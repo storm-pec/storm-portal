@@ -8,6 +8,38 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Hide page content immediately to prevent unauthorized flashing before authentication check */
+    body { display: none; }
+  </style>
+
+  <script>
+    const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function checkAuth() {
+      const { data: { session } } = await db.auth.getSession();
+      if (!session) {
+        window.location.href = "index.html";
+      } else {
+        document.addEventListener("DOMContentLoaded", () => {
+          document.body.style.display = "block";
+          // Initial Load
+          fetchBearers();
+          fetchExec();
+          fetchFacultyAdmin();
+          fetchMinutesAdmin();
+          fetchEventsAdmin();
+          fetchToppersAdmin();
+          fetchAlumniAdmin();
+        });
+      }
+    }
+
+    checkAuth();
+  </script>
 </head>
 <body class="bg-slate-100 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
 
@@ -16,8 +48,9 @@
     <div class="flex items-center gap-3">
       <span class="font-black text-lg tracking-wider text-amber-400">STORM ADMIN PORTAL</span>
     </div>
-    <div>
+    <div class="flex items-center gap-2">
       <a href="index.html" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition">← Back to Website</a>
+      <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg text-xs transition cursor-pointer">Logout</button>
     </div>
   </header>
 
@@ -180,7 +213,7 @@
       </div>
     </div>
 
-    <!-- TAB 5: EVENTS (With Device Poster Upload Support & Live Preview) -->
+    <!-- TAB 5: EVENTS -->
     <div id="section-events" class="admin-section grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
       <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
         <h2 id="event-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Add / Edit Association Event & Poster</h2>
@@ -305,10 +338,6 @@
 
   <!-- SCRIPTS -->
   <script>
-    const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     function switchAdminTab(tab, event) {
       document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
       document.querySelectorAll('.admin-tab-btn').forEach(b => {
@@ -318,6 +347,11 @@
       document.getElementById('section-' + tab).classList.remove('hidden');
       event.currentTarget.classList.add('active', 'border-amber-500', 'text-slate-900');
       event.currentTarget.classList.remove('border-transparent', 'text-gray-500');
+    }
+
+    async function handleLogout() {
+      await db.auth.signOut();
+      window.location.href = "index.html";
     }
 
     // AUTO UPLOAD TO SUPABASE ON FILE SELECT
@@ -759,15 +793,6 @@
         fetchAlumniAdmin();
       }
     }
-
-    // Initial Load
-    fetchBearers();
-    fetchExec();
-    fetchFacultyAdmin();
-    fetchMinutesAdmin();
-    fetchEventsAdmin();
-    fetchToppersAdmin();
-    fetchAlumniAdmin();
   </script>
 </body>
 </html>
