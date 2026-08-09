@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faculty Directory | ME Dept, PEC</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    .creative-card {
+      transition: all 0.3s ease;
+    }
+    .creative-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.12);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+
+  <!-- HEADER -->
+  <header class="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h1 class="font-black text-lg text-slate-900 tracking-wider uppercase">Faculty Directory</h1>
+      </div>
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+        <a href="index.html" class="hover:text-amber-600 transition">Home</a>
+        <a href="faculty.html" class="text-amber-600 font-bold transition">Faculty</a>
+        <a href="toppers.html" class="hover:text-amber-600 transition">Academic Excellence</a>
+        <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
+        <a href="admin.html" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-full font-bold transition shadow-md text-xs">ADMIN</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-6 py-12 flex-grow w-full">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-black text-slate-900 uppercase tracking-wide">Department Faculty Members</h2>
+      <div class="w-20 h-1.5 bg-amber-500 mx-auto mt-2 rounded-full"></div>
+      <p class="text-gray-600 text-sm mt-3">Meet our experienced and dedicated faculty members of Mechanical Engineering.</p>
+    </div>
+
+    <!-- Faculty Grid -->
+    <div id="faculty-directory-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div class="col-span-full text-center text-gray-500 py-12">Loading faculty directory...</div>
+    </div>
+  </main>
+
+  <!-- MODAL FOR FULL PROFILE -->
+  <div id="faculty-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+        <h3 class="font-bold text-lg uppercase tracking-wider text-amber-400">Faculty Profile</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white font-black text-xl cursor-pointer">✕</button>
+      </div>
+      <div id="modal-body" class="p-6 overflow-y-auto space-y-6 text-sm">
+        <!-- Dynamic Content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#121212] text-gray-400 py-6 text-center text-xs uppercase tracking-widest border-t-4 border-amber-500 mt-auto">
+    <span>Department of Mechanical Engineering || College of Engineering Pathanapuram</span>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function fetchFacultyDirectory() {
+      const container = document.getElementById('faculty-directory-container');
+      const { data, error } = await db.from('faculty').select('*').order('display_order', { ascending: true });
+      
+      if (error || !data || data.length === 0) {
+        container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-12'>No faculty profiles found.</p>";
+        return;
+      }
+
+      container.innerHTML = data.map(m => `
+        <div class="bg-[#FDFBF7] border border-gray-200 rounded-xl shadow-md overflow-hidden flex flex-col items-center text-center relative group creative-card p-6">
+          
+          <!-- Hover Overlay with Know More Button -->
+          <div class="absolute inset-x-0 top-0 h-28 bg-blue-600 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end pb-3 z-10">
+            <button onclick='openFacultyModal(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="mx-auto bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold px-6 py-2 rounded shadow transition uppercase tracking-wider cursor-pointer">Know More</button>
+          </div>
+
+          <!-- Profile Image -->
+          <div class="relative z-20 mt-4 mb-4">
+            <img src="${m.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-md mx-auto" />
+          </div>
+
+          <!-- Details -->
+          <h4 class="font-serif font-bold text-lg text-slate-900 leading-tight mb-1">${m.name}</h4>
+          <p class="text-[11px] text-gray-600 font-bold uppercase tracking-wider mt-1">${m.role}</p>
+          
+          <!-- Bottom Click Trigger -->
+          <div class="mt-4 pt-4 border-t border-gray-100 w-full">
+            <button onclick='openFacultyModal(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-wide cursor-pointer">View Full Profile →</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openFacultyModal(m) {
+      const modal = document.getElementById('faculty-modal');
+      const body = document.getElementById('modal-body');
+      
+      body.innerHTML = `
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6 border-b pb-6">
+          <img src="${m.photo_url || 'https://via.placeholder.com/150'}" class="w-32 h-32 rounded-full object-cover border-4 border-amber-500 shadow-md">
+          <div class="text-center md:text-left space-y-1.5">
+            <h2 class="text-2xl font-serif font-black text-slate-900">${m.name}</h2>
+            <p class="text-xs font-bold text-amber-600 uppercase tracking-wide">${m.role}</p>
+            ${m.email ? `<p class="text-xs text-blue-600 font-medium">✉ ${m.email}</p>` : ''}
+            ${m.phone ? `<p class="text-xs text-gray-600 font-medium">📞 ${m.phone}</p>` : ''}
+          </div>
+        </div>
+
+        <div class="space-y-4 text-xs md:text-sm">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-b pb-3">
+            <span class="font-bold text-slate-700 uppercase">Qualification</span>
+            <span class="md:col-span-2 text-gray-700">${m.qualification || 'Not Specified'}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-b pb-3">
+            <span class="font-bold text-slate-700 uppercase">Experience</span>
+            <span class="md:col-span-2 text-gray-700">${m.experience || 'Not Specified'}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-b pb-3">
+            <span class="font-bold text-slate-700 uppercase">Areas of Interest</span>
+            <span class="md:col-span-2 text-gray-700">${m.areas_of_interest || 'Not Specified'}</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+            <span class="font-bold text-slate-700 uppercase">Publications</span>
+            <div class="md:col-span-2 text-gray-700 whitespace-pre-line leading-relaxed">${m.publications || 'No publications listed.'}</div>
+          </div>
+        </div>
+      `;
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('faculty-modal').classList.add('hidden');
+    }
+
+    fetchFacultyDirectory();
+  </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academic Excellence | STORM Association</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    .creative-card {
+      transition: all 0.3s ease;
+    }
+    .creative-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.12);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+
+  <!-- HEADER -->
+  <header class="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <h1 class="font-black text-lg text-slate-900 tracking-wider uppercase">Academic Excellence</h1>
+      </div>
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+        <a href="index.html" class="hover:text-amber-600 transition">Home</a>
+        <a href="faculty.html" class="hover:text-amber-600 transition">Faculty</a>
+        <a href="toppers.html" class="text-amber-600 font-bold transition">Academic Excellence</a>
+        <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
+        <a href="events.html" class="hover:text-amber-600 transition">Events</a>
+        <a href="admin.html" class="bg-slate-900 hover:bg-slate-800 text-white px-4 py-2 rounded-full font-bold transition shadow-md text-xs">ADMIN</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-6 py-12 flex-grow w-full">
+    
+    <!-- Title Section with Professional Emoji (Fixed Broken Image) -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-black text-slate-900 uppercase tracking-wide flex items-center justify-center gap-3">
+        <span class="text-3xl">🏆</span> ACADEMIC TOPPERS
+      </h2>
+      <div class="w-20 h-1.5 bg-amber-500 mx-auto mt-2 rounded-full"></div>
+      <p class="text-gray-600 text-sm mt-3">Honoring the academic brilliance and top-performing students of Mechanical Engineering.</p>
+    </div>
+
+    <!-- Toppers Grid -->
+    <div id="toppers-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div class="col-span-full text-center text-gray-500 py-12">Loading academic toppers...</div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#121212] text-gray-400 py-6 text-center text-xs uppercase tracking-widest border-t-4 border-amber-500 mt-auto">
+    <span>Department of Mechanical Engineering || College of Engineering Pathanapuram</span>
+    <div class="mt-2 text-[10px] text-gray-500">Designed & Developed By <a href="https://share.google/ifivL6bAiou0fFubP" target="_blank" class="text-white font-bold hover:underline">Athul J</a></div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+    const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function fetchToppersDirectory() {
+      const container = document.getElementById('toppers-container');
+      const { data, error } = await db.from('toppers').select('*').order('created_at', { ascending: false });
+      
+      if (error || !data || data.length === 0) {
+        container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-12'>No academic toppers found.</p>";
+        return;
+      }
+
+      container.innerHTML = data.map(t => `
+        <div class="bg-white border border-gray-200 p-6 text-center relative shadow-md rounded-xl creative-card flex flex-col items-center">
+          <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year || ''}</div>
+          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-24 h-24 rounded-full object-cover border-4 border-amber-500 mb-4 shadow-md" />
+          <h4 class="font-bold text-base text-slate-900 leading-tight mb-1">${t.student_name}</h4>
+          <p class="text-xs text-gray-500 uppercase tracking-wide mb-3">${t.semester || ''}</p>
+          <div class="mt-auto w-full bg-slate-50 py-2 rounded-lg text-xs font-bold border border-gray-100 text-slate-700">
+            CGPA: <span class="text-amber-600 font-black">${t.cgpa || 'N/A'}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    fetchToppersDirectory();
+  </script>
+</body>
+</html>

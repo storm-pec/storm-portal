@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STORM Association | ME Dept, PEC</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+    .animate-marquee { display: inline-block; white-space: nowrap; animation: marquee 35s linear infinite; }
+    
+    @keyframes scroll-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .logo-slider {
+      display: flex;
+      width: max-content;
+      animation: scroll-left 35s linear infinite;
+    }
+    .logo-slider:hover {
+      animation-play-state: paused;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+
+    .storm-font {
+      font-family: 'Orbitron', sans-serif;
+    }
+    
+    .creative-card {
+      transition: all 0.3s ease;
+    }
+    .creative-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.12);
+    }
+
+    /* MECHANICAL STORM VORTEX BACKGROUND */
+    @keyframes rigorousSpin {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(540deg) scale(1.3); }
+      100% { transform: rotate(1080deg) scale(1); }
+    }
+    .storm-mechanical-vortex {
+      background: radial-gradient(circle, #1e293b 0%, #0f172a 60%, #020617 100%);
+      box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.5);
+    }
+    .swirling-element {
+      animation: rigorousSpin 5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
+    /* GEAR TRAIN ANIMATION ALONG FOOTER */
+    @keyframes slideGearTrain {
+      0% { left: 2%; transform: rotate(0deg); }
+      50% { left: 90%; transform: rotate(720deg); }
+      100% { left: 2%; transform: rotate(1440deg); }
+    }
+    .gear-train-moving {
+      animation: slideGearTrain 6s linear infinite;
+    }
+
+    .content-crash {
+      transition: transform 1.2s ease, opacity 1.2s ease, filter 1.2s ease;
+      transform: scale(1.8);
+      opacity: 0;
+      filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+
+  <!-- CAR REVVING AUDIO ELEMENT -->
+  <audio id="engineSound" preload="auto">
+    <source src="https://www.image2url.com/r2/default/audio/1786295144445-11ab0b5b-9626-4d7c-9b6c-9f8c2926efb5.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- IMMERSIVE FULL-SCREEN LAUNCH SCREEN -->
+  <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
+    
+    <!-- BACKGROUND SWIRLING CLEAN MECHANICAL GEARS -->
+    <div class="absolute inset-0 z-10 pointer-events-none overflow-hidden flex items-center justify-center opacity-30">
+      <div class="absolute text-amber-500 text-7xl swirling-element" style="top: 15%; left: 15%; animation-duration: 4s;">⚙️</div>
+      <div class="absolute text-slate-300 text-6xl swirling-element" style="bottom: 25%; right: 20%; animation-duration: 3.5s;">⚙️</div>
+      <div class="absolute text-amber-400 text-8xl swirling-element" style="top: 25%; right: 15%; animation-duration: 4.5s;">⚙️</div>
+      <div class="absolute text-slate-400 text-6xl swirling-element" style="bottom: 20%; left: 15%; animation-duration: 3.8s;">⚙️</div>
+    </div>
+
+    <!-- LAUNCH CONTENT CONTAINER -->
+    <div id="launch-content" class="relative z-30 max-w-3xl space-y-6 flex flex-col items-center text-center my-auto">
+      <span class="bg-amber-500 text-slate-950 font-black text-xs md:text-sm px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">Official Portal Launch</span>
+      
+      <!-- STORM BRANDING -->
+      <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)]">
+        <span>S.</span>
+        <span>T.</span>
+        <img src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle filter drop-shadow-[0_0_10px_rgba(245,158,11,0.9)]" onerror="this.onerror=null; this.style.display='none'">
+        <span>.R.</span>
+        <span>M</span>
+      </h1>
+
+      <div class="text-amber-400 font-black tracking-[0.15em] md:tracking-[0.2em] uppercase text-sm md:text-lg text-center space-y-1 drop-shadow-md">
+        <p>SOVEREIGN TECHNOLOGICAL</p>
+        <p>ORGANISATION FOR ROYAL MECH</p>
+      </div>
+      
+      <p class="text-gray-300 text-xs tracking-wide uppercase font-medium pt-1 drop-shadow">
+        Department of Mechanical Engineering | College of Engineering Pathanapuram
+      </p>
+
+      <div class="pt-2">
+        <button id="launchBtn" class="launch-button bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm md:text-base uppercase tracking-widest px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.9)] transition-all transform hover:scale-105 cursor-pointer">
+          UNLEASH STORM & LAUNCH PORTAL
+        </button>
+      </div>
+      
+      <div class="pt-2 flex flex-col items-center space-y-2">
+        <p class="text-xs text-gray-300 uppercase tracking-widest drop-shadow">
+          Inaugurated by Hon. MLA <span class="text-amber-400 font-bold">Sri. Jyothikumar Chamakkala</span>
+        </p>
+        
+        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 border-amber-500 overflow-hidden bg-slate-900 shadow-xl flex items-center justify-center">
+          <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'" />
+        </div>
+      </div>
+    </div>
+
+    <!-- WHOLE LENGTH GEAR TRAIN FOOTER BAR ON LAUNCH SCREEN -->
+    <div class="absolute bottom-0 inset-x-0 h-16 bg-slate-950/90 border-t-2 border-amber-500/50 flex items-center px-6 overflow-hidden z-30 pointer-events-none">
+      <div class="flex items-center justify-between w-full text-amber-500/40 text-2xl tracking-[1.5rem] select-none">
+        <span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span><span>⚙️</span>
+      </div>
+      <div class="absolute top-1/2 -translate-y-1/2 text-amber-400 text-4xl filter drop-shadow-[0_0_10px_rgba(245,158,11,0.9)] gear-train-moving">
+        ⚙️
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const launchBtn = document.getElementById('launchBtn');
+    const engineSound = document.getElementById('engineSound');
+    const launchScreen = document.getElementById('launch-screen');
+    const launchContent = document.getElementById('launch-content');
+
+    launchBtn.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent instant page transition
+
+      if (engineSound) {
+        engineSound.currentTime = 0;
+        engineSound.play().then(() => {
+          launchContent.classList.add('content-crash');
+          
+          // Wait for the custom audio to finish playing before revealing webpage
+          engineSound.onended = () => {
+            launchScreen.style.transition = 'opacity 0.8s ease';
+            launchScreen.style.opacity = '0';
+            setTimeout(() => {
+              launchScreen.style.display = 'none';
+            }, 800);
+          };
+        }).catch(err => {
+          console.error("Audio playback error:", err);
+          // Fallback transition if audio fails or is blocked by browser policies
+          launchContent.classList.add('content-crash');
+          launchScreen.style.transition = 'opacity 0.8s ease';
+          launchScreen.style.opacity = '0';
+          setTimeout(() => {
+            launchScreen.style.display = 'none';
+          }, 800);
+        });
+      }
+    });
+
+    function switchTab(targetId, btnElement) {
+      document.querySelectorAll('.main-tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-amber-500', 'text-slate-900');
+        btn.classList.add('border-transparent', 'text-gray-500');
+      });
+      if(btnElement) {
+        btnElement.classList.add('active', 'border-amber-500', 'text-slate-900');
+        btnElement.classList.remove('border-transparent', 'text-gray-500');
+      }
+
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      const targetEl = document.getElementById(targetId);
+      if(targetEl) targetEl.classList.add('active');
+
+      document.getElementById('main-tabs-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function fetchOfficeBearers() {
+      const container = document.getElementById('bearers-container');
+      const { data, error } = await db.from('office_bearers').select('*').order('display_order', { ascending: true });
+      if (error || !data || data.length === 0) { container.innerHTML = "<p class='col-span-full text-center text-gray-500'>No office bearers listed yet.</p>"; return; }
+      container.innerHTML = data.map(b => `
+        <div class="bg-white border border-gray-100 p-6 flex flex-col items-center shadow-md rounded-xl creative-card">
+          <img src="${b.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-24 h-24 rounded-full object-cover border-4 border-slate-900 mb-4 shadow-md" />
+          <h4 class="font-bold text-lg text-slate-900 text-center leading-tight">${b.name}</h4>
+          <p class="text-xs text-amber-600 font-black uppercase tracking-widest mt-2 text-center">${b.position}</p>
+        </div>
+      `).join('');
+    }
+
+    async function fetchExecutiveCommittee() {
+      const container = document.getElementById('exec-container');
+      const { data, error } = await db.from('executive_committee').select('*').order('display_order', { ascending: true });
+      if (error || !data || data.length === 0) { 
+        container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-4'>Executive committee members will be updated soon.</p>"; 
+        return; 
+      }
+      container.innerHTML = data.map(m => `
+        <div class="bg-white border border-gray-100 p-6 flex flex-col items-center shadow-md rounded-xl creative-card">
+          <img src="${m.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-20 h-20 rounded-full object-cover border-3 border-slate-900 mb-3 shadow-md" />
+          <h4 class="font-bold text-base text-slate-900 text-center leading-tight">${m.name}</h4>
+          <p class="text-xs text-amber-600 font-bold uppercase tracking-widest mt-1 text-center">${m.position || m.year_batch || 'Member'}</p>
+        </div>
+      `).join('');
+    }
+
+    async function fetchFaculty() {
+      const container = document.getElementById('faculty-container');
+      const { data, error } = await db.from('faculty').select('*').order('display_order', { ascending: true });
+      if (error || !data || data.length === 0) {
+        container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-10'>No faculty profiles found.</p>";
+        return;
+      }
+      container.innerHTML = data.map(m => {
+        const isHOD = m.role && m.role.toLowerCase().includes('head');
+        const cardStyle = isHOD ? 'border-2 border-amber-500 bg-amber-50/40 shadow-amber-500/20' : 'border border-gray-200 bg-[#FDFBF7]';
+        const hodBadge = isHOD ? `<span class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl rounded-tr-xl z-20 shadow-sm">HOD</span>` : '';
+
+        return `
+        <div class="${cardStyle} rounded-xl shadow-md overflow-hidden flex flex-col items-center text-center relative group creative-card p-6 mt-4">
+          ${hodBadge}
+          <div class="relative z-20 mt-2 mb-4 w-28 h-28 mx-auto">
+            <img src="${m.photo_url || ''}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-full h-full rounded-full object-cover border-4 border-white shadow-md transition-all duration-300 group-hover:shadow-lg" />
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-30">
+              <button onclick='openFacultyModal(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="bg-blue-600/90 hover:bg-blue-700 text-white text-[10px] font-bold px-4 py-2 rounded-full shadow-xl uppercase tracking-wider cursor-pointer backdrop-blur-sm transform scale-90 group-hover:scale-100 transition-transform">Know More</button>
+            </div>
+          </div>
+          <h4 class="font-serif font-bold text-lg text-slate-900 leading-tight mb-1">${m.name}</h4>
+          <p class="text-[10px] text-gray-600 font-bold uppercase tracking-wider mt-1 px-2">${m.role}</p>
+        </div>
+        `;
+      }).join('');
+    }
+
+    async function fetchMeetingMinutes() {
+      const container = document.getElementById('minutes-container');
+      const { data, error } = await db.from('meeting_minutes').select('*').order('meeting_date', { ascending: false });
+      if (error || !data || data.length === 0) { 
+        container.innerHTML = "<p class='text-center text-gray-500 py-4'>No meeting minutes uploaded yet.</p>"; 
+        return; 
+      }
+      container.innerHTML = data.map(m => `
+        <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md transition">
+          <div>
+            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">${m.meeting_date}</span>
+            <h4 class="font-bold text-slate-900 mt-2">${m.title}</h4>
+            ${m.minutes_text ? `<p class="text-sm text-gray-600 mt-1 line-clamp-2">${m.minutes_text}</p>` : ''}
+          </div>
+          ${m.document_url ? `<a href="${m.document_url}" target="_blank" class="shrink-0 bg-slate-900 text-white text-xs font-bold px-4 py-2 rounded-lg shadow hover:bg-amber-500 hover:text-slate-950 transition flex items-center gap-2">View Minutes PDF</a>` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function fetchEvents() {
+      const container = document.getElementById('events-container');
+      const { data, error } = await db.from('main_events').select('*').order('created_at', { ascending: false }).limit(3);
+      if (error || !data || data.length === 0) { 
+        container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-4'>No events found.</p>"; 
+        return; 
+      }
+      container.innerHTML = data.map(ev => `
+        <div onclick='openEventModal(${JSON.stringify(ev).replace(/'/g, "&#39;")})' class="bg-white shadow-md border border-gray-200 rounded-xl overflow-hidden creative-card cursor-pointer flex flex-col h-full">
+          <div class="bg-slate-950 h-72 md:h-80 flex items-center justify-center overflow-hidden p-2">
+            <img src="${ev.cover_image_url || ''}" class="max-h-full max-w-full object-contain drop-shadow-md" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Event+Poster'"/>
+          </div>
+          <div class="p-5 flex flex-col flex-grow">
+            ${ev.event_date ? `<span class="text-[10px] font-bold text-amber-600 uppercase mb-1">${ev.event_date}</span>` : ''}
+            <h4 class="font-bold text-lg text-slate-900 mb-2 leading-tight">${ev.title}</h4>
+            <p class="text-sm text-gray-600 line-clamp-2">${ev.description || ''}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchToppersPreview() {
+      const container = document.getElementById('toppers-preview');
+      const { data, error } = await db.from('toppers').select('*').order('created_at', { ascending: false }).limit(4);
+      if (error || !data || data.length === 0) return;
+      container.innerHTML = data.map(t => `
+        <div class="bg-white border border-gray-200 p-5 text-center relative shadow-md hover:shadow-xl transition rounded-xl creative-card">
+          <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year}</div>
+          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
+          <h4 class="font-bold text-sm text-slate-900">${t.student_name}</h4>
+          <p class="text-xs text-gray-500 mt-1">${t.semester || 'Achiever'}</p>
+          <div class="mt-3 bg-slate-50 py-1.5 rounded-lg text-xs text-slate-700 border border-gray-100 font-bold">CGPA: <span class="text-amber-600">${t.cgpa || 'N/A'}</span></div>
+        </div>
+      `).join('');
+    }
+
+    async function fetchAlumniPreview() {
+      const container = document.getElementById('alumni-preview');
+      const { data, error } = await db.from('alumni').select('*').order('graduation_year', { ascending: false }).limit(4);
+      if (error || !data || data.length === 0) return;
+      container.innerHTML = data.map(person => `
+        <div class="bg-white p-5 border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition creative-card flex flex-col items-center text-center">
+          <img src="${person.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500 mb-3 shadow-sm" />
+          <h4 class="font-bold text-slate-900 text-base">${person.full_name}</h4>
+          <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">${person.job_designation}</p>
+          <p class="text-xs text-gray-600 font-semibold mt-1">@ ${person.company_name}</p>
+        </div>
+      `).join('');
+    }
+
+    // INITIAL FETCH CALLS
+    fetchOfficeBearers();
+    fetchExecutiveCommittee();
+    fetchFaculty();
+    fetchMeetingMinutes();
+    fetchEvents();
+    fetchToppersPreview();
+    fetchAlumniPreview();
+  </script>
+
+  <!-- TOP BLACK BAR -->
+  <div class="bg-[#121212] text-white text-xs py-2 px-6 flex flex-col md:flex-row justify-between items-center border-b border-gray-800 gap-2">
+    <div class="flex items-center gap-3 flex-wrap justify-center md:justify-start">
+      <img src="pec-logo.png" alt="PEC Logo" class="h-8 md:h-10 w-auto object-contain" onerror="this.onerror=null; this.style.display='none'">
+      <a href="https://www.cepathanapuram.ac.in/" target="_blank" class="hover:underline font-semibold tracking-wide whitespace-nowrap">College of Engineering Pathanapuram</a>
+      <a href="https://www.cepathanapuram.ac.in/me" target="_blank" class="hover:underline text-gray-400 hidden md:inline whitespace-nowrap">| Department of Mechanical Engineering</a>
+    </div>
+    <div class="flex items-center gap-4 shrink-0">
+      <span class="font-medium whitespace-nowrap tracking-wider">ISO 9001:2015 CERTIFIED</span>
+      <span class="bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full text-[10px]">PEC</span>
+    </div>
+  </div>
+
+  <!-- HEADER NAVIGATION -->
+  <header class="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
+    <div class="w-full px-4 md:px-6 py-3 flex justify-between items-center">
+      
+      <div class="flex items-center gap-4 h-full">
+        <img src="storm-logo.png" alt="STORM Logo" class="h-10 md:h-12 w-auto object-contain shrink-0 self-center" onerror="this.onerror=null; this.style.display='none'">
+        
+        <div class="flex flex-col w-max items-center">
+          <div class="storm-font font-black text-2xl md:text-3xl text-slate-900 uppercase flex items-center justify-center gap-1 tracking-wide">
+            <span>S.</span>
+            <span>T.</span>
+            <img src="storm-o-icon-black.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle" onerror="this.onerror=null; this.style.display='none'">
+            <span>.R.</span>
+            <span>M</span>
+          </div>
+          <div class="w-full mt-0.5 border-t-2 border-amber-500 pt-1 text-[9px] md:text-[11px] text-slate-800 font-black uppercase whitespace-nowrap tracking-wider text-center">
+            DEPARTMENT OF MECHANICAL ENGINEERING
+          </div>
+        </div>
+      </div>
+
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700 uppercase tracking-wide shrink-0 pr-2">
+        <a href="index.html" class="text-amber-600 font-bold transition">Home</a>
+        <a href="faculty.html" class="hover:text-amber-600 transition">Faculty</a>
+        <a href="toppers.html" class="hover:text-amber-600 transition">Academic Excellence</a>
+        <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
+        <a href="events.html" class="hover:text-amber-600 transition">Events</a>
+        <a href="admin.html" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs">ADMIN</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MARQUEE -->
+  <div class="bg-white border-b border-gray-200 flex items-center h-10 overflow-hidden text-sm shadow-inner">
+    <div class="bg-amber-500 text-slate-950 font-black h-full px-6 flex items-center shadow-md z-10 relative shrink-0 uppercase tracking-wider text-xs">Latest Updates</div>
+    <div class="flex-grow overflow-hidden relative h-full flex items-center bg-gray-50 text-slate-800 font-semibold">
+      <div class="animate-marquee">Meet Our Office Bearers 2026-27! | Welcome to the Official Portal of Mechanical Association - Sovereign Technological Organisation For Royal Mech | Check out our latest events like CHANDRA 2025!</div>
+    </div>
+  </div>
+
+  <!-- HERO BANNER -->
+  <div class="w-full h-64 md:h-72 bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden border-b-4 border-amber-500 shadow-xl">
+    <img src="college-bg.jpg" alt="College Background" class="w-full h-full object-cover opacity-20 mix-blend-overlay absolute inset-0" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80'">
+    
+    <div class="absolute inset-0 flex flex-col items-center justify-center px-4 z-10 space-y-3">
+      <h2 class="storm-font text-4xl md:text-6xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 drop-shadow-2xl tracking-wide">
+        <span>S.</span>
+        <span>T.</span>
+        <img src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle" onerror="this.onerror=null; this.style.display='none'">
+        <span>.R.</span>
+        <span>M</span>
+      </h2>
+
+      <p class="text-gray-300 font-bold tracking-[0.2em] md:tracking-[0.25em] uppercase text-[10px] md:text-xs text-center leading-relaxed drop-shadow-md">
+        SOVEREIGN TECHNOLOGICAL ORGANISATION FOR ROYAL MECH
+      </p>
+    </div>
+  </div>
+
+  <!-- MAIN TABBED INTERFACE -->
+  <section id="main-tabs-section" class="max-w-7xl mx-auto px-6 py-12">
+    
+    <div class="flex border-b border-gray-200 overflow-x-auto bg-white shadow-md rounded-t-xl">
+      <button class="main-tab-btn active px-6 py-4 border-b-4 border-amber-500 text-slate-900 font-extrabold flex items-center gap-2 uppercase tracking-wide text-xs shrink-0 transition cursor-pointer" onclick="switchTab('tab-about', this)">
+        About STORM
+      </button>
+      <button class="main-tab-btn px-6 py-4 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-extrabold flex items-center gap-2 uppercase tracking-wide text-xs transition shrink-0 cursor-pointer" onclick="switchTab('tab-office', this)">
+        Office Bearers
+      </button>
+      <button class="main-tab-btn px-6 py-4 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-extrabold flex items-center gap-2 uppercase tracking-wide text-xs transition shrink-0 cursor-pointer" onclick="switchTab('tab-faculty', this)">
+        Faculty
+      </button>
+      <button class="main-tab-btn px-6 py-4 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-extrabold flex items-center gap-2 uppercase tracking-wide text-xs transition shrink-0 cursor-pointer" onclick="switchTab('tab-minutes', this)">
+        Meeting Minutes
+      </button>
+    </div>
+
+    <div class="bg-white p-8 border border-gray-200 border-t-0 shadow-xl rounded-b-xl min-h-[400px]">
+      
+      <!-- ABOUT TAB -->
+      <div id="tab-about" class="tab-content active text-gray-800 space-y-10">
+        <h2 class="text-3xl font-serif font-black text-slate-900 mb-6 tracking-tight border-l-4 border-amber-500 pl-4">Ready to Storm?</h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+          <div class="lg:col-span-2 flex flex-col gap-3 w-full">
+            <details class="group border border-gray-200 rounded-lg overflow-hidden shadow-sm" open>
+              <summary class="cursor-pointer p-4 font-black text-sm tracking-wide uppercase flex justify-between items-center outline-none bg-blue-600 text-white transition hover:bg-blue-700">
+                <span>VISION</span>
+                <span class="text-white text-lg font-normal group-open:rotate-180 transition">▼</span>
+              </summary>
+              <div class="p-6 text-gray-700 text-sm leading-relaxed bg-slate-50 border-t border-gray-200 font-medium">
+                To be a center of excellence in Mechanical Engineering education and research, nurturing innovative engineers to develop sustainable and socially impactful technological solutions.
+              </div>
+            </details>
+
+            <details class="group border border-gray-200 rounded-lg overflow-hidden shadow-sm" open>
+              <summary class="cursor-pointer p-4 font-black text-sm tracking-wide uppercase flex justify-between items-center outline-none bg-blue-600 text-white transition hover:bg-blue-700">
+                <span>MISSION</span>
+                <span class="text-white text-lg font-normal group-open:rotate-180 transition">▼</span>
+              </summary>
+              <div class="p-6 text-gray-700 text-sm leading-relaxed bg-slate-50 border-t border-gray-200">
+                <ol class="list-decimal pl-5 space-y-3 font-medium">
+                  <li>To provide transformative, experiential mechanical engineering education that cultivates critical thinking, technical competence, innovation, and professional ethics.</li>
+                  <li>To promote interdisciplinary research and product development focused on sustainable, energy-efficient, and human-centric engineering solutions.</li>
+                  <li>To bridge the gap between engineering education and societal needs through technology transfer, industry collaboration, and community-driven initiatives.</li>
+                </ol>
+              </div>
+            </details>
+          </div>
+
+          <div class="bg-gradient-to-br from-slate-900 to-slate-950 text-white p-8 rounded-xl shadow-lg w-full relative overflow-hidden h-full flex flex-col justify-between">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl"></div>
+            <div>
+              <div class="w-10 h-1.5 bg-amber-500 mb-4 rounded-full"></div>
+              <h3 class="text-xl font-serif font-bold text-white mb-4">About Association</h3>
+              <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                STORM is the official student association of the Department of Mechanical Engineering at the College of Engineering Pathanapuram. We strive to bridge the gap between academic curriculum and industry requirements.
+              </p>
+              <p class="text-gray-300 text-sm leading-relaxed">
+                Our goal is to foster a community of innovative thinkers, ethical professionals, and technically sound engineers ready to tackle modern industrial challenges.
+              </p>
+            </div>
+            <div class="pt-6 text-xs text-amber-400 font-semibold uppercase tracking-wider">
+              PEC Mechanical Engineering
+            </div>
+          </div>
+        </div>
+
+        <!-- ANNOUNCEMENTS SECTION -->
+        <div class="pt-8 border-t border-gray-200">
+          <div class="text-center mb-8">
+            <h3 class="text-2xl md:text-3xl font-black text-slate-900 uppercase tracking-wide">ANNOUNCEMENTS</h3>
+            <div class="w-20 h-1.5 bg-amber-500 mx-auto mt-2 rounded-full"></div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-gradient-to-br from-white to-slate-100 border border-gray-200 rounded-2xl p-6 md:p-8 shadow-md">
+            <div class="flex justify-center">
+              <div class="w-full max-w-sm rounded-xl overflow-hidden shadow-2xl border-2 border-slate-900 bg-black creative-card">
+                <img src="office-bearers-poster.jpeg" alt="Office Bearers Poster" class="w-full h-auto object-cover block" onerror="this.onerror=null; this.src='https://via.placeholder.com/600x800?text=Office+Bearers+Poster'" />
+              </div>
+            </div>
+            <div class="space-y-4">
+              <span class="bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">Featured Update</span>
+              <h4 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">MEET OUR OFFICE BEARERS 2026-27</h4>
+              <p class="text-gray-600 text-sm leading-relaxed font-medium">
+                We proudly introduce the newly selected Office Bearers and Executive Committee members of the STORM Association for the academic year 2026–27. Led by our General Secretary, Assistant General Secretary, and Treasurer, the team is set to lead upcoming technical workshops and departmental initiatives.
+              </p>
+              <div class="pt-2">
+                <button type="button" onclick="switchTab('tab-office', document.querySelector('.main-tab-btn:nth-child(2)'))" class="inline-block bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-black text-xs uppercase tracking-wider px-6 py-3 rounded-xl transition shadow-lg cursor-pointer">View Individual Profiles ↓</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OFFICE BEARERS TAB -->
+      <div id="tab-office" class="tab-content space-y-12">
+        <div>
+          <h3 class="text-xl font-black text-slate-900 uppercase tracking-wide mb-6 border-b-2 border-amber-500 pb-2 flex items-center gap-2">
+            <span class="w-3 h-3 bg-amber-500 rounded-full inline-block"></span> Core Office Bearers
+          </h3>
+          <div id="bearers-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="col-span-full text-center text-gray-500 py-6">Loading office bearers...</div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <h3 class="text-xl font-black text-slate-900 uppercase tracking-wide mb-6 border-b-2 border-amber-500 pb-2 flex items-center gap-2">
+            <span class="w-3 h-3 bg-amber-500 rounded-full inline-block"></span> Executive Committee Members
+          </h3>
+          <div id="exec-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <div class="col-span-full text-center text-gray-500 py-6">Loading executive committee members...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FACULTY TAB -->
+      <div id="tab-faculty" class="tab-content">
+        <h3 class="text-xl font-black text-slate-900 uppercase tracking-wide mb-6 border-b-2 border-amber-500 pb-2 flex items-center gap-2">
+          <span class="w-3 h-3 bg-amber-500 rounded-full inline-block"></span> Department Faculty
+        </h3>
+        <div id="faculty-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div class="col-span-full text-center text-gray-500 py-10">Loading faculty profiles...</div>
+        </div>
+        <div class="text-center mt-8">
+          <a href="faculty.html" class="inline-block bg-slate-900 text-white font-bold text-xs uppercase px-6 py-3 rounded-lg shadow hover:bg-amber-500 hover:text-slate-950 transition">View Full Faculty Directory →</a>
+        </div>
+      </div>
+
+      <!-- MEETING MINUTES TAB -->
+      <div id="tab-minutes" class="tab-content">
+        <div class="bg-slate-50 p-6 rounded-xl border border-gray-200">
+          <h3 class="font-black text-lg text-slate-900 mb-4 border-b pb-2">Official Association Records</h3>
+          <div id="minutes-container" class="space-y-4">
+            <div class="text-center text-gray-500 py-6">Loading meeting minutes...</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HIGHLIGHT SECTIONS -->
+  <div class="bg-gray-100 py-12 border-t border-gray-200">
+    
+    <!-- EVENTS & POSTERS GALLERY -->
+    <section id="events" class="max-w-7xl mx-auto px-6 mb-20">
+      <div class="flex justify-between items-center mb-10">
+        <h3 class="text-2xl font-black text-slate-900 uppercase tracking-wide">Events & Posters Gallery</h3>
+        <a href="events.html" class="text-xs font-bold text-blue-600 hover:underline uppercase tracking-wider">View All Events →</a>
+      </div>
+      <div id="events-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="col-span-full text-center text-gray-500 py-8">Loading events & posters...</div>
+      </div>
+    </section>
+
+    <!-- ACADEMIC TOPPERS -->
+    <section class="max-w-7xl mx-auto px-6 mb-20">
+      <h3 class="text-2xl font-black text-center text-slate-900 mb-10 uppercase tracking-wide flex items-center justify-center gap-2">
+        <span>🏆</span> ACADEMIC TOPPERS
+      </h3>
+      <div id="toppers-preview" class="grid grid-cols-1 md:grid-cols-4 gap-6"></div>
+      <div class="text-center mt-8"><a href="toppers.html" class="inline-block bg-white border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white font-black py-3 px-8 rounded-xl transition shadow-md">View All Achievers →</a></div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 mb-10">
+      <h3 class="text-2xl font-black text-center text-slate-900 mb-10 tracking-wide uppercase">Notable Alumni</h3>
+      <div id="alumni-preview" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"></div>
+      <div class="text-center mt-8"><a href="alumni.html" class="inline-block bg-white border-2 border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-white font-black py-3 px-8 rounded-xl transition shadow-md">View All Notable Alumni →</a></div>
+    </section>
+  </div>
+
+  <!-- AFFILIATIONS & PLACEMENTS (STATIC & CENTERED) -->
+  <div class="bg-white py-16 border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 space-y-16">
+      
+      <!-- Professional Bodies Chapters (STATIC & CENTERED) -->
+      <div>
+        <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-6">Professional Body Chapters & Clubs</h3>
+        <div class="w-full border-t border-gray-200 mb-10"></div>
+        
+        <div class="flex justify-center items-center flex-wrap gap-6">
+          <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer">
+            <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" onerror="this.parentElement.style.display='none';">
+          </a>
+        </div>
+      </div>
+
+      <!-- Placement Companies & Collaborations (STATIC & CENTERED) -->
+      <div>
+        <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Our Collaborations</h3>
+        <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Active & Under Discussion)</p>
+        <div class="w-full border-t border-gray-200 mb-10"></div>
+        
+        <div class="flex justify-center items-center flex-wrap gap-6">
+          <a href="https://share.google/75monPwa0DN5FSRoU" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer">
+            <img src="fanar-polymers-logo.png" alt="Fanar Polymers" class="max-h-full max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" onerror="this.parentElement.style.display='none';">
+          </a>
+          <a href="https://www.linkedin.com/company/rds-project-ltd/?originalSubdomain=in" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer">
+            <img src="rds-logo.png" alt="RDS Project Ltd" class="max-h-full max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" onerror="this.parentElement.style.display='none';">
+          </a>
+          <a href="https://www.kmml.com/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer">
+            <img src="kmml-logo.png" alt="KMML" class="max-h-full max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" onerror="this.parentElement.style.display='none';">
+          </a>
+          <a href="https://www.tcs.com/careers" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer">
+            <img src="tcs-logo.png" alt="TCS" class="max-h-full max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" onerror="this.parentElement.style.display='none';">
+          </a>
+          <a href="https://www.infosys.com/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer">
+            <img src="infosys-logo.png" alt="Infosys" class="max-h-full max-w-full object-contain grayscale hover:grayscale-0 transition duration-300" onerror="this.parentElement.style.display='none';">
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FACULTY PROFILE MODAL -->
+  <div id="faculty-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+        <h3 class="font-bold text-lg uppercase tracking-wider text-amber-400">Faculty Profile</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white font-black text-xl cursor-pointer">✕</button>
+      </div>
+      <div id="modal-body" class="p-6 overflow-y-auto space-y-6 text-sm"></div>
+    </div>
+  </div>
+
+  <!-- EVENT FULL POSTER MODAL -->
+  <div id="event-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+        <h3 id="modal-event-title" class="font-bold text-lg uppercase tracking-wider text-amber-400">Event Details</h3>
+        <button onclick="closeEventModal()" class="text-gray-400 hover:text-white font-black text-xl cursor-pointer">✕</button>
+      </div>
+      <div class="p-6 overflow-y-auto space-y-6 text-sm flex flex-col items-center">
+        <img id="modal-event-img" class="max-h-[60vh] w-auto object-contain rounded-xl shadow-lg border bg-slate-950" />
+        <div class="w-full space-y-2 text-left">
+          <p id="modal-event-date" class="text-xs font-bold text-amber-600 uppercase tracking-wider"></p>
+          <p id="modal-event-desc" class="text-gray-700 whitespace-pre-line leading-relaxed text-sm md:text-base"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#121212] text-gray-300 pt-12 pb-6 border-t-4 border-amber-500 mt-auto">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-sm pb-12">
+        <div class="flex flex-col items-center md:items-start text-center md:text-left">
+          <h4 class="text-white font-extrabold mb-4 tracking-wider uppercase text-xs border-b-2 md:border-b-0 md:border-l-2 border-amber-500 pb-2 md:pb-0 md:pl-2 w-max">STORM Association</h4>
+          <p class="leading-relaxed text-gray-400">The official student body of the Mechanical Engineering Department, College of Engineering Pathanapuram, dedicated to empowering future engineers.</p>
+        </div>
+        
+        <div class="flex flex-col items-center justify-start text-center w-full">
+          <h4 class="text-white font-extrabold mb-4 tracking-wider uppercase text-xs border-b-2 border-amber-500 pb-2 w-max">Quick Links</h4>
+          <ul class="space-y-2 text-gray-400 flex flex-col items-center">
+            <li>
+              <a href="toppers.html" class="hover:text-white transition flex items-center gap-2">
+                <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Academic Excellence
+              </a>
+            </li>
+            <li>
+              <a href="alumni.html" class="hover:text-white transition flex items-center gap-2">
+                <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Notable Alumni
+              </a>
+            </li>
+            <li>
+              <a href="admin.html" class="hover:text-white transition flex items-center gap-2">
+                <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                Portal Login
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="flex flex-col items-center md:items-end text-center md:text-right w-full">
+          <h4 class="text-white font-extrabold mb-4 tracking-wider uppercase text-xs border-b-2 md:border-b-0 md:border-r-2 border-amber-500 pb-2 md:pb-0 md:pr-2 w-max">Contact Info</h4>
+          <address class="not-italic leading-relaxed text-gray-400 space-y-2 uppercase flex flex-col items-center md:items-end w-full">
+            <p>COLLEGE OF ENGINEERING PATHANAPURAM</p>
+            <p>ELIKKATOOR P.O, PATHANAPURAM, KOLLAM 689696</p>
+            <p class="text-amber-400 mt-2 flex items-center justify-center md:justify-end gap-2 lowercase font-medium w-full">
+              <svg class="w-4 h-4 shrink-0 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+              thulaseedharanr@cepathanapuram.ac.in
+            </p>
+            <p class="text-amber-400 mt-1 flex items-center justify-center md:justify-end gap-2 lowercase font-medium w-full">
+              <svg class="w-4 h-4 shrink-0 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            Instagram: <a href="https://www.instagram.com/storm.pec" target="_blank" class="text-amber-400 hover:underline font-bold">@storm.pec</a> | <a href="https://www.instagram.com/rmx.ofpec/" target="_blank" class="text-amber-400 hover:underline font-bold">@rmx.ofpec</a>
+            </p>
+          </address>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIXED FOOTER DESIGN & ALIGNMENT -->
+    <div class="border-t border-gray-800 pt-6 pb-8">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row justify-between items-center text-[10px] md:text-xs text-gray-500 uppercase tracking-widest w-full gap-4 lg:gap-0">
+        <span class="whitespace-nowrap w-full lg:w-1/3 text-center lg:text-left">COPYRIGHT © ALL RIGHTS RESERVED BY STORM ASSOCIATION</span>
+        <span class="hidden lg:inline text-gray-600 px-2">||</span>
+        <div class="flex flex-col items-center justify-center w-full lg:w-1/3 text-center space-y-1">
+          <span class="text-gray-400 font-bold leading-none">DEPARTMENT OF MECHANICAL ENGINEERING</span>
+          <span class="text-[9px] md:text-[10px] text-gray-500 normal-case tracking-wider">
+            Designed & Developed By <a href="https://share.google/ifivL6bAiou0fFubP" target="_blank" class="text-white font-bold hover:underline transition-colors">Athul J</a>
+          </span>
+        </div>
+        <span class="hidden lg:inline text-gray-600 px-2">||</span>
+        <span class="whitespace-nowrap w-full lg:w-1/3 text-center lg:text-right">COLLEGE OF ENGINEERING PATHANAPURAM</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
