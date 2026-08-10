@@ -126,7 +126,7 @@
 
       <div class="fade-target pt-12">
         <button id="launchBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm md:text-base uppercase tracking-widest px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.9)] transition-all transform hover:scale-105 cursor-pointer">
-          WELCOME TO STORM OUR MECHANICAL ASSOCIATION
+          WELCOME TO THE STORM
         </button>
       </div>
 
@@ -140,6 +140,21 @@
         ROYAL MECH
       </div>
 
+    </div>
+  </div>
+
+  <!-- SECURE ADMIN LOGIN MODAL -->
+  <div id="admin-login-modal" class="fixed inset-0 bg-slate-950/90 z-[99999] hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+    <div class="bg-slate-900 border-2 border-amber-500 p-8 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.3)] max-w-sm w-full relative text-center">
+      <button onclick="closeAdminLogin()" class="absolute top-4 right-4 text-gray-500 hover:text-amber-400 font-bold text-xl cursor-pointer">✕</button>
+      <h3 class="storm-font text-amber-400 text-2xl font-black mb-1 tracking-widest">ACCESS</h3>
+      <p class="text-xs text-gray-400 mb-8 uppercase tracking-widest">Authorized Personnel Only</p>
+      
+      <input type="email" id="adminEmail" placeholder="Admin Email" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-4 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
+      <input type="password" id="adminPassword" placeholder="Password" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-6 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
+      
+      <button onclick="loginAdmin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black tracking-widest uppercase py-3.5 rounded-lg transition shadow-lg cursor-pointer">Authenticate</button>
+      <p id="loginError" class="text-red-500 font-bold text-xs mt-4 hidden"></p>
     </div>
   </div>
 
@@ -158,14 +173,13 @@
     const goldenText = document.getElementById('golden-royal-mech');
 
     // PRE-GENERATE FLYING LETTERS FOR FIRST PART OF THE ASSOCIATION NAME
-    const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR ROYAL MECH";
+    const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR";
     targetString.split('').forEach(char => {
       let span = document.createElement('span');
       span.innerText = char;
       if (char === ' ') span.innerHTML = '&nbsp;';
       span.className = 'fly-letter';
       
-      // Random scatter
       let rx = (Math.random() - 0.5) * 1500; 
       let ry = (Math.random() - 0.5) * 1000;
       let rot = Math.random() * 720 - 360;
@@ -190,7 +204,6 @@
             stormLogoIcon.classList.add('is-vertical-spinning');
           }
 
-          // Gather flying letters
           const letters = document.querySelectorAll('.fly-letter');
           letters.forEach((letter, idx) => {
             setTimeout(() => {
@@ -199,7 +212,6 @@
             }, 500 + (idx * 60)); 
           });
 
-          // Drop in Golden Text at the end
           setTimeout(() => {
             goldenText.classList.add('golden-text-reveal');
           }, (audioDuration * 1000) - 700); 
@@ -219,6 +231,41 @@
       }
     });
 
+    // --- ADMIN LOGIN LOGIC ---
+    function openAdminLogin() {
+      document.getElementById('admin-login-modal').classList.remove('hidden');
+    }
+    
+    function closeAdminLogin() {
+      document.getElementById('admin-login-modal').classList.add('hidden');
+      document.getElementById('loginError').classList.add('hidden');
+    }
+
+    async function loginAdmin() {
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+      const errorEl = document.getElementById('loginError');
+      
+      errorEl.classList.add('hidden');
+      errorEl.innerText = "Authenticating...";
+      errorEl.classList.remove('hidden', 'text-red-500');
+      errorEl.classList.add('text-amber-500');
+
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        errorEl.classList.remove('text-amber-500');
+        errorEl.classList.add('text-red-500');
+        errorEl.innerText = "Access Denied: Invalid login credentials";
+      } else {
+        errorEl.classList.remove('text-amber-500', 'text-red-500');
+        errorEl.classList.add('text-green-500');
+        errorEl.innerText = "Access Granted. Redirecting...";
+        setTimeout(() => { window.location.href = "admin.html"; }, 800);
+      }
+    }
+
+    // --- TABS & DATA FETCHING ---
     function switchTab(targetId, btnElement) {
       document.querySelectorAll('.main-tab-btn').forEach(btn => {
         btn.classList.remove('active', 'border-amber-500', 'text-slate-900');
@@ -465,8 +512,7 @@
         <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
         <a href="events.html" class="hover:text-amber-600 transition">Events</a>
         
-        <!-- ADMIN LINK FIX: NOW DIRECTLY GOES TO ADMIN PAGE -->
-        <a href="admin.html" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs tracking-wider">ADMIN</a>
+        <button onclick="openAdminLogin()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs cursor-pointer tracking-wider">ADMIN</button>
       </nav>
     </div>
   </header>
@@ -671,26 +717,25 @@
     </section>
   </div>
 
-  <!-- AFFILIATIONS & PLACEMENTS -->
+  <!-- AFFILIATIONS & PLACEMENTS (ANIMATED SCROLL & COLORFUL) -->
   <div class="bg-white py-16 border-t border-gray-200 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 space-y-16">
       
-      <!-- Professional Bodies Chapters (ANIMATED SCROLL & COLORFUL) -->
+      <!-- Professional Bodies Chapters -->
       <div>
-        <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Professional Body Chapters & Clubs</h3>
-        <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Upcoming)</p>
+        <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Upcoming Professional Body Chapters & Clubs</h3>
+        <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Under Registration)</p>
         <div class="w-full border-t border-gray-200 mb-10"></div>
         
         <div class="relative flex overflow-x-hidden">
           <div class="logo-slider">
-            <!-- Logos repeated for infinite scroll -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
             <a href="https://www.asme.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="asme-logo.png" alt="ASME" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
-            <!-- Duplicate set -->
+            <!-- Duplicates for infinite scroll -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -701,7 +746,7 @@
         </div>
       </div>
 
-      <!-- Placement Companies & Collaborations (ANIMATED SCROLL & COLORFUL) -->
+      <!-- Placement Companies & Collaborations -->
       <div>
         <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Our Collaborations</h3>
         <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Active & Under Discussion)</p>
@@ -726,7 +771,7 @@
               <img src="infosys-logo.png" alt="Infosys" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
             
-            <!-- Group 2 (Duplicate for smooth infinite scroll loop) -->
+            <!-- Group 2 -->
             <a href="https://share.google/75monPwa0DN5FSRoU" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4 shrink-0">
               <img src="fanar-polymers-logo.png" alt="Fanar Polymers" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -749,34 +794,6 @@
     </div>
   </div>
 
-  <!-- FACULTY PROFILE MODAL -->
-  <div id="faculty-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
-      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
-        <h3 class="font-bold text-lg uppercase tracking-wider text-amber-400">Faculty Profile</h3>
-        <button onclick="closeModal()" class="text-gray-400 hover:text-white font-black text-xl cursor-pointer">✕</button>
-      </div>
-      <div id="modal-body" class="p-6 overflow-y-auto space-y-6 text-sm"></div>
-    </div>
-  </div>
-
-  <!-- EVENT FULL POSTER MODAL -->
-  <div id="event-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
-      <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
-        <h3 id="modal-event-title" class="font-bold text-lg uppercase tracking-wider text-amber-400">Event Details</h3>
-        <button onclick="closeEventModal()" class="text-gray-400 hover:text-white font-black text-xl cursor-pointer">✕</button>
-      </div>
-      <div class="p-6 overflow-y-auto space-y-6 text-sm flex flex-col items-center">
-        <img id="modal-event-img" class="max-h-[60vh] w-auto object-contain rounded-xl shadow-lg border bg-slate-950" />
-        <div class="w-full space-y-2 text-left">
-          <p id="modal-event-date" class="text-xs font-bold text-amber-600 uppercase tracking-wider"></p>
-          <p id="modal-event-desc" class="text-gray-700 whitespace-pre-line leading-relaxed text-sm md:text-base"></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- EXACT MATCH REPLICA FOOTER -->
   <footer class="bg-[#111111] text-gray-300 pt-16">
     
@@ -784,7 +801,7 @@
     <div class="max-w-3xl mx-auto px-6 mb-12 flex flex-col items-center text-center">
       <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-4 font-bold">Official Portal Inaugurated On 10-08-2026 By</p>
       <div class="flex items-center justify-center gap-6">
-        <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-20 h-20 rounded-full object-cover shadow-xl grayscale hover:grayscale-0 transition duration-500 border border-gray-600" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'">
+        <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-20 h-20 rounded-full object-cover shadow-xl transition duration-500 border border-gray-600" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'">
         <div class="text-left">
           <h4 class="text-white font-bold text-lg tracking-wider uppercase mb-1">Hon. MLA Sri. Jyothikumar Chamakkala</h4>
           <p class="text-amber-500 text-xs font-bold uppercase tracking-wide">Pathanapuram Assembly Constituency</p>
@@ -797,19 +814,19 @@
 
     <!-- MAIN FOOTER LINKS (MATCHING SCREENSHOT EXACTLY) -->
     <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
-      <div class="flex flex-col lg:flex-row justify-between items-start gap-12 pb-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-12 w-full">
         
         <!-- COLUMN 1: STORM ASSOCIATION -->
-        <div class="w-full lg:w-1/3 flex flex-col items-start text-left">
-          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-l-2 border-amber-500 pl-3">STORM ASSOCIATION</h4>
-          <p class="leading-loose text-gray-400 text-sm max-w-sm">
+        <div class="flex flex-col items-center lg:items-start text-center lg:text-left mx-auto max-w-sm w-full">
+          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-l-2 border-amber-500 pl-3 w-full text-left">STORM ASSOCIATION</h4>
+          <p class="leading-loose text-gray-400 text-sm text-left">
             The official student body of the Mechanical Engineering Department, College of Engineering Pathanapuram, dedicated to empowering future engineers.
           </p>
         </div>
         
         <!-- COLUMN 2: QUICK LINKS -->
-        <div class="w-full lg:w-1/3 flex flex-col items-center justify-start text-center">
-          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm inline-block border-b-2 border-amber-500 pb-1">QUICK LINKS</h4>
+        <div class="flex flex-col items-center text-center mx-auto max-w-sm w-full">
+          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-b-2 border-amber-500 pb-1">QUICK LINKS</h4>
           <ul class="space-y-4 text-gray-300 text-sm flex flex-col items-center">
             <li>
               <a href="toppers.html" class="hover:text-amber-400 transition flex items-center gap-2">
@@ -822,17 +839,17 @@
               </a>
             </li>
             <li>
-              <a href="admin.html" class="hover:text-amber-400 transition flex items-center gap-2">
+              <button onclick="openAdminLogin()" class="hover:text-amber-400 transition flex items-center gap-2 cursor-pointer">
                 <span class="text-amber-500 font-bold">✓</span> Portal Login
-              </a>
+              </button>
             </li>
           </ul>
         </div>
 
         <!-- COLUMN 3: CONTACT INFO -->
-        <div class="w-full lg:w-1/3 flex flex-col items-end text-right">
-          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-r-2 border-amber-500 pr-3">CONTACT INFO</h4>
-          <address class="not-italic leading-loose text-gray-400 text-sm uppercase flex flex-col items-end">
+        <div class="flex flex-col items-center lg:items-end text-center lg:text-right mx-auto max-w-sm w-full">
+          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-r-2 border-amber-500 pr-3 w-full text-right">CONTACT INFO</h4>
+          <address class="not-italic leading-loose text-gray-400 text-sm uppercase flex flex-col items-end text-right">
             <p>COLLEGE OF ENGINEERING PATHANAPURAM</p>
             <p>ELIKKATOOR P.O, PATHANAPURAM, KOLLAM 689696</p>
             <p class="text-amber-400 font-medium lowercase flex items-center gap-2 mt-2 tracking-wide">
@@ -848,50 +865,37 @@
       </div>
     </div>
 
-    <div class="border-t border-gray-800 bg-[#0a0a0a] py-6">
-  <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
+    <!-- EXACT BOTTOM ROW ALIGNMENT BASED ON SCREENSHOT -->
+    <div class="border-t border-gray-800 bg-[#0a0a0a] py-6 relative">
+      <div class="max-w-[90rem] mx-auto px-8 lg:px-12 text-[10px] md:text-xs text-gray-500 uppercase tracking-widest relative">
+        
+        <!-- Desktop Vertical Dividers exactly aligned with grid gaps -->
+        <div class="hidden lg:block absolute left-1/3 top-0 bottom-0 text-gray-600 flex items-center -ml-1">||</div>
+        <div class="hidden lg:block absolute right-1/3 top-0 bottom-0 text-gray-600 flex items-center -mr-1">||</div>
 
-    <!-- MAIN FOOTER ROW -->
-    <div class="grid grid-cols-3 items-start text-[10px] md:text-xs text-gray-500 uppercase tracking-widest">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start w-full">
+          
+          <!-- LEFT: COPYRIGHT -->
+          <div class="flex justify-center lg:justify-start w-full mx-auto max-w-sm">
+            <p class="text-center lg:text-left w-full">COPYRIGHT © ALL RIGHTS RESERVED BY STORM ASSOCIATION</p>
+          </div>
+          
+          <!-- CENTER: DEPT & ATHUL J -->
+          <div class="flex flex-col items-center justify-start text-center w-full mx-auto max-w-sm">
+            <p class="font-bold text-gray-300 w-full">DEPARTMENT OF MECHANICAL ENGINEERING</p>
+            <p class="mt-2 text-[9px] md:text-[10px] normal-case tracking-wider w-full">
+              Designed & Developed By <a href="https://share.google/ifivL6bAiou0fFubP" target="_blank" class="text-white font-bold hover:text-amber-400 transition-colors">Athul J</a>
+            </p>
+          </div>
 
-      <!-- LEFT -->
-      <div class="flex items-start justify-end pt-1 whitespace-nowrap">
-        <p>
-          COPYRIGHT © ALL RIGHTS RESERVED BY STORM ASSOCIATION
-        </p>
-        <span class="text-gray-600 ml-6">||</span>
+          <!-- RIGHT: COLLEGE -->
+          <div class="flex justify-center lg:justify-end w-full mx-auto max-w-sm">
+            <p class="text-center lg:text-right w-full">COLLEGE OF ENGINEERING PATHANAPURAM</p>
+          </div>
+
+        </div>
       </div>
-
-      <!-- CENTER -->
-      <div class="text-center">
-
-        <p class="font-bold text-gray-300 whitespace-nowrap">
-          DEPARTMENT OF MECHANICAL ENGINEERING
-        </p>
-
-        <p class="mt-2 text-[9px] md:text-[10px] normal-case tracking-wider whitespace-nowrap">
-          Designed &amp; Developed By
-          <a
-            href="https://share.google/ifivL6bAiou0fFubP"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-white font-bold hover:text-amber-400 transition-colors"
-          >
-            Athul J
-          </a>
-        </p>
-
-      </div>
-
-      <!-- RIGHT -->
-      <div class="flex items-start justify-start pt-1 whitespace-nowrap">
-        <span class="text-gray-600 mr-6">||</span>
-        <p>
-          COLLEGE OF ENGINEERING PATHANAPURAM
-        </p>
-      </div>
-
     </div>
-
-  </div>
-</div>
+  </footer>
+</body>
+</html>
