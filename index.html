@@ -109,8 +109,8 @@
   <!-- IMMERSIVE FULL-SCREEN LAUNCH SCREEN -->
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
-    <!-- GOLDEN "ROYAL MECH" TEXT - TOP CENTERED -->
-    <div class="fixed top-[15%] md:top-[15%] left-0 right-0 flex justify-center z-50 pointer-events-none">
+    <!-- GOLDEN "ROYAL MECH" TEXT - MOVED TO THE VACANT SPACE BELOW THE LOGO -->
+    <div class="fixed top-[62%] md:top-[65%] left-0 right-0 flex justify-center z-50 pointer-events-none">
       <div id="golden-royal-mech" class="opacity-0 transform scale-0 text-5xl md:text-7xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-500 to-yellow-600 drop-shadow-[0_0_25px_rgba(253,224,71,1)] storm-font origin-center">
         ROYAL MECH
       </div>
@@ -145,20 +145,20 @@
         Department of Mechanical Engineering | College of Engineering Pathanapuram
       </p>
 
-      <!-- TIGHTENED BUTTON SPACING -->
-      <div class="fade-target my-8">
+      <!-- PERFECTLY CENTERED & TIGHTENED BUTTON SPACING -->
+      <div class="fade-target my-4">
         <button id="launchBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm md:text-base uppercase tracking-widest px-10 py-4 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.9)] transition-all transform hover:scale-105 cursor-pointer">
           ENTER THE STORM PORTAL
         </button>
       </div>
       
       <!-- TIGHTENED MLA SPACING -->
-      <div class="fade-target flex flex-col items-center space-y-3">
+      <div class="fade-target flex flex-col items-center space-y-2 mt-2">
         <p class="text-xs md:text-sm text-gray-300 uppercase tracking-widest drop-shadow font-medium">
           Officially Launched on 10-08-2026 by Hon. MLA <span class="text-amber-400 font-bold">Sri. Jyothikumar Chamakkala</span>
         </p>
         
-        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 border-amber-500 overflow-hidden bg-slate-900 shadow-xl flex items-center justify-center">
+        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 border-amber-500 overflow-hidden bg-slate-900 shadow-xl flex items-center justify-center mt-2">
           <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'" />
         </div>
       </div>
@@ -199,7 +199,7 @@
     const flyingContainer = document.getElementById('flying-text-container');
     const goldenText = document.getElementById('golden-royal-mech');
 
-    // PRE-GENERATE FLYING LETTERS FOR FULL ASSOCIATION NAME
+    // PRE-GENERATE FLYING LETTERS WITH "ROYAL MECH" INCLUDED
     const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR ROYAL MECH";
     targetString.split('').forEach(char => {
       let span = document.createElement('span');
@@ -550,7 +550,6 @@
         <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
         <a href="events.html" class="hover:text-amber-600 transition">Events</a>
         
-        <!-- ADMIN BUTTON TRIGGERS SECURE MODAL -->
         <button onclick="openAdminLogin()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs cursor-pointer tracking-wider">ADMIN</button>
       </nav>
     </div>
@@ -854,7 +853,7 @@
 
     <!-- MAIN FOOTER LINKS (MATCHING SCREENSHOT EXACTLY) -->
     <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-12 w-full">
+      <div class="flex flex-col lg:flex-row justify-between items-start gap-12 pb-12 w-full">
         
         <!-- COLUMN 1: STORM ASSOCIATION -->
         <div class="flex flex-col items-center lg:items-start text-center lg:text-left mx-auto max-w-sm w-full">
