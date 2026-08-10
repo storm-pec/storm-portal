@@ -126,7 +126,7 @@
 
       <div class="fade-target pt-12">
         <button id="launchBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm md:text-base uppercase tracking-widest px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.9)] transition-all transform hover:scale-105 cursor-pointer">
-          WELCOME TO THE STORM
+          WELCOME TO STORM OUR MECHANICAL ASSOCIATION
         </button>
       </div>
 
@@ -158,7 +158,7 @@
     const goldenText = document.getElementById('golden-royal-mech');
 
     // PRE-GENERATE FLYING LETTERS FOR FIRST PART OF THE ASSOCIATION NAME
-    const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR";
+    const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR ROYAL MECH";
     targetString.split('').forEach(char => {
       let span = document.createElement('span');
       span.innerText = char;
@@ -677,8 +677,8 @@
       
       <!-- Professional Bodies Chapters (ANIMATED SCROLL & COLORFUL) -->
       <div>
-        <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Upcoming Professional Body Chapters & Clubs</h3>
-        <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Under Registration)</p>
+        <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Professional Body Chapters & Clubs</h3>
+        <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Upcoming)</p>
         <div class="w-full border-t border-gray-200 mb-10"></div>
         
         <div class="relative flex overflow-x-hidden">
@@ -848,31 +848,50 @@
       </div>
     </div>
 
-    <!-- EXACT BOTTOM ROW ALIGNMENT BASED ON SCREENSHOT -->
     <div class="border-t border-gray-800 bg-[#0a0a0a] py-6">
-      <div class="max-w-[90rem] mx-auto px-8 lg:px-12 flex justify-between items-start text-[10px] md:text-xs text-gray-500 uppercase tracking-widest">
-        
-        <!-- LEFT: COPYRIGHT & PIPE -->
-        <div class="w-1/3 text-left">
-          <p>COPYRIGHT © ALL RIGHTS RESERVED BY STORM ASSOCIATION</p>
-          <p class="mt-2 text-gray-600">||</p>
-        </div>
-        
-        <!-- CENTER: DEPT & ATHUL J -->
-        <div class="w-1/3 text-center">
-          <p class="font-bold text-gray-300">DEPARTMENT OF MECHANICAL ENGINEERING</p>
-          <p class="mt-2 text-[9px] md:text-[10px] normal-case tracking-wider">
-            Designed & Developed By <a href="https://share.google/ifivL6bAiou0fFubP" target="_blank" class="text-white font-bold hover:text-amber-400 transition-colors">Athul J</a>
-          </p>
-        </div>
+  <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
 
-        <!-- RIGHT: PIPE & COLLEGE -->
-        <div class="w-1/3 text-right">
-          <p><span class="text-gray-600 mr-2">||</span> COLLEGE OF ENGINEERING PATHANAPURAM</p>
-        </div>
+    <!-- MAIN FOOTER ROW -->
+    <div class="grid grid-cols-3 items-start text-[10px] md:text-xs text-gray-500 uppercase tracking-widest">
+
+      <!-- LEFT -->
+      <div class="flex items-start justify-end pt-1 whitespace-nowrap">
+        <p>
+          COPYRIGHT © ALL RIGHTS RESERVED BY STORM ASSOCIATION
+        </p>
+        <span class="text-gray-600 ml-6">||</span>
+      </div>
+
+      <!-- CENTER -->
+      <div class="text-center">
+
+        <p class="font-bold text-gray-300 whitespace-nowrap">
+          DEPARTMENT OF MECHANICAL ENGINEERING
+        </p>
+
+        <p class="mt-2 text-[9px] md:text-[10px] normal-case tracking-wider whitespace-nowrap">
+          Designed &amp; Developed By
+          <a
+            href="https://share.google/ifivL6bAiou0fFubP"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white font-bold hover:text-amber-400 transition-colors"
+          >
+            Athul J
+          </a>
+        </p>
 
       </div>
+
+      <!-- RIGHT -->
+      <div class="flex items-start justify-start pt-1 whitespace-nowrap">
+        <span class="text-gray-600 mr-6">||</span>
+        <p>
+          COLLEGE OF ENGINEERING PATHANAPURAM
+        </p>
+      </div>
+
     </div>
-  </footer>
-</body>
-</html>
+
+  </div>
+</div>
