@@ -38,24 +38,15 @@
       box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.4);
     }
 
-    /* CENTERED LOGO ENLARGE & SPIN ANIMATION (SYNCED TO MUSIC, ZERO BLUR) */
+    /* CENTERED LOGO ENLARGE & SPIN ANIMATION (SYNCED TO AUDIO DURATION, ZERO BLUR) */
     @keyframes centerLogoSpin {
       0% { 
-        transform: scale(1) rotate(0deg); 
-        filter: drop-shadow(0 0 15px rgba(245,158,11,0.9)); 
-      }
-      25% {
-        transform: scale(3.5) rotate(720deg);
-        filter: drop-shadow(0 0 40px rgba(245,158,11,1));
-      }
-      75% {
-        transform: scale(7.5) rotate(2520deg);
-        filter: drop-shadow(0 0 75px rgba(245,158,11,1));
+        transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+        filter: drop-shadow(0 0 20px rgba(245,158,11,0.9)); 
       }
       100% {
-        transform: scale(9) rotate(3600deg); /* Stops exactly when audio finishes */
+        transform: translate(-50%, -50%) scale(8.5) rotate(3600deg); 
         filter: drop-shadow(0 0 90px rgba(245,158,11,1));
-        opacity: 0;
       }
     }
 
@@ -63,9 +54,7 @@
       position: fixed !important;
       top: 50% !important;
       left: 50% !important;
-      margin-left: -0.7em;
-      margin-top: -0.7em;
-      animation: centerLogoSpin 4.5s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
+      animation: centerLogoSpin cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
       z-index: 100000;
     }
 
@@ -144,9 +133,12 @@
       if (engineSound) {
         engineSound.currentTime = 0;
         engineSound.play().then(() => {
-          // Clean fade out for text elements, logo moves to center, enlarges, and spins until audio ends
           launchContent.classList.add('content-clean-fade');
+          
           if (stormLogoIcon) {
+            // Match animation duration dynamically to the audio duration so it rotates smoothly until audio ends
+            let duration = engineSound.duration && !isNaN(engineSound.duration) ? engineSound.duration : 4.5;
+            stormLogoIcon.style.animationDuration = duration + 's';
             stormLogoIcon.classList.add('is-center-spinning');
           }
           
@@ -161,13 +153,16 @@
           console.error("Audio playback error:", err);
           launchContent.classList.add('content-clean-fade');
           if (stormLogoIcon) {
+            stormLogoIcon.style.animationDuration = '4.5s';
             stormLogoIcon.classList.add('is-center-spinning');
           }
-          launchScreen.style.transition = 'opacity 0.8s ease';
-          launchScreen.style.opacity = '0';
           setTimeout(() => {
-            launchScreen.style.display = 'none';
-          }, 800);
+            launchScreen.style.transition = 'opacity 0.8s ease';
+            launchScreen.style.opacity = '0';
+            setTimeout(() => {
+              launchScreen.style.display = 'none';
+            }, 800);
+          }, 4500);
         });
       }
     });
