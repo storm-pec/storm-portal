@@ -38,47 +38,61 @@
       box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.4);
     }
 
-    /* MUSTANG TYre SPIN & DRIFT SMOKE CINEMATIC EFFECT */
-    @keyframes mustangSpin {
-      0% { transform: scale(1) rotate(0deg); filter: drop-shadow(0 0 15px rgba(245,158,11,0.6)); }
-      25% { transform: scale(1.4) rotate(360deg); }
-      50% { transform: scale(1.9) rotate(1080deg); filter: drop-shadow(0 0 40px rgba(245,158,11,0.9)); }
-      75% { transform: scale(2.4) rotate(2160deg); }
-      100% { transform: scale(3.2) rotate(3600deg); filter: drop-shadow(0 0 70px rgba(245,158,11,1)); opacity: 0; }
+    /* CINEMATIC LOGO EXPAND & SPIN EFFECT (NO BLURRING) */
+    @keyframes cinematicLogoZoom {
+      0% { 
+        transform: translate(0, 0) scale(1) rotate(0deg); 
+        filter: drop-shadow(0 0 15px rgba(245,158,11,0.6)); 
+      }
+      30% { 
+        transform: translate(0, -20px) scale(3) rotate(360deg); 
+        filter: drop-shadow(0 0 35px rgba(245,158,11,0.9)); 
+      }
+      70% { 
+        transform: translate(0, -40px) scale(6) rotate(1440deg); 
+        filter: drop-shadow(0 0 60px rgba(245,158,11,1)); 
+      }
+      100% { 
+        transform: translate(0, -50px) scale(9) rotate(2880deg); 
+        filter: drop-shadow(0 0 90px rgba(245,158,11,1)); 
+        opacity: 0; 
+      }
     }
 
+    /* DRIFT SMOKE EFFECT */
     @keyframes driftSmoke {
-      0% { opacity: 0; transform: scale(0.5) translate(0, 0); }
-      30% { opacity: 0.6; transform: scale(1.2) translate(-20px, -10px); }
-      60% { opacity: 0.4; transform: scale(2) translate(30px, -30px); }
-      100% { opacity: 0; transform: scale(3.5) translate(-50px, -60px); filter: blur(20px); }
+      0% { opacity: 0; transform: scale(0.6) translate(0, 0); }
+      30% { opacity: 0.5; transform: scale(1.5) translate(-30px, -20px); }
+      70% { opacity: 0.3; transform: scale(2.8) translate(40px, -50px); }
+      100% { opacity: 0; transform: scale(4.5) translate(-70px, -90px); }
     }
 
-    .is-mustang-spinning {
-      animation: mustangSpin 3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    .is-cinematic-spinning {
+      animation: cinematicLogoZoom 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
       transform-origin: center center;
+      position: relative;
+      z-index: 50;
     }
 
     .drift-smoke-plume {
       position: absolute;
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.3);
       border-radius: 50%;
-      filter: blur(15px);
       pointer-events: none;
-      width: 150px;
-      height: 150px;
+      width: 180px;
+      height: 180px;
       z-index: 25;
       opacity: 0;
     }
 
-    .is-smoking-1 { animation: driftSmoke 2.5s ease-out forwards; }
-    .is-smoking-2 { animation: driftSmoke 2.5s ease-out 0.3s forwards; }
-    .is-smoking-3 { animation: driftSmoke 2.5s ease-out 0.6s forwards; }
+    .is-smoking-1 { animation: driftSmoke 2.8s ease-out forwards; }
+    .is-smoking-2 { animation: driftSmoke 2.8s ease-out 0.2s forwards; }
+    .is-smoking-3 { animation: driftSmoke 2.8s ease-out 0.4s forwards; }
 
-    .content-fade-out {
-      transition: opacity 1.5s ease, filter 1.5s ease;
+    /* CLEAN FADE OUT FOR OTHER CONTENT (NO BLUR) */
+    .content-clean-fade {
+      transition: opacity 1s ease;
       opacity: 0;
-      filter: blur(10px);
     }
   </style>
 </head>
@@ -93,9 +107,9 @@
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
     <!-- DRIFT SMOKE ELEMENTS -->
-    <div id="smoke1" class="drift-smoke-plume" style="bottom: 30%; left: 40%;"></div>
-    <div id="smoke2" class="drift-smoke-plume" style="bottom: 35%; right: 40%;"></div>
-    <div id="smoke3" class="drift-smoke-plume" style="bottom: 25%; left: 45%;"></div>
+    <div id="smoke1" class="drift-smoke-plume" style="bottom: 35%; left: 35%;"></div>
+    <div id="smoke2" class="drift-smoke-plume" style="bottom: 40%; right: 35%;"></div>
+    <div id="smoke3" class="drift-smoke-plume" style="bottom: 30%; left: 42%;"></div>
 
     <!-- LAUNCH CONTENT CONTAINER -->
     <div id="launch-content" class="relative z-30 max-w-3xl space-y-6 flex flex-col items-center text-center my-auto transition-all duration-1000">
@@ -157,10 +171,10 @@
       if (engineSound) {
         engineSound.currentTime = 0;
         engineSound.play().then(() => {
-          // Trigger Mustang-style spinning, centering, and drift smoke effects
-          launchContent.classList.add('content-fade-out');
+          // Fade out text elements smoothly without blur, isolate and enlarge logo to center, add drift smoke
+          launchContent.classList.add('content-clean-fade');
           if (stormLogoIcon) {
-            stormLogoIcon.classList.add('is-mustang-spinning');
+            stormLogoIcon.classList.add('is-cinematic-spinning');
           }
           if (smoke1 && smoke2 && smoke3) {
             smoke1.classList.add('is-smoking-1');
@@ -177,9 +191,9 @@
           };
         }).catch(err => {
           console.error("Audio playback error:", err);
-          launchContent.classList.add('content-fade-out');
+          launchContent.classList.add('content-clean-fade');
           if (stormLogoIcon) {
-            stormLogoIcon.classList.add('is-mustang-spinning');
+            stormLogoIcon.classList.add('is-cinematic-spinning');
           }
           if (smoke1 && smoke2 && smoke3) {
             smoke1.classList.add('is-smoking-1');
