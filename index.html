@@ -38,68 +38,38 @@
       box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.4);
     }
 
-    /* MUSTANG / F1 TIRE BURNOUT & HARD BRAKING STOP ANIMATION (ABSOLUTELY ZERO BLUR) */
-    @keyframes mustangCenterBurnout {
+    /* CENTERED LOGO ENLARGE & SPIN ANIMATION (SYNCED TO MUSIC, ZERO BLUR) */
+    @keyframes centerLogoSpin {
       0% { 
         transform: scale(1) rotate(0deg); 
-        filter: drop-shadow(0 0 20px rgba(245,158,11,0.9)); 
+        filter: drop-shadow(0 0 15px rgba(245,158,11,0.9)); 
       }
       25% {
-        transform: scale(3) rotate(720deg);
+        transform: scale(3.5) rotate(720deg);
         filter: drop-shadow(0 0 40px rgba(245,158,11,1));
       }
-      60% {
-        transform: scale(7) rotate(2160deg);
-        filter: drop-shadow(0 0 70px rgba(245,158,11,1));
-      }
-      90% {
-        transform: scale(9) rotate(3240deg);
-        filter: drop-shadow(0 0 90px rgba(245,158,11,1));
+      75% {
+        transform: scale(7.5) rotate(2520deg);
+        filter: drop-shadow(0 0 75px rgba(245,158,11,1));
       }
       100% {
-        transform: scale(9) rotate(3240deg); /* Hard braking stop */
-        filter: drop-shadow(0 0 100px rgba(245,158,11,1));
+        transform: scale(9) rotate(3600deg); /* Stops exactly when audio finishes */
+        filter: drop-shadow(0 0 90px rgba(245,158,11,1));
         opacity: 0;
       }
     }
 
-    /* SHARP DRIFT DUST & SMOKE RISING FROM THE SPIN */
-    @keyframes tireDriftDust {
-      0% { opacity: 0; transform: scale(0.4) translate(0, 0); }
-      30% { opacity: 0.85; transform: scale(1.6) translate(-60px, 25px); }
-      70% { opacity: 0.6; transform: scale(3.5) translate(100px, -80px); }
-      100% { opacity: 0; transform: scale(6) translate(-150px, -180px); }
-    }
-
-    .is-mustang-spinning {
+    .is-center-spinning {
       position: fixed !important;
       top: 50% !important;
       left: 50% !important;
       margin-left: -0.7em;
       margin-top: -0.7em;
-      animation: mustangCenterBurnout 4.5s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
+      animation: centerLogoSpin 4.5s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
       z-index: 100000;
     }
 
-    .drift-dust-plume {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      background: rgba(230, 200, 160, 0.55); /* Crisp, unblurred drift dust */
-      border-radius: 50%;
-      pointer-events: none;
-      width: 240px;
-      height: 240px;
-      z-index: 90000;
-      opacity: 0;
-    }
-
-    .is-dust-1 { animation: tireDriftDust 4s ease-out forwards; }
-    .is-dust-2 { animation: tireDriftDust 4s ease-out 0.2s forwards; }
-    .is-dust-3 { animation: tireDriftDust 4s ease-out 0.4s forwards; }
-    .is-dust-4 { animation: tireDriftDust 4s ease-out 0.6s forwards; }
-
-    /* CLEAN FADE OUT FOR OTHER CONTENT (ZERO BLUR) */
+    /* CLEAN FADE OUT FOR OTHER LAUNCH CONTENT (ZERO BLUR) */
     .content-clean-fade {
       transition: opacity 0.5s ease;
       opacity: 0;
@@ -117,17 +87,11 @@
   <!-- IMMERSIVE FULL-SCREEN LAUNCH SCREEN -->
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
-    <!-- DRIFT DUST & SMOKE ELEMENTS -->
-    <div id="smoke1" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
-    <div id="smoke2" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
-    <div id="smoke3" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
-    <div id="smoke4" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
-
     <!-- LAUNCH CONTENT CONTAINER -->
     <div id="launch-content" class="relative z-30 max-w-3xl space-y-6 flex flex-col items-center text-center my-auto transition-all duration-700">
       <span class="bg-amber-500 text-slate-950 font-black text-xs md:text-sm px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">Official Portal Launch</span>
       
-      <!-- STORM BRANDING WITH UNBLURRED VISIBLE LOGO -->
+      <!-- STORM BRANDING WITH UNBLURRED LOGO -->
       <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)]">
         <span>S.</span>
         <span>T.</span>
@@ -173,10 +137,6 @@
     const launchScreen = document.getElementById('launch-screen');
     const launchContent = document.getElementById('launch-content');
     const stormLogoIcon = document.getElementById('stormLogoIcon');
-    const smoke1 = document.getElementById('smoke1');
-    const smoke2 = document.getElementById('smoke2');
-    const smoke3 = document.getElementById('smoke3');
-    const smoke4 = document.getElementById('smoke4');
 
     launchBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -184,16 +144,10 @@
       if (engineSound) {
         engineSound.currentTime = 0;
         engineSound.play().then(() => {
-          // Clean fade out for texts, Mustang tire burnout spin and drift dust for logo (zero blur)
+          // Clean fade out for text elements, logo moves to center, enlarges, and spins until audio ends
           launchContent.classList.add('content-clean-fade');
           if (stormLogoIcon) {
-            stormLogoIcon.classList.add('is-mustang-spinning');
-          }
-          if (smoke1 && smoke2 && smoke3 && smoke4) {
-            smoke1.classList.add('is-dust-1');
-            smoke2.classList.add('is-dust-2');
-            smoke3.classList.add('is-dust-3');
-            smoke4.classList.add('is-dust-4');
+            stormLogoIcon.classList.add('is-center-spinning');
           }
           
           engineSound.onended = () => {
@@ -207,13 +161,7 @@
           console.error("Audio playback error:", err);
           launchContent.classList.add('content-clean-fade');
           if (stormLogoIcon) {
-            stormLogoIcon.classList.add('is-mustang-spinning');
-          }
-          if (smoke1 && smoke2 && smoke3 && smoke4) {
-            smoke1.classList.add('is-dust-1');
-            smoke2.classList.add('is-dust-2');
-            smoke3.classList.add('is-dust-3');
-            smoke4.classList.add('is-dust-4');
+            stormLogoIcon.classList.add('is-center-spinning');
           }
           launchScreen.style.transition = 'opacity 0.8s ease';
           launchScreen.style.opacity = '0';
