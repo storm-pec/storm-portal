@@ -38,64 +38,82 @@
       box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.4);
     }
 
-    /* MUSTANG TIRE BURNOUT - CONTINUOUS SPIN (NO BLUR, FULLY VISIBLE TO THE END) */
-    @keyframes continuousMustangSpin {
+    /* CENTERED LOGO ENLARGE & SPIN ANIMATION (SYNCED TO AUDIO DURATION, HIGH QUALITY) */
+    @keyframes centerLogoSpin {
       0% { 
         transform: translate(-50%, -50%) scale(1) rotate(0deg); 
-        filter: drop-shadow(0 0 15px rgba(245,158,11,0.8)); 
-      }
-      15% {
-        /* Rapidly enlarge and start fast spin */
-        transform: translate(-50%, -50%) scale(5.5) rotate(720deg); 
-        filter: drop-shadow(0 0 50px rgba(245,158,11,1));
+        filter: drop-shadow(0 0 20px rgba(245,158,11,0.9)); 
       }
       100% {
-        /* Slowly continuously spin to the end */
-        transform: translate(-50%, -50%) scale(7) rotate(2160deg); 
-        filter: drop-shadow(0 0 80px rgba(245,158,11,1));
-        opacity: 1; /* Explicitly guarantees it never disappears until the wrapper fades */
+        transform: translate(-50%, -50%) scale(8.5) rotate(3600deg); 
+        filter: drop-shadow(0 0 90px rgba(245,158,11,1));
       }
     }
 
-    /* DUST SMOKE RISING FROM THE TIRE */
-    @keyframes tireDriftDust {
-      0% { opacity: 0; transform: scale(0.4) translate(-50%, -50%); }
-      20% { opacity: 0.6; transform: scale(1.6) translate(-60px, 10px); }
-      60% { opacity: 0.4; transform: scale(3.5) translate(80px, -50px); }
-      100% { opacity: 0; transform: scale(5) translate(-100px, -120px); }
-    }
-
-    .is-mustang-spinning {
+    .is-center-spinning {
       position: fixed !important;
       top: 50% !important;
       left: 50% !important;
-      transform-origin: center center;
-      /* JS will dynamically set duration based on audio, defaults to 8s fallback */
-      animation: continuousMustangSpin 8s cubic-bezier(0.15, 0.85, 0.4, 1) forwards;
+      /* High quality rendering properties for scaling */
+      image-rendering: high-quality;
+      -webkit-font-smoothing: antialiased;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      will-change: transform;
+      animation: centerLogoSpin cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
       z-index: 100000;
+    }
+
+    /* VERY SMALL DUST/SMOKE PARTICLES RISING FROM THE TIRE */
+    @keyframes tinyDriftDust1 {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+      20% { opacity: 1; transform: translate(calc(-50% - 60px), calc(-50% + 20px)) scale(1.5); }
+      60% { opacity: 0.8; transform: translate(calc(-50% - 120px), calc(-50% - 60px)) scale(2); }
+      100% { opacity: 0; transform: translate(calc(-50% - 180px), calc(-50% - 150px)) scale(0); }
+    }
+    @keyframes tinyDriftDust2 {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+      20% { opacity: 1; transform: translate(calc(-50% + 70px), calc(-50% - 10px)) scale(1.5); }
+      60% { opacity: 0.8; transform: translate(calc(-50% + 140px), calc(-50% - 80px)) scale(2); }
+      100% { opacity: 0; transform: translate(calc(-50% + 190px), calc(-50% - 180px)) scale(0); }
+    }
+    @keyframes tinyDriftDust3 {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+      20% { opacity: 1; transform: translate(calc(-50% - 30px), calc(-50% - 40px)) scale(1.5); }
+      60% { opacity: 0.8; transform: translate(calc(-50% - 90px), calc(-50% - 120px)) scale(2); }
+      100% { opacity: 0; transform: translate(calc(-50% - 130px), calc(-50% - 200px)) scale(0); }
+    }
+    @keyframes tinyDriftDust4 {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+      20% { opacity: 1; transform: translate(calc(-50% + 40px), calc(-50% + 40px)) scale(1.5); }
+      60% { opacity: 0.8; transform: translate(calc(-50% + 100px), calc(-50% - 30px)) scale(2); }
+      100% { opacity: 0; transform: translate(calc(-50% + 160px), calc(-50% - 110px)) scale(0); }
     }
 
     .drift-dust-plume {
       position: fixed;
       top: 50%;
       left: 50%;
-      background: rgba(220, 190, 150, 0.4); /* Sand dust / smoke mix */
+      background: rgba(220, 190, 150, 0.9); /* Opaque tiny particle color */
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
       border-radius: 50%;
       pointer-events: none;
-      width: 220px;
-      height: 220px;
+      width: 8px; /* Very small */
+      height: 8px; /* Very small */
       z-index: 90000;
       opacity: 0;
     }
 
-    .is-dust-1 { animation: tireDriftDust 8s ease-out forwards; }
-    .is-dust-2 { animation: tireDriftDust 8s ease-out 0.5s forwards; }
-    .is-dust-3 { animation: tireDriftDust 8s ease-out 1s forwards; }
-    .is-dust-4 { animation: tireDriftDust 8s ease-out 1.5s forwards; }
+    .is-dust-1 { animation: tinyDriftDust1 8s ease-out forwards; }
+    .is-dust-2 { animation: tinyDriftDust2 8s ease-out 0.2s forwards; }
+    .is-dust-3 { animation: tinyDriftDust3 8s ease-out 0.4s forwards; }
+    .is-dust-4 { animation: tinyDriftDust4 8s ease-out 0.6s forwards; }
 
-    /* TEXT FADE TARGETS (NO BLUR, ONLY OPACITY TRANSITION) */
-    .fade-target {
+    /* CLEAN FADE OUT FOR OTHER LAUNCH CONTENT */
+    .content-clean-fade {
       transition: opacity 0.5s ease;
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -109,7 +127,7 @@
   <!-- IMMERSIVE FULL-SCREEN LAUNCH SCREEN -->
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
-    <!-- DRIFT DUST & SMOKE ELEMENTS -->
+    <!-- TINY DRIFT DUST PARTICLES -->
     <div id="smoke1" class="drift-dust-plume"></div>
     <div id="smoke2" class="drift-dust-plume"></div>
     <div id="smoke3" class="drift-dust-plume"></div>
@@ -121,12 +139,13 @@
       <!-- FADABLE ELEMENTS WRAPPED PROPERLY -->
       <span class="fade-target bg-amber-500 text-slate-950 font-black text-xs md:text-sm px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">Official Portal Launch</span>
       
-      <!-- STORM BRANDING WITH THE LOGO THAT STAYS -->
+      <!-- STORM BRANDING -->
       <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)]">
         <span class="fade-target">S.</span>
         <span class="fade-target">T.</span>
         
-        <!-- THE LOGO ICON (WILL NEVER FADE OUT UNTIL ENTIRE WRAPPER CLOSES) -->
+        <!-- THE LOGO ICON (WILL NEVER FADE OUT UNTIL ENTIRE WRAPPER CLOSES) 
+             TIP: Ensure your source file is high resolution (e.g. 1000x1000px) or an SVG for absolute crispness -->
         <img id="stormLogoIcon" src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle filter drop-shadow-[0_0_15px_rgba(245,158,11,0.9)]" onerror="this.onerror=null; this.style.display='none'">
         
         <span class="fade-target">.R.</span>
@@ -197,10 +216,10 @@
           // 3. Initiate Mustang Spinning logic right in center
           if (stormLogoIcon) {
             stormLogoIcon.style.animationDuration = audioDuration + 's';
-            stormLogoIcon.classList.add('is-mustang-spinning');
+            stormLogoIcon.classList.add('is-center-spinning');
           }
 
-          // 4. Initiate Smoke
+          // 4. Initiate Tiny Particle Smoke
           if (smoke1 && smoke2 && smoke3 && smoke4) {
             smoke1.style.animationDuration = audioDuration + 's';
             smoke2.style.animationDuration = audioDuration + 's';
