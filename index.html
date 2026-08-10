@@ -38,78 +38,53 @@
       box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.4);
     }
 
-    /* CENTERED LOGO ENLARGE & SPIN ANIMATION (SYNCED TO AUDIO DURATION, HIGH QUALITY) */
-    @keyframes centerLogoSpin {
+    /* VERTICAL SPIN (Y-AXIS) - MEDIUM SIZE, NO BLUR, HARD STOP */
+    @keyframes verticalSpinBrake {
       0% { 
-        transform: translate(-50%, -50%) scale(1) rotate(0deg); 
-        filter: drop-shadow(0 0 20px rgba(245,158,11,0.9)); 
+        transform: scale(1) rotateY(0deg); 
+        filter: drop-shadow(0 0 15px rgba(245,158,11,0.8)); 
+      }
+      20% {
+        transform: scale(3.5) rotateY(720deg);
+        filter: drop-shadow(0 0 30px rgba(245,158,11,1));
+      }
+      80% {
+        transform: scale(3.5) rotateY(2880deg);
+        filter: drop-shadow(0 0 50px rgba(245,158,11,1));
       }
       100% {
-        transform: translate(-50%, -50%) scale(8.5) rotate(3600deg); 
-        filter: drop-shadow(0 0 90px rgba(245,158,11,1));
+        transform: scale(3.5) rotateY(3600deg); /* Stops spinning like braking */
+        filter: drop-shadow(0 0 70px rgba(245,158,11,1));
+        opacity: 1; 
       }
     }
 
-    .is-center-spinning {
-      position: fixed !important;
-      top: 50% !important;
-      left: 50% !important;
-      /* High quality rendering properties for scaling */
+    .is-vertical-spinning {
+      display: inline-block;
+      image-rendering: -webkit-optimize-contrast;
       image-rendering: high-quality;
-      -webkit-font-smoothing: antialiased;
-      transform-style: preserve-3d;
-      backface-visibility: hidden;
-      will-change: transform;
-      animation: centerLogoSpin cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
+      /* Dynamic duration applied via JS */
+      animation: verticalSpinBrake cubic-bezier(0.15, 0.85, 0.35, 1) forwards;
       z-index: 100000;
     }
 
-    /* VERY SMALL DUST/SMOKE PARTICLES RISING FROM THE TIRE */
-    @keyframes tinyDriftDust1 {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-      20% { opacity: 1; transform: translate(calc(-50% - 60px), calc(-50% + 20px)) scale(1.5); }
-      60% { opacity: 0.8; transform: translate(calc(-50% - 120px), calc(-50% - 60px)) scale(2); }
-      100% { opacity: 0; transform: translate(calc(-50% - 180px), calc(-50% - 150px)) scale(0); }
-    }
-    @keyframes tinyDriftDust2 {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-      20% { opacity: 1; transform: translate(calc(-50% + 70px), calc(-50% - 10px)) scale(1.5); }
-      60% { opacity: 0.8; transform: translate(calc(-50% + 140px), calc(-50% - 80px)) scale(2); }
-      100% { opacity: 0; transform: translate(calc(-50% + 190px), calc(-50% - 180px)) scale(0); }
-    }
-    @keyframes tinyDriftDust3 {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-      20% { opacity: 1; transform: translate(calc(-50% - 30px), calc(-50% - 40px)) scale(1.5); }
-      60% { opacity: 0.8; transform: translate(calc(-50% - 90px), calc(-50% - 120px)) scale(2); }
-      100% { opacity: 0; transform: translate(calc(-50% - 130px), calc(-50% - 200px)) scale(0); }
-    }
-    @keyframes tinyDriftDust4 {
-      0% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
-      20% { opacity: 1; transform: translate(calc(-50% + 40px), calc(-50% + 40px)) scale(1.5); }
-      60% { opacity: 0.8; transform: translate(calc(-50% + 100px), calc(-50% - 30px)) scale(2); }
-      100% { opacity: 0; transform: translate(calc(-50% + 160px), calc(-50% - 110px)) scale(0); }
-    }
-
-    .drift-dust-plume {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      background: rgba(220, 190, 150, 0.9); /* Opaque tiny particle color */
-      box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
-      border-radius: 50%;
-      pointer-events: none;
-      width: 8px; /* Very small */
-      height: 8px; /* Very small */
-      z-index: 90000;
+    /* FLYING LETTERS CSS */
+    .fly-letter {
+      display: inline-block;
       opacity: 0;
+      white-space: pre;
+      /* Transforms are applied directly via JS for random scatter */
+      transition: transform 2.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 2s ease;
     }
 
-    .is-dust-1 { animation: tinyDriftDust1 8s ease-out forwards; }
-    .is-dust-2 { animation: tinyDriftDust2 8s ease-out 0.2s forwards; }
-    .is-dust-3 { animation: tinyDriftDust3 8s ease-out 0.4s forwards; }
-    .is-dust-4 { animation: tinyDriftDust4 8s ease-out 0.6s forwards; }
+    /* GOLDEN TEXT REVEAL */
+    .golden-text-reveal {
+      opacity: 1 !important;
+      transform: scale(1) translateY(0) !important;
+      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+    }
 
-    /* CLEAN FADE OUT FOR OTHER LAUNCH CONTENT */
+    /* CLEAN FADE OUT FOR BUTTON & INITIAL TEXT (ZERO BLUR) */
     .content-clean-fade {
       transition: opacity 0.5s ease;
       opacity: 0;
@@ -127,56 +102,57 @@
   <!-- IMMERSIVE FULL-SCREEN LAUNCH SCREEN -->
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
-    <!-- TINY DRIFT DUST PARTICLES -->
-    <div id="smoke1" class="drift-dust-plume"></div>
-    <div id="smoke2" class="drift-dust-plume"></div>
-    <div id="smoke3" class="drift-dust-plume"></div>
-    <div id="smoke4" class="drift-dust-plume"></div>
-
     <!-- LAUNCH CONTENT CONTAINER -->
-    <div id="launch-content" class="relative z-30 max-w-3xl space-y-6 flex flex-col items-center text-center my-auto">
+    <div id="launch-content" class="relative z-30 w-full flex flex-col items-center text-center my-auto transition-all duration-700">
       
-      <!-- FADABLE ELEMENTS WRAPPED PROPERLY -->
-      <span class="fade-target bg-amber-500 text-slate-950 font-black text-xs md:text-sm px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">Official Portal Launch</span>
+      <!-- FADABLE WELCOME TEXT -->
+      <span class="fade-target bg-amber-500 text-slate-950 font-black text-xs md:text-sm px-6 py-1.5 rounded-full uppercase tracking-widest shadow-lg mb-6">
+        Welcome to the Storm
+      </span>
       
-      <!-- STORM BRANDING -->
-      <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)]">
+      <!-- MAIN STORM LOGO TEXT -->
+      <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)] relative z-50">
         <span class="fade-target">S.</span>
         <span class="fade-target">T.</span>
         
-        <!-- THE LOGO ICON (WILL NEVER FADE OUT UNTIL ENTIRE WRAPPER CLOSES) 
-             TIP: Ensure your source file is high resolution (e.g. 1000x1000px) or an SVG for absolute crispness -->
+        <!-- THE LOGO ICON (SPINS VERTICALLY) -->
         <img id="stormLogoIcon" src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle filter drop-shadow-[0_0_15px_rgba(245,158,11,0.9)]" onerror="this.onerror=null; this.style.display='none'">
         
         <span class="fade-target">.R.</span>
         <span class="fade-target">M</span>
       </h1>
 
-      <div class="fade-target text-amber-400 font-black tracking-[0.15em] md:tracking-[0.2em] uppercase text-sm md:text-lg text-center space-y-1 drop-shadow-md">
-        <p>SOVEREIGN TECHNOLOGICAL</p>
-        <p>ORGANISATION FOR ROYAL MECH</p>
-      </div>
-      
-      <p class="fade-target text-gray-300 text-xs tracking-wide uppercase font-medium pt-1 drop-shadow">
-        Department of Mechanical Engineering | College of Engineering Pathanapuram
-      </p>
-
-      <div class="fade-target pt-2">
+      <div class="fade-target pt-10">
         <button id="launchBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm md:text-base uppercase tracking-widest px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.9)] transition-all transform hover:scale-105 cursor-pointer">
-          UNLEASH STORM & LAUNCH PORTAL
+          ENTER THE STORM PORTAL
         </button>
       </div>
-      
-      <div class="fade-target pt-2 flex flex-col items-center space-y-2">
-        <p class="text-xs text-gray-300 uppercase tracking-widest drop-shadow">
-          Inaugurated by Hon. MLA <span class="text-amber-400 font-bold">Sri. Jyothikumar Chamakkala</span>
-        </p>
-        
-        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 border-amber-500 overflow-hidden bg-slate-900 shadow-xl flex items-center justify-center">
-          <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'" />
-        </div>
+
+      <!-- FLYING LETTERS CONTAINER (Hidden initially, gathers beneath the logo) -->
+      <div id="flying-text-container" class="absolute top-[160%] left-1/2 -translate-x-1/2 w-max text-amber-400 font-black tracking-[0.15em] text-xs md:text-sm text-center z-40 pointer-events-none drop-shadow-lg">
+        <!-- JS will populate letters here -->
       </div>
 
+      <!-- GOLDEN "ROYAL MECH" TEXT (Appears at the very end) -->
+      <div id="golden-royal-mech" class="absolute top-[260%] left-1/2 -translate-x-1/2 opacity-0 transform scale-50 translate-y-10 text-4xl md:text-5xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-500 to-yellow-600 drop-shadow-[0_0_25px_rgba(253,224,71,1)] pointer-events-none z-50 w-max storm-font">
+        ROYAL MECH
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN MODAL (HIDDEN BY DEFAULT) -->
+  <div id="admin-login-modal" class="fixed inset-0 bg-slate-950/90 z-[99999] hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+    <div class="bg-slate-900 border-2 border-amber-500 p-8 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.3)] max-w-sm w-full relative text-center">
+      <button onclick="closeAdminLogin()" class="absolute top-4 right-4 text-gray-500 hover:text-amber-400 font-bold text-xl cursor-pointer">✕</button>
+      <h3 class="storm-font text-amber-400 text-2xl font-black mb-1 tracking-widest">ACCESS</h3>
+      <p class="text-xs text-gray-400 mb-8 uppercase tracking-widest">Authorized Personnel Only</p>
+      
+      <input type="email" id="adminEmail" placeholder="Admin Email" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-4 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
+      <input type="password" id="adminPassword" placeholder="Password" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-6 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
+      
+      <button onclick="loginAdmin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black tracking-widest uppercase py-3.5 rounded-lg transition shadow-lg cursor-pointer">Authenticate</button>
+      <p id="loginError" class="text-red-500 font-bold text-xs mt-4 hidden"></p>
     </div>
   </div>
 
@@ -185,17 +161,32 @@
     const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // --- LAUNCH ANIMATION LOGIC ---
     const launchBtn = document.getElementById('launchBtn');
     const engineSound = document.getElementById('engineSound');
     const launchScreen = document.getElementById('launch-screen');
     const stormLogoIcon = document.getElementById('stormLogoIcon');
-    const smoke1 = document.getElementById('smoke1');
-    const smoke2 = document.getElementById('smoke2');
-    const smoke3 = document.getElementById('smoke3');
-    const smoke4 = document.getElementById('smoke4');
-    
-    // Select all other elements to fade out cleanly
     const fadeTargets = document.querySelectorAll('.fade-target');
+    const flyingContainer = document.getElementById('flying-text-container');
+    const goldenText = document.getElementById('golden-royal-mech');
+
+    // PRE-GENERATE FLYING LETTERS
+    const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR ROYAL MECH";
+    targetString.split('').forEach(char => {
+      let span = document.createElement('span');
+      span.innerText = char;
+      if (char === ' ') span.innerHTML = '&nbsp;';
+      span.className = 'fly-letter';
+      
+      // Randomly scatter them off-screen initially
+      let rx = (Math.random() - 0.5) * 1500; 
+      let ry = (Math.random() - 0.5) * 1000;
+      let rz = (Math.random() - 0.5) * 500;
+      let rot = Math.random() * 720 - 360;
+      
+      span.style.transform = `translate3d(${rx}px, ${ry}px, ${rz}px) scale(3) rotate(${rot}deg)`;
+      flyingContainer.appendChild(span);
+    });
 
     launchBtn.addEventListener('click', (e) => {
       e.preventDefault();
@@ -204,55 +195,83 @@
         engineSound.currentTime = 0;
         engineSound.play().then(() => {
           
-          // 1. Fade out everything EXCEPT the logo O
+          // 1. Fade out intro text and button cleanly
           fadeTargets.forEach(el => {
-            el.style.opacity = '0';
-            el.style.pointerEvents = 'none';
+            el.classList.add('content-clean-fade');
           });
 
-          // 2. Dynamically set duration to match audio length
-          let audioDuration = engineSound.duration && !isNaN(engineSound.duration) ? engineSound.duration : 8;
-
-          // 3. Initiate Mustang Spinning logic right in center
+          // 2. Set duration based on audio, and start vertical spin
+          let audioDuration = engineSound.duration && !isNaN(engineSound.duration) ? engineSound.duration : 6;
           if (stormLogoIcon) {
             stormLogoIcon.style.animationDuration = audioDuration + 's';
-            stormLogoIcon.classList.add('is-center-spinning');
+            stormLogoIcon.classList.add('is-vertical-spinning');
           }
 
-          // 4. Initiate Tiny Particle Smoke
-          if (smoke1 && smoke2 && smoke3 && smoke4) {
-            smoke1.style.animationDuration = audioDuration + 's';
-            smoke2.style.animationDuration = audioDuration + 's';
-            smoke3.style.animationDuration = audioDuration + 's';
-            smoke4.style.animationDuration = audioDuration + 's';
-
-            smoke1.classList.add('is-dust-1');
-            smoke2.classList.add('is-dust-2');
-            smoke3.classList.add('is-dust-3');
-            smoke4.classList.add('is-dust-4');
-          }
-          
-          // 5. Open Page strictly when audio is done
-          engineSound.onended = () => {
-            launchScreen.style.transition = 'opacity 0.8s ease';
-            launchScreen.style.opacity = '0';
+          // 3. Bring flying letters together one by one
+          const letters = document.querySelectorAll('.fly-letter');
+          letters.forEach((letter, idx) => {
             setTimeout(() => {
-              launchScreen.style.display = 'none';
-            }, 800);
+              letter.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+              letter.style.opacity = '1';
+            }, 500 + (idx * 40)); // Start flying in after a 0.5s delay
+          });
+
+          // 4. Reveal Golden "ROYAL MECH" right at the end of the sound
+          setTimeout(() => {
+            goldenText.classList.add('golden-text-reveal');
+          }, (audioDuration * 1000) - 600); // 0.6 seconds before audio ends
+
+          // 5. Fade out entire launch screen and open page
+          engineSound.onended = () => {
+            setTimeout(() => {
+              launchScreen.style.transition = 'opacity 1s ease';
+              launchScreen.style.opacity = '0';
+              setTimeout(() => { launchScreen.style.display = 'none'; }, 1000);
+            }, 1000); // Hold for 1 second to let user see the golden text
           };
 
         }).catch(err => {
           console.error("Audio playback error:", err);
-          // Fallback if audio fails to play
-          launchScreen.style.transition = 'opacity 0.8s ease';
-          launchScreen.style.opacity = '0';
-          setTimeout(() => {
-            launchScreen.style.display = 'none';
-          }, 800);
+          launchScreen.style.display = 'none'; // Fallback
         });
       }
     });
 
+    // --- ADMIN LOGIN LOGIC ---
+    function openAdminLogin() {
+      document.getElementById('admin-login-modal').classList.remove('hidden');
+    }
+    
+    function closeAdminLogin() {
+      document.getElementById('admin-login-modal').classList.add('hidden');
+      document.getElementById('loginError').classList.add('hidden');
+    }
+
+    async function loginAdmin() {
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+      const errorEl = document.getElementById('loginError');
+      
+      errorEl.classList.add('hidden');
+      errorEl.innerText = "Authenticating...";
+      errorEl.classList.remove('hidden', 'text-red-500');
+      errorEl.classList.add('text-amber-500');
+
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        errorEl.classList.remove('text-amber-500');
+        errorEl.classList.add('text-red-500');
+        errorEl.innerText = "Access Denied: " + error.message;
+      } else {
+        errorEl.classList.remove('text-amber-500', 'text-red-500');
+        errorEl.classList.add('text-green-500');
+        errorEl.innerText = "Access Granted. Redirecting...";
+        setTimeout(() => { window.location.href = "admin.html"; }, 800);
+      }
+    }
+
+    // --- TABS & DATA FETCHING ---
     function switchTab(targetId, btnElement) {
       document.querySelectorAll('.main-tab-btn').forEach(btn => {
         btn.classList.remove('active', 'border-amber-500', 'text-slate-900');
@@ -498,7 +517,9 @@
         <a href="toppers.html" class="hover:text-amber-600 transition">Academic Excellence</a>
         <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
         <a href="events.html" class="hover:text-amber-600 transition">Events</a>
-        <a href="admin.html" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs">ADMIN</a>
+        
+        <!-- ADMIN BUTTON TRIGGERS NEW SECURE MODAL -->
+        <button onclick="openAdminLogin()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs cursor-pointer tracking-wider">ADMIN</button>
       </nav>
     </div>
   </header>
@@ -777,6 +798,20 @@
 
   <!-- FOOTER -->
   <footer class="bg-[#121212] text-gray-300 pt-12 pb-6 border-t-4 border-amber-500 mt-auto">
+    
+    <!-- NEW MLA LAUNCH FOOTER MEMORIAL SECTION -->
+    <div class="max-w-4xl mx-auto px-6 mb-12 border-b border-gray-800 pb-10 flex flex-col items-center text-center">
+      <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mb-4">Official Portal Inaugurated On 10-08-2026 By</p>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+        <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-20 h-20 rounded-full object-cover border-2 border-amber-500 shadow-md grayscale hover:grayscale-0 transition duration-500" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'">
+        <div class="text-center md:text-left">
+          <h4 class="text-white font-bold text-lg tracking-wider uppercase mb-1">Hon. MLA Sri. Jyothikumar Chamakkala</h4>
+          <p class="text-amber-500 text-xs font-semibold uppercase tracking-widest">Pathanapuram Assembly Constituency</p>
+          <p class="text-gray-400 text-[10px] uppercase mt-1">Syndicate Member of APJAKTU</p>
+        </div>
+      </div>
+    </div>
+
     <div class="max-w-7xl mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-sm pb-12">
         <div class="flex flex-col items-center md:items-start text-center md:text-left">
@@ -800,10 +835,10 @@
               </a>
             </li>
             <li>
-              <a href="admin.html" class="hover:text-white transition flex items-center gap-2">
+              <button onclick="openAdminLogin()" class="hover:text-white transition flex items-center gap-2 cursor-pointer">
                 <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                 Portal Login
-              </a>
+              </button>
             </li>
           </ul>
         </div>
