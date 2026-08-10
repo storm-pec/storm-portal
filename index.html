@@ -15,24 +15,27 @@
 </head>
 <body class="bg-slate-950 text-gray-100 font-sans antialiased min-h-screen flex flex-col">
 
-  <!-- AUDIO INTRO / BGM (Engine Rev / Storm Sound) -->
+  <!-- AUDIO INTRO (Engine Rev / Storm Sound) -->
   <audio id="stormAudio" preload="auto">
     <!-- Replace with your uploaded Supabase Storage audio public URL -->
     <source src="https://qzaeuohpeyuajscgosbs.supabase.co/storage/v1/object/public/posters/storm-engine.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- IMMERSIVE LAUNCH / ENTER SCREEN -->
+  <!-- IMMERSIVE LAUNCH / INAUGURATION SCREEN -->
   <div id="intro-screen" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-700">
     <div class="max-w-md space-y-6">
-      <h1 class="text-4xl md:text-5xl font-black font-orbitron text-amber-400 tracking-wider">STORM</h1>
-      <p class="text-sm text-gray-400 uppercase tracking-widest">Mechanical Engineering Association | PEC</p>
-      <button onclick="startStormPortal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-8 py-4 rounded-xl text-sm uppercase tracking-wider shadow-lg transition transform hover:scale-105 cursor-pointer">
-        ⚡ Engage Storm Portal
+      <div class="inline-block p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 mb-2">
+        <span class="text-4xl">⚡</span>
+      </div>
+      <h1 class="text-4xl md:text-6xl font-black font-orbitron text-amber-400 tracking-wider">STORM</h1>
+      <p class="text-xs md:text-sm text-gray-400 uppercase tracking-widest font-semibold">Mechanical Engineering Association | PEC</p>
+      <button onclick="startStormPortal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-8 py-4 rounded-xl text-xs uppercase tracking-widest shadow-lg transition transform hover:scale-105 cursor-pointer">
+        Ignite Storm Engine
       </button>
     </div>
   </div>
 
-  <!-- MAIN WEBSITE CONTAINER (Hidden until intro is triggered) -->
+  <!-- MAIN WEBSITE CONTAINER -->
   <div id="main-portal" class="opacity-0 transition-opacity duration-1000 flex flex-col flex-grow">
     
     <!-- HEADER -->
@@ -40,10 +43,12 @@
       <div class="flex items-center gap-3">
         <span class="font-black text-xl font-orbitron text-amber-400">STORM PEC</span>
       </div>
-      <nav class="hidden md:flex gap-6 text-xs font-bold uppercase tracking-wider text-gray-300">
+      <nav class="hidden lg:flex gap-6 text-xs font-bold uppercase tracking-wider text-gray-300">
         <a href="#events" class="hover:text-amber-400 transition">Events</a>
         <a href="#bearers" class="hover:text-amber-400 transition">Office Bearers</a>
+        <a href="#exec" class="hover:text-amber-400 transition">Executive</a>
         <a href="#faculty" class="hover:text-amber-400 transition">Faculty</a>
+        <a href="#minutes" class="hover:text-amber-400 transition">Minutes</a>
         <a href="#toppers" class="hover:text-amber-400 transition">Toppers</a>
         <a href="#alumni" class="hover:text-amber-400 transition">Alumni</a>
       </nav>
@@ -56,8 +61,8 @@
     <section class="py-20 px-6 text-center bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800">
       <div class="max-w-4xl mx-auto space-y-6">
         <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest">College of Engineering Pathanapuram</span>
-        <h2 class="text-4xl md:text-6xl font-black font-orbitron tracking-tight text-white">Unleash the Power of Mechanics</h2>
-        <p class="text-sm md:text-base text-gray-400 max-w-2xl mx-auto">Official portal of the Mechanical Engineering Association, driving innovation, leadership, and engineering excellence.</p>
+        <h2 class="text-4xl md:text-6xl font-black font-orbitron tracking-tight text-white">Mechanical Engineering Association</h2>
+        <p class="text-sm md:text-base text-gray-400 max-w-2xl mx-auto">Driving innovation, engineering excellence, and technical leadership.</p>
       </div>
     </section>
 
@@ -84,6 +89,16 @@
         </div>
       </section>
 
+      <!-- EXECUTIVE COMMITTEE SECTION -->
+      <section id="exec" class="space-y-6">
+        <div class="border-b border-slate-800 pb-4">
+          <h3 class="text-2xl font-black font-orbitron text-amber-400 uppercase">Executive Committee</h3>
+        </div>
+        <div id="exec-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <p class="text-gray-500 text-sm">Loading executive committee...</p>
+        </div>
+      </section>
+
       <!-- FACULTY SECTION -->
       <section id="faculty" class="space-y-6">
         <div class="border-b border-slate-800 pb-4">
@@ -91,6 +106,16 @@
         </div>
         <div id="faculty-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <p class="text-gray-500 text-sm">Loading faculty...</p>
+        </div>
+      </section>
+
+      <!-- MEETING MINUTES SECTION -->
+      <section id="minutes" class="space-y-6">
+        <div class="border-b border-slate-800 pb-4">
+          <h3 class="text-2xl font-black font-orbitron text-amber-400 uppercase">Meeting Minutes</h3>
+        </div>
+        <div id="minutes-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <p class="text-gray-500 text-sm">Loading meeting minutes...</p>
         </div>
       </section>
 
@@ -179,7 +204,22 @@
         bearersGrid.innerHTML = '<p class="text-gray-500 text-sm">No office bearers found.</p>';
       }
 
-      // 3. Load Faculty
+      // 3. Load Executive Committee
+      const { data: exec } = await db.from('executive_committee').select('*').order('display_order');
+      const execGrid = document.getElementById('exec-grid');
+      if (exec && exec.length > 0) {
+        execGrid.innerHTML = exec.map(m => `
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl text-center shadow-md flex flex-col items-center">
+            <img src="${m.photo_url || ''}" onerror="this.src='https://via.placeholder.com/150'" class="w-20 h-20 rounded-full object-cover border-2 border-amber-400 mb-3 shadow" />
+            <h4 class="font-bold text-sm text-white">${m.name}</h4>
+            <p class="text-[11px] text-amber-400 font-bold uppercase tracking-wider mt-1">${m.position}</p>
+          </div>
+        `).join('');
+      } else {
+        execGrid.innerHTML = '<p class="text-gray-500 text-sm">No executive committee members found.</p>';
+      }
+
+      // 4. Load Faculty
       const { data: faculty } = await db.from('faculty').select('*').order('display_order');
       const facultyGrid = document.getElementById('faculty-grid');
       if (faculty && faculty.length > 0) {
@@ -197,7 +237,27 @@
         facultyGrid.innerHTML = '<p class="text-gray-500 text-sm">No faculty data available.</p>';
       }
 
-      // 4. Load Toppers
+      // 5. Load Meeting Minutes
+      const { data: minutes } = await db.from('meeting_minutes').select('*').order('meeting_date', { ascending: false });
+      const minutesGrid = document.getElementById('minutes-grid');
+      if (minutes && minutes.length > 0) {
+        minutesGrid.innerHTML = minutes.map(min => `
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-md flex flex-col justify-between">
+            <div>
+              <span class="text-[10px] font-bold text-amber-400 uppercase">${min.meeting_date}</span>
+              <h4 class="font-bold text-base text-white mt-1 mb-2">${min.title}</h4>
+              <p class="text-xs text-gray-400 line-clamp-2">${min.minutes_text || ''}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-800">
+              <a href="${min.document_url}" target="_blank" class="text-xs font-bold text-amber-400 hover:underline">View PDF Document →</a>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        minutesGrid.innerHTML = '<p class="text-gray-500 text-sm">No meeting minutes uploaded yet.</p>';
+      }
+
+      // 6. Load Toppers
       const { data: toppers } = await db.from('toppers').select('*').order('created_at', { ascending: false });
       const toppersGrid = document.getElementById('toppers-grid');
       if (toppers && toppers.length > 0) {
@@ -214,7 +274,7 @@
         toppersGrid.innerHTML = '<p class="text-gray-500 text-sm">No toppers data found.</p>';
       }
 
-      // 5. Load Alumni
+      // 7. Load Alumni
       const { data: alumni } = await db.from('alumni').select('*').order('graduation_year', { ascending: false });
       const alumniGrid = document.getElementById('alumni-grid');
       if (alumni && alumni.length > 0) {
