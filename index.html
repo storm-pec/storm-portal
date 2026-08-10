@@ -85,10 +85,10 @@
       transition: transform 2.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 2s ease;
     }
 
-    /* GOLDEN TEXT REVEAL */
+    /* GOLDEN TEXT REVEAL FROM A POINT */
     .golden-text-reveal {
       opacity: 1 !important;
-      transform: scale(1) translateY(0) !important;
+      transform: scale(1) !important;
       transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27);
     }
 
@@ -107,10 +107,22 @@
   </audio>
 
   <!-- IMMERSIVE FULL-SCREEN LAUNCH SCREEN -->
-  <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
+  <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white">
     
+    <!-- TOP CENTER GOLDEN "ROYAL MECH" TEXT -->
+    <div class="fixed top-16 md:top-24 left-0 right-0 flex justify-center z-50 pointer-events-none">
+      <div id="golden-royal-mech" class="opacity-0 transform scale-0 text-5xl md:text-7xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-500 to-yellow-600 drop-shadow-[0_0_25px_rgba(253,224,71,1)] storm-font origin-center">
+        ROYAL MECH
+      </div>
+    </div>
+
     <!-- LAUNCH CONTENT CONTAINER -->
-    <div id="launch-content" class="relative z-30 w-full flex flex-col items-center text-center my-auto transition-all duration-700">
+    <div id="launch-content" class="relative z-30 w-full flex flex-col items-center text-center px-4 transition-all duration-700">
+      
+      <!-- FADABLE WELCOME TEXT -->
+      <span class="fade-target bg-amber-500 text-slate-950 font-black text-xs md:text-sm px-6 py-1.5 rounded-full uppercase tracking-widest shadow-lg mb-6">
+        Welcome to our Association
+      </span>
       
       <!-- MAIN STORM LOGO TEXT -->
       <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)] relative z-50">
@@ -124,22 +136,35 @@
         <span class="fade-target">M</span>
       </h1>
 
-      <div class="fade-target pt-12">
+      <div class="fade-target text-amber-400 font-black tracking-[0.15em] md:tracking-[0.2em] uppercase text-sm md:text-lg text-center space-y-1 drop-shadow-md">
+        <p>SOVEREIGN TECHNOLOGICAL</p>
+        <p>ORGANISATION FOR ROYAL MECH</p>
+      </div>
+      
+      <p class="fade-target text-gray-300 text-xs tracking-wide uppercase font-medium pt-1 drop-shadow">
+        Department of Mechanical Engineering | College of Engineering Pathanapuram
+      </p>
+
+      <div class="fade-target pt-10">
         <button id="launchBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm md:text-base uppercase tracking-widest px-8 py-4 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.9)] transition-all transform hover:scale-105 cursor-pointer">
-          WELCOME TO STORM OUR MECHANICAL DEPT. ASSOCIATION
+          ENTER THE STORM PORTAL
         </button>
       </div>
-
-      <!-- FLYING LETTERS CONTAINER -->
-      <div id="flying-text-container" class="absolute top-[180%] left-1/2 -translate-x-1/2 w-max text-amber-400 font-black tracking-[0.2em] text-xs md:text-sm text-center z-40 pointer-events-none drop-shadow-lg">
-        <!-- JS will populate letters here -->
+      
+      <div class="fade-target pt-6 flex flex-col items-center space-y-2 mt-4">
+        <p class="text-xs text-gray-300 uppercase tracking-widest drop-shadow">
+          Officially Launched on 10-08-2026 by Hon. MLA <span class="text-amber-400 font-bold">Sri. Jyothikumar Chamakkala</span>
+        </p>
+        
+        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 border-amber-500 overflow-hidden bg-slate-900 shadow-xl flex items-center justify-center">
+          <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'" />
+        </div>
       </div>
+    </div>
 
-      <!-- GOLDEN "ROYAL MECH" TEXT -->
-      <div id="golden-royal-mech" class="absolute top-[280%] left-1/2 -translate-x-1/2 opacity-0 transform scale-50 translate-y-10 text-4xl md:text-6xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-500 to-yellow-600 drop-shadow-[0_0_25px_rgba(253,224,71,1)] pointer-events-none z-50 w-max storm-font">
-        ROYAL MECH
-      </div>
-
+    <!-- FIXED BOTTOM CENTER FLYING LETTERS CONTAINER -->
+    <div id="flying-text-container" class="fixed bottom-12 md:bottom-20 left-2 right-2 flex justify-center flex-wrap text-amber-400 font-black tracking-[0.1em] md:tracking-[0.2em] text-[10px] md:text-sm lg:text-base text-center z-40 pointer-events-none drop-shadow-lg leading-loose">
+      <!-- JS will populate letters here -->
     </div>
   </div>
 
@@ -172,7 +197,7 @@
     const flyingContainer = document.getElementById('flying-text-container');
     const goldenText = document.getElementById('golden-royal-mech');
 
-    // PRE-GENERATE FLYING LETTERS FOR FIRST PART OF THE ASSOCIATION NAME
+    // PRE-GENERATE FLYING LETTERS FOR FULL ASSOCIATION NAME
     const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR ROYAL MECH";
     targetString.split('').forEach(char => {
       let span = document.createElement('span');
@@ -180,6 +205,7 @@
       if (char === ' ') span.innerHTML = '&nbsp;';
       span.className = 'fly-letter';
       
+      // Random scatter
       let rx = (Math.random() - 0.5) * 1500; 
       let ry = (Math.random() - 0.5) * 1000;
       let rot = Math.random() * 720 - 360;
@@ -191,10 +217,14 @@
     launchBtn.addEventListener('click', (e) => {
       e.preventDefault();
 
+      // Immediately scroll to top to prevent page offsets
+      window.scrollTo({ top: 0, behavior: 'instant' });
+
       if (engineSound) {
         engineSound.currentTime = 0;
         engineSound.play().then(() => {
           
+          // Hide initial elements safely
           fadeTargets.forEach(el => el.classList.add('content-clean-fade'));
 
           let audioDuration = engineSound.duration && !isNaN(engineSound.duration) ? engineSound.duration : 6;
@@ -204,14 +234,16 @@
             stormLogoIcon.classList.add('is-vertical-spinning');
           }
 
+          // Gather flying letters
           const letters = document.querySelectorAll('.fly-letter');
           letters.forEach((letter, idx) => {
             setTimeout(() => {
               letter.style.transform = 'translate(0, 0) scale(1) rotate(0deg)';
               letter.style.opacity = '1';
-            }, 500 + (idx * 60)); 
+            }, 500 + (idx * 50)); 
           });
 
+          // Drop in Golden Text at the very end
           setTimeout(() => {
             goldenText.classList.add('golden-text-reveal');
           }, (audioDuration * 1000) - 700); 
@@ -220,6 +252,10 @@
             setTimeout(() => {
               launchScreen.style.transition = 'opacity 1s ease';
               launchScreen.style.opacity = '0';
+              
+              // Guarantee we are at the top when the main site reveals
+              window.scrollTo({ top: 0, behavior: 'instant' });
+              
               setTimeout(() => { launchScreen.style.display = 'none'; }, 1000);
             }, 1200); 
           };
@@ -717,11 +753,11 @@
     </section>
   </div>
 
-  <!-- AFFILIATIONS & PLACEMENTS (ANIMATED SCROLL & COLORFUL) -->
+  <!-- AFFILIATIONS & PLACEMENTS -->
   <div class="bg-white py-16 border-t border-gray-200 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 space-y-16">
       
-      <!-- Professional Bodies Chapters -->
+      <!-- Professional Bodies Chapters (ANIMATED SCROLL & COLORFUL) -->
       <div>
         <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Upcoming Professional Body Chapters & Clubs</h3>
         <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Under Registration)</p>
@@ -729,13 +765,14 @@
         
         <div class="relative flex overflow-x-hidden">
           <div class="logo-slider">
+            <!-- Logos repeated for infinite scroll -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
             <a href="https://www.asme.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="asme-logo.png" alt="ASME" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
-            <!-- Duplicates for infinite scroll -->
+            <!-- Duplicate set -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -746,7 +783,7 @@
         </div>
       </div>
 
-      <!-- Placement Companies & Collaborations -->
+      <!-- Placement Companies & Collaborations (ANIMATED SCROLL & COLORFUL) -->
       <div>
         <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Our Collaborations</h3>
         <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Active & Under Discussion)</p>
@@ -771,7 +808,7 @@
               <img src="infosys-logo.png" alt="Infosys" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
             
-            <!-- Group 2 -->
+            <!-- Group 2 (Duplicate for smooth infinite scroll loop) -->
             <a href="https://share.google/75monPwa0DN5FSRoU" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4 shrink-0">
               <img src="fanar-polymers-logo.png" alt="Fanar Polymers" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -814,7 +851,7 @@
 
     <!-- MAIN FOOTER LINKS (MATCHING SCREENSHOT EXACTLY) -->
     <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-12 w-full">
+      <div class="flex flex-col lg:flex-row justify-between items-start gap-12 pb-12 w-full">
         
         <!-- COLUMN 1: STORM ASSOCIATION -->
         <div class="flex flex-col items-center lg:items-start text-center lg:text-left mx-auto max-w-sm w-full">
