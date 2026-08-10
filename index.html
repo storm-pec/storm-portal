@@ -199,7 +199,7 @@
     const flyingContainer = document.getElementById('flying-text-container');
     const goldenText = document.getElementById('golden-royal-mech');
 
-    // PRE-GENERATE FLYING LETTERS WITH "ROYAL MECH" INCLUDED
+    // PRE-GENERATE FLYING LETTERS FOR FULL ASSOCIATION NAME
     const targetString = "SOVEREIGN TECHNOLOGICAL ORGANISATION FOR ROYAL MECH";
     targetString.split('').forEach(char => {
       let span = document.createElement('span');
@@ -423,14 +423,22 @@
       `).join('');
     }
 
+    // --- TOPPERS PREVIEW FETCH (UPDATED SORT LOGIC) ---
     async function fetchToppersPreview() {
       const container = document.getElementById('toppers-preview');
       if (!container) return;
-      const { data, error } = await db.from('toppers').select('*').order('created_at', { ascending: false }).limit(4);
+      
+      const { data, error } = await db.from('toppers')
+        .select('*')
+        .order('semester', { ascending: false })
+        .order('cgpa', { ascending: false })
+        .limit(4);
+        
       if (error || !data || data.length === 0) {
         container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-4'>No toppers listed yet.</p>";
         return;
       }
+      
       container.innerHTML = data.map(t => `
         <div class="bg-white border border-gray-200 p-5 text-center relative shadow-md hover:shadow-xl transition rounded-xl creative-card">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year}</div>
@@ -759,7 +767,7 @@
   <div class="bg-white py-16 border-t border-gray-200 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 space-y-16">
       
-      <!-- Professional Bodies Chapters (ANIMATED SCROLL & COLORFUL) -->
+      <!-- Professional Bodies Chapters -->
       <div>
         <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Upcoming Professional Body Chapters & Clubs</h3>
         <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Under Registration)</p>
@@ -767,14 +775,12 @@
         
         <div class="relative flex overflow-x-hidden">
           <div class="logo-slider">
-            <!-- Logos repeated for infinite scroll -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
             <a href="https://www.asme.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="asme-logo.png" alt="ASME" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
-            <!-- Duplicate set -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -785,7 +791,7 @@
         </div>
       </div>
 
-      <!-- Placement Companies & Collaborations (ANIMATED SCROLL & COLORFUL) -->
+      <!-- Placement Companies & Collaborations -->
       <div>
         <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Our Collaborations</h3>
         <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Active & Under Discussion)</p>
@@ -809,8 +815,7 @@
             <a href="https://www.infosys.com/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4 shrink-0">
               <img src="infosys-logo.png" alt="Infosys" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
-            
-            <!-- Group 2 (Duplicate for smooth infinite scroll loop) -->
+            <!-- Group 2 -->
             <a href="https://share.google/75monPwa0DN5FSRoU" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4 shrink-0">
               <img src="fanar-polymers-logo.png" alt="Fanar Polymers" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -851,7 +856,7 @@
 
     <div class="w-full border-t border-gray-800 mb-12"></div>
 
-    <!-- MAIN FOOTER LINKS (MATCHING SCREENSHOT EXACTLY) -->
+    <!-- MAIN FOOTER LINKS -->
     <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
       <div class="flex flex-col lg:flex-row justify-between items-start gap-12 pb-12 w-full">
         
