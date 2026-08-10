@@ -38,50 +38,44 @@
       box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.4);
     }
 
-    /* CINEMATIC LOGO EXPAND & SPIN EFFECT (NO BLURRING) */
-    @keyframes cinematicLogoZoom {
+    /* CENTERED LOGO ENLARGE & SPIN CINEMATIC EFFECT (NO BLUR, FULLY VISIBLE) */
+    @keyframes centerLogoCinematic {
       0% { 
-        transform: translate(0, 0) scale(1) rotate(0deg); 
-        filter: drop-shadow(0 0 15px rgba(245,158,11,0.6)); 
+        transform: scale(1) rotate(0deg); 
+        filter: drop-shadow(0 0 15px rgba(245,158,11,0.8)); 
       }
-      30% { 
-        transform: translate(0, -20px) scale(3) rotate(360deg); 
-        filter: drop-shadow(0 0 35px rgba(245,158,11,0.9)); 
-      }
-      70% { 
-        transform: translate(0, -40px) scale(6) rotate(1440deg); 
-        filter: drop-shadow(0 0 60px rgba(245,158,11,1)); 
+      50% { 
+        transform: scale(4.5) rotate(720deg); 
+        filter: drop-shadow(0 0 50px rgba(245,158,11,1)); 
       }
       100% { 
-        transform: translate(0, -50px) scale(9) rotate(2880deg); 
-        filter: drop-shadow(0 0 90px rgba(245,158,11,1)); 
-        opacity: 0; 
+        transform: scale(8) rotate(1440deg); 
+        filter: drop-shadow(0 0 80px rgba(245,158,11,1)); 
       }
     }
 
     /* DRIFT SMOKE EFFECT */
     @keyframes driftSmoke {
-      0% { opacity: 0; transform: scale(0.6) translate(0, 0); }
-      30% { opacity: 0.5; transform: scale(1.5) translate(-30px, -20px); }
-      70% { opacity: 0.3; transform: scale(2.8) translate(40px, -50px); }
-      100% { opacity: 0; transform: scale(4.5) translate(-70px, -90px); }
+      0% { opacity: 0; transform: scale(0.5) translate(0, 0); }
+      30% { opacity: 0.6; transform: scale(1.5) translate(-40px, -20px); }
+      70% { opacity: 0.4; transform: scale(3) translate(60px, -60px); }
+      100% { opacity: 0; transform: scale(5) translate(-100px, -120px); }
     }
 
-    .is-cinematic-spinning {
-      animation: cinematicLogoZoom 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    .is-center-spinning {
+      animation: centerLogoCinematic 3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
       transform-origin: center center;
-      position: relative;
-      z-index: 50;
+      z-index: 100;
     }
 
     .drift-smoke-plume {
       position: absolute;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.35);
       border-radius: 50%;
       pointer-events: none;
-      width: 180px;
-      height: 180px;
-      z-index: 25;
+      width: 200px;
+      height: 200px;
+      z-index: 90;
       opacity: 0;
     }
 
@@ -89,10 +83,11 @@
     .is-smoking-2 { animation: driftSmoke 2.8s ease-out 0.2s forwards; }
     .is-smoking-3 { animation: driftSmoke 2.8s ease-out 0.4s forwards; }
 
-    /* CLEAN FADE OUT FOR OTHER CONTENT (NO BLUR) */
+    /* CLEAN FADE OUT FOR OTHER LAUNCH CONTENT */
     .content-clean-fade {
-      transition: opacity 1s ease;
+      transition: opacity 0.8s ease;
       opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -107,19 +102,19 @@
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
     <!-- DRIFT SMOKE ELEMENTS -->
-    <div id="smoke1" class="drift-smoke-plume" style="bottom: 35%; left: 35%;"></div>
-    <div id="smoke2" class="drift-smoke-plume" style="bottom: 40%; right: 35%;"></div>
-    <div id="smoke3" class="drift-smoke-plume" style="bottom: 30%; left: 42%;"></div>
+    <div id="smoke1" class="drift-smoke-plume" style="top: 50%; left: 40%;"></div>
+    <div id="smoke2" class="drift-smoke-plume" style="top: 50%; right: 40%;"></div>
+    <div id="smoke3" class="drift-smoke-plume" style="top: 55%; left: 45%;"></div>
 
     <!-- LAUNCH CONTENT CONTAINER -->
-    <div id="launch-content" class="relative z-30 max-w-3xl space-y-6 flex flex-col items-center text-center my-auto transition-all duration-1000">
+    <div id="launch-content" class="relative z-30 max-w-3xl space-y-6 flex flex-col items-center text-center my-auto transition-all duration-700">
       <span class="bg-amber-500 text-slate-950 font-black text-xs md:text-sm px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg">Official Portal Launch</span>
       
-      <!-- STORM BRANDING -->
+      <!-- STORM BRANDING WITH FULLY VISIBLE LOGO -->
       <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)]">
         <span>S.</span>
         <span>T.</span>
-        <img id="stormLogoIcon" src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle filter drop-shadow-[0_0_10px_rgba(245,158,11,0.9)] transition-all duration-1000" onerror="this.onerror=null; this.style.display='none'">
+        <img id="stormLogoIcon" src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle filter drop-shadow-[0_0_15px_rgba(245,158,11,0.9)] transition-transform duration-1000" onerror="this.onerror=null; this.style.display='none'">
         <span>.R.</span>
         <span>M</span>
       </h1>
@@ -171,10 +166,10 @@
       if (engineSound) {
         engineSound.currentTime = 0;
         engineSound.play().then(() => {
-          // Fade out text elements smoothly without blur, isolate and enlarge logo to center, add drift smoke
+          // Fade out secondary texts cleanly, keep logo fully visible, centered, spinning, and enlarging with smoke
           launchContent.classList.add('content-clean-fade');
           if (stormLogoIcon) {
-            stormLogoIcon.classList.add('is-cinematic-spinning');
+            stormLogoIcon.classList.add('is-center-spinning');
           }
           if (smoke1 && smoke2 && smoke3) {
             smoke1.classList.add('is-smoking-1');
@@ -183,28 +178,28 @@
           }
           
           engineSound.onended = () => {
-            launchScreen.style.transition = 'opacity 1s ease';
+            launchScreen.style.transition = 'opacity 0.8s ease';
             launchScreen.style.opacity = '0';
             setTimeout(() => {
               launchScreen.style.display = 'none';
-            }, 1000);
+            }, 800);
           };
         }).catch(err => {
           console.error("Audio playback error:", err);
           launchContent.classList.add('content-clean-fade');
           if (stormLogoIcon) {
-            stormLogoIcon.classList.add('is-cinematic-spinning');
+            stormLogoIcon.classList.add('is-center-spinning');
           }
           if (smoke1 && smoke2 && smoke3) {
             smoke1.classList.add('is-smoking-1');
             smoke2.classList.add('is-smoking-2');
             smoke3.classList.add('is-smoking-3');
           }
-          launchScreen.style.transition = 'opacity 1s ease';
+          launchScreen.style.transition = 'opacity 0.8s ease';
           launchScreen.style.opacity = '0';
           setTimeout(() => {
             launchScreen.style.display = 'none';
-          }, 1000);
+          }, 800);
         });
       }
     });
