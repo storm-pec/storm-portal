@@ -500,19 +500,28 @@
       document.getElementById('faculty-modal').classList.add('hidden');
     }
 
-    // --- AUTO-LINKER SCRIPT FOR EVENTS ---
     function openEventModal(ev) {
       document.getElementById('modal-event-title').innerText = ev.title;
       document.getElementById('modal-event-date').innerText = ev.event_date || '';
       
-      // Auto-Linker: Detects any URL starting with http/https and turns it into a clickable golden link
+      // Auto-Linker: Detects links and makes them clickable
       let descText = ev.description || '';
       let formattedDesc = descText
-        .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-amber-600 font-bold hover:underline break-all">$1</a>')
-        .replace(/\n/g, '<br>'); // Preserves paragraph breaks if faculty hit "Enter"
+        .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-amber-500 font-bold hover:underline break-all">$1</a>')
+        .replace(/\n/g, '<br>'); // Preserves paragraph breaks
 
       document.getElementById('modal-event-desc').innerHTML = formattedDesc;
-      document.getElementById('modal-event-img').src = ev.cover_image_url || '';
+      
+      // Smart Image Hider: Removes the broken image icon if no valid picture is provided
+      const imgEl = document.getElementById('modal-event-img');
+      if (ev.cover_image_url && ev.cover_image_url.trim() !== '') {
+        imgEl.src = ev.cover_image_url;
+        imgEl.style.display = 'block'; 
+      } else {
+        imgEl.src = '';
+        imgEl.style.display = 'none'; 
+      }
+
       document.getElementById('event-modal').classList.remove('hidden');
     }
 
@@ -876,7 +885,7 @@
 
     <!-- MAIN FOOTER LINKS (MATCHING SCREENSHOT EXACTLY) -->
     <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
-      <div class="flex flex-col lg:flex-row justify-between items-start gap-12 pb-12 w-full">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-12 w-full">
         
         <!-- COLUMN 1: STORM ASSOCIATION -->
         <div class="flex flex-col items-center lg:items-start text-center lg:text-left mx-auto max-w-sm w-full">
