@@ -449,12 +449,10 @@
       `).join('');
     }
 
-    // --- ALUMNI PREVIEW FETCH (UPDATED TO SORT LATEST PASSOUT & PLACED ALUMNI) ---
     async function fetchAlumniPreview() {
       const container = document.getElementById('alumni-preview');
       if (!container) return;
       
-      // Orders by the latest graduation year first, then prioritizes those who have a company listing
       const { data, error } = await db.from('alumni')
         .select('*')
         .order('graduation_year', { ascending: false })
@@ -502,10 +500,18 @@
       document.getElementById('faculty-modal').classList.add('hidden');
     }
 
+    // --- AUTO-LINKER SCRIPT FOR EVENTS ---
     function openEventModal(ev) {
       document.getElementById('modal-event-title').innerText = ev.title;
       document.getElementById('modal-event-date').innerText = ev.event_date || '';
-      document.getElementById('modal-event-desc').innerText = ev.description || '';
+      
+      // Auto-Linker: Detects any URL starting with http/https and turns it into a clickable golden link
+      let descText = ev.description || '';
+      let formattedDesc = descText
+        .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-amber-600 font-bold hover:underline break-all">$1</a>')
+        .replace(/\n/g, '<br>'); // Preserves paragraph breaks if faculty hit "Enter"
+
+      document.getElementById('modal-event-desc').innerHTML = formattedDesc;
       document.getElementById('modal-event-img').src = ev.cover_image_url || '';
       document.getElementById('event-modal').classList.remove('hidden');
     }
@@ -567,7 +573,6 @@
         <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
         <a href="events.html" class="hover:text-amber-600 transition">Events</a>
         
-        <!-- ADMIN BUTTON TRIGGERS SECURE MODAL -->
         <button onclick="openAdminLogin()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs cursor-pointer tracking-wider">ADMIN</button>
       </nav>
     </div>
@@ -777,7 +782,7 @@
   <div class="bg-white py-16 border-t border-gray-200 overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 space-y-16">
       
-      <!-- Professional Bodies Chapters -->
+      <!-- Professional Bodies Chapters (ANIMATED SCROLL & COLORFUL) -->
       <div>
         <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Upcoming Professional Body Chapters & Clubs</h3>
         <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Under Registration)</p>
@@ -785,13 +790,14 @@
         
         <div class="relative flex overflow-x-hidden">
           <div class="logo-slider">
+            <!-- Logos repeated for infinite scroll -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
             <a href="https://www.asme.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="asme-logo.png" alt="ASME" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
-            <!-- Duplicates for infinite scroll -->
+            <!-- Duplicate set -->
             <a href="https://www.imeche.org/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4">
               <img src="ImechE_logo.png" alt="IMechE" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -802,7 +808,7 @@
         </div>
       </div>
 
-      <!-- Placement Companies & Collaborations -->
+      <!-- Placement Companies & Collaborations (ANIMATED SCROLL & COLORFUL) -->
       <div>
         <h3 class="text-2xl md:text-3xl font-serif text-center text-slate-900 mb-2">Our Collaborations</h3>
         <p class="text-sm md:text-base text-center text-gray-500 font-medium tracking-wide mb-6 uppercase">(Active & Under Discussion)</p>
@@ -826,7 +832,8 @@
             <a href="https://www.infosys.com/" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4 shrink-0">
               <img src="infosys-logo.png" alt="Infosys" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
-            <!-- Group 2 -->
+            
+            <!-- Group 2 (Duplicate for smooth infinite scroll loop) -->
             <a href="https://share.google/75monPwa0DN5FSRoU" target="_blank" class="w-36 h-24 md:w-44 md:h-28 border border-gray-200 rounded-xl flex items-center justify-center p-3 hover:shadow-lg transition bg-white cursor-pointer mx-4 shrink-0">
               <img src="fanar-polymers-logo.png" alt="Fanar Polymers" class="max-h-full max-w-full object-contain" onerror="this.parentElement.style.display='none';">
             </a>
@@ -867,7 +874,7 @@
 
     <div class="w-full border-t border-gray-800 mb-12"></div>
 
-    <!-- MAIN FOOTER LINKS -->
+    <!-- MAIN FOOTER LINKS (MATCHING SCREENSHOT EXACTLY) -->
     <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
       <div class="flex flex-col lg:flex-row justify-between items-start gap-12 pb-12 w-full">
         
