@@ -38,53 +38,45 @@
       box-shadow: inset 0 0 180px rgba(245, 158, 11, 0.4);
     }
 
-    /* MUSTANG / F1 TIRE BURNOUT & BRAKING STOP ANIMATION (ZERO BLUR, FULLY VISIBLE) */
+    /* MUSTANG / F1 TIRE BURNOUT & HARD BRAKING STOP ANIMATION (ABSOLUTELY ZERO BLUR) */
     @keyframes mustangCenterBurnout {
       0% { 
-        position: relative;
         transform: scale(1) rotate(0deg); 
-        filter: drop-shadow(0 0 15px rgba(245,158,11,0.9)); 
+        filter: drop-shadow(0 0 20px rgba(245,158,11,0.9)); 
       }
-      20% {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(3) rotate(360deg);
-        filter: drop-shadow(0 0 30px rgba(245,158,11,1));
+      25% {
+        transform: scale(3) rotate(720deg);
+        filter: drop-shadow(0 0 40px rgba(245,158,11,1));
       }
       60% {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(8) rotate(1800deg);
-        filter: drop-shadow(0 0 60px rgba(245,158,11,1));
+        transform: scale(7) rotate(2160deg);
+        filter: drop-shadow(0 0 70px rgba(245,158,11,1));
       }
       90% {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(10) rotate(2880deg);
-        filter: drop-shadow(0 0 80px rgba(245,158,11,1));
+        transform: scale(9) rotate(3240deg);
+        filter: drop-shadow(0 0 90px rgba(245,158,11,1));
       }
       100% {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(10) rotate(2880deg); /* Hard braking stop */
-        filter: drop-shadow(0 0 90px rgba(245,158,11,1));
+        transform: scale(9) rotate(3240deg); /* Hard braking stop */
+        filter: drop-shadow(0 0 100px rgba(245,158,11,1));
         opacity: 0;
       }
     }
 
-    /* DRIFT DUST & SMOKE PLUMES RISING FROM THE SPIN */
+    /* SHARP DRIFT DUST & SMOKE RISING FROM THE SPIN */
     @keyframes tireDriftDust {
       0% { opacity: 0; transform: scale(0.4) translate(0, 0); }
-      30% { opacity: 0.75; transform: scale(1.6) translate(-50px, 20px); }
-      70% { opacity: 0.5; transform: scale(3.5) translate(80px, -70px); }
-      100% { opacity: 0; transform: scale(6) translate(-130px, -160px); }
+      30% { opacity: 0.85; transform: scale(1.6) translate(-60px, 25px); }
+      70% { opacity: 0.6; transform: scale(3.5) translate(100px, -80px); }
+      100% { opacity: 0; transform: scale(6) translate(-150px, -180px); }
     }
 
     .is-mustang-spinning {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      margin-left: -0.7em;
+      margin-top: -0.7em;
       animation: mustangCenterBurnout 4.5s cubic-bezier(0.15, 0.85, 0.3, 1) forwards;
       z-index: 100000;
     }
@@ -93,21 +85,21 @@
       position: fixed;
       top: 50%;
       left: 50%;
-      background: rgba(220, 190, 150, 0.5); /* Crisp sand dust & smoke */
+      background: rgba(230, 200, 160, 0.55); /* Crisp, unblurred drift dust */
       border-radius: 50%;
       pointer-events: none;
-      width: 220px;
-      height: 220px;
+      width: 240px;
+      height: 240px;
       z-index: 90000;
       opacity: 0;
     }
 
     .is-dust-1 { animation: tireDriftDust 4s ease-out forwards; }
-    .is-dust-2 { animation: tireDriftDust 4s ease-out 0.25s forwards; }
-    .is-dust-3 { animation: tireDriftDust 4s ease-out 0.5s forwards; }
-    .is-dust-4 { animation: tireDriftDust 4s ease-out 0.75s forwards; }
+    .is-dust-2 { animation: tireDriftDust 4s ease-out 0.2s forwards; }
+    .is-dust-3 { animation: tireDriftDust 4s ease-out 0.4s forwards; }
+    .is-dust-4 { animation: tireDriftDust 4s ease-out 0.6s forwards; }
 
-    /* CLEAN FADE OUT FOR OTHER LAUNCH CONTENT (NO BLUR) */
+    /* CLEAN FADE OUT FOR OTHER CONTENT (ZERO BLUR) */
     .content-clean-fade {
       transition: opacity 0.5s ease;
       opacity: 0;
@@ -126,10 +118,10 @@
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
     <!-- DRIFT DUST & SMOKE ELEMENTS -->
-    <div id="smoke1" class="drift-dust-plume" style="margin-left: -110px; margin-top: -110px;"></div>
-    <div id="smoke2" class="drift-dust-plume" style="margin-left: -110px; margin-top: -110px;"></div>
-    <div id="smoke3" class="drift-dust-plume" style="margin-left: -110px; margin-top: -110px;"></div>
-    <div id="smoke4" class="drift-dust-plume" style="margin-left: -110px; margin-top: -110px;"></div>
+    <div id="smoke1" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
+    <div id="smoke2" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
+    <div id="smoke3" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
+    <div id="smoke4" class="drift-dust-plume" style="margin-left: -120px; margin-top: -120px;"></div>
 
     <!-- LAUNCH CONTENT CONTAINER -->
     <div id="launch-content" class="relative z-30 max-w-3xl space-y-6 flex flex-col items-center text-center my-auto transition-all duration-700">
@@ -139,7 +131,7 @@
       <h1 class="storm-font text-5xl md:text-7xl font-black uppercase text-gray-100 flex items-center justify-center gap-1 tracking-wider drop-shadow-[0_0_25px_rgba(245,158,11,0.8)]">
         <span>S.</span>
         <span>T.</span>
-        <img id="stormLogoIcon" src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle filter drop-shadow-[0_0_15px_rgba(245,158,11,0.9)]" onerror="this.onerror=null; this.style.display='none'">
+        <img id="stormLogoIcon" src="storm-o-icon.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle filter drop-shadow-[0_0_15px_rgba(245,158,11,0.9)] transition-transform duration-1000" onerror="this.onerror=null; this.style.display='none'">
         <span>.R.</span>
         <span>M</span>
       </h1>
