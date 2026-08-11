@@ -109,8 +109,8 @@
   <!-- IMMERSIVE FULL-SCREEN LAUNCH SCREEN -->
   <div id="launch-screen" class="fixed inset-0 z-[9999] overflow-hidden flex flex-col items-center justify-center storm-mechanical-vortex text-white px-4">
     
-    <!-- GOLDEN "ROYAL MECH" TEXT - MOVED TO THE VACANT SPACE BELOW THE LOGO -->
-    <div class="fixed top-[62%] md:top-[65%] left-0 right-0 flex justify-center z-50 pointer-events-none">
+    <!-- GOLDEN "ROYAL MECH" TEXT - TOP CENTERED -->
+    <div class="fixed top-[15%] md:top-[15%] left-0 right-0 flex justify-center z-50 pointer-events-none">
       <div id="golden-royal-mech" class="opacity-0 transform scale-0 text-5xl md:text-7xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-500 to-yellow-600 drop-shadow-[0_0_25px_rgba(253,224,71,1)] storm-font origin-center">
         ROYAL MECH
       </div>
@@ -145,20 +145,20 @@
         Department of Mechanical Engineering | College of Engineering Pathanapuram
       </p>
 
-      <!-- PERFECTLY CENTERED & TIGHTENED BUTTON SPACING -->
-      <div class="fade-target my-4">
+      <!-- TIGHTENED BUTTON SPACING -->
+      <div class="fade-target my-8">
         <button id="launchBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm md:text-base uppercase tracking-widest px-10 py-4 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.9)] transition-all transform hover:scale-105 cursor-pointer">
           ENTER THE STORM PORTAL
         </button>
       </div>
       
       <!-- TIGHTENED MLA SPACING -->
-      <div class="fade-target flex flex-col items-center space-y-2 mt-2">
+      <div class="fade-target flex flex-col items-center space-y-3">
         <p class="text-xs md:text-sm text-gray-300 uppercase tracking-widest drop-shadow font-medium">
           Officially Launched on 10-08-2026 by Hon. MLA <span class="text-amber-400 font-bold">Sri. Jyothikumar Chamakkala</span>
         </p>
         
-        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 border-amber-500 overflow-hidden bg-slate-900 shadow-xl flex items-center justify-center mt-2">
+        <div class="w-20 h-20 md:w-24 md:h-24 rounded-xl border-2 border-amber-500 overflow-hidden bg-slate-900 shadow-xl flex items-center justify-center">
           <img src="jyothikumar-chamakkala.png" alt="Hon. MLA Sri. Jyothikumar Chamakkala" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=MLA+Photo'" />
         </div>
       </div>
@@ -467,7 +467,7 @@
       container.innerHTML = data.map(person => `
         <div class="bg-white p-5 border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition creative-card flex flex-col items-center text-center relative">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">Batch ${person.graduation_year || ''}</div>
-          <img src="${person.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
+          <img src="${person.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 shadow-sm" />
           <h4 class="font-bold text-slate-900 text-base">${person.full_name}</h4>
           <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">${person.job_designation}</p>
           <p class="text-xs text-gray-600 font-semibold mt-1">${person.company_name ? '@ ' + person.company_name : ''}</p>
@@ -500,19 +500,21 @@
       document.getElementById('faculty-modal').classList.add('hidden');
     }
 
+    // LINE-BREAK PROOF AUTO-LINKER SCRIPT FOR EVENTS MODAL
     function openEventModal(ev) {
       document.getElementById('modal-event-title').innerText = ev.title;
       document.getElementById('modal-event-date').innerText = ev.event_date || '';
       
-      // Auto-Linker: Detects links and makes them clickable
       let descText = ev.description || '';
       let formattedDesc = descText
-        .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-amber-500 font-bold hover:underline break-all">$1</a>')
-        .replace(/\n/g, '<br>'); // Preserves paragraph breaks
+        .replace(/https?:\/\/[^\s]+/g, function(match) {
+          let cleanUrl = match.replace(/[\r\n]+/g, ''); 
+          return '<a href="' + cleanUrl + '" target="_blank" class="text-amber-500 font-bold hover:underline break-all">' + match + '</a>';
+        })
+        .replace(/\n/g, '<br>'); 
 
       document.getElementById('modal-event-desc').innerHTML = formattedDesc;
       
-      // Smart Image Hider: Removes the broken image icon if no valid picture is provided
       const imgEl = document.getElementById('modal-event-img');
       if (ev.cover_image_url && ev.cover_image_url.trim() !== '') {
         imgEl.src = ev.cover_image_url;
@@ -946,7 +948,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start w-full">
           
-          <!-- LEFT: COPYRIGHT -->
+          <!-- LEFT: PRIOR -->
           <div class="flex justify-center lg:justify-start w-full mx-auto max-w-sm">
             <p class="text-center lg:text-left w-full">COPYRIGHT © ALL RIGHTS RESERVED BY STORM ASSOCIATION</p>
           </div>
