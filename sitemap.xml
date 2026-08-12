@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://storm-pec.github.io/storm-portal/</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://storm-pec.github.io/storm-portal/faculty.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://storm-pec.github.io/storm-portal/toppers.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://storm-pec.github.io/storm-portal/alumni.html</loc>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://storm-pec.github.io/storm-portal/events.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
+</urlset>
