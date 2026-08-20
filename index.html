@@ -353,13 +353,13 @@
 
       <p class="text-xs text-gray-400 mb-8 uppercase tracking-widest">Authorized Personnel Only</p>
 
-      
+       
 
       <input type="email" id="adminEmail" placeholder="Admin Email" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-4 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
 
       <input type="password" id="adminPassword" placeholder="Password" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-6 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
 
-      
+       
 
       <button onclick="loginAdmin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black tracking-widest uppercase py-3.5 rounded-lg transition shadow-lg cursor-pointer">Authenticate</button>
 
@@ -413,7 +413,7 @@
 
       span.className = 'fly-letter';
 
-      
+       
 
       // Random scatter
 
@@ -423,7 +423,7 @@
 
       let rot = Math.random() * 720 - 360;
 
-      
+       
 
       span.style.transform = `translate(${rx}px, ${ry}px) scale(3) rotate(${rot}deg)`;
 
@@ -451,7 +451,7 @@
 
         engineSound.play().then(() => {
 
-          
+           
 
           // Hide initial elements safely
 
@@ -461,7 +461,7 @@
 
           let audioDuration = engineSound.duration && !isNaN(engineSound.duration) ? engineSound.duration : 6;
 
-          
+           
 
           if (stormLogoIcon) {
 
@@ -521,17 +521,17 @@
 
             }, 1200); 
 
-        };
+          };
 
 
 
-      }).catch(err => {
+        }).catch(err => {
 
-        console.error("Audio playback error:", err);
+          console.error("Audio playback error:", err);
 
-        launchScreen.style.display = 'none'; 
+          launchScreen.style.display = 'none'; 
 
-      });
+        });
 
       }
 
@@ -547,7 +547,7 @@
 
     }
 
-    
+     
 
     function closeAdminLogin() {
 
@@ -1011,7 +1011,21 @@
 
           ${m.areas_of_interest ? `<p><strong>Areas of Interest:</strong> ${m.areas_of_interest}</p>` : ''}
 
-          ${m.publications ? `<p><strong>Publications:</strong> ${m.publications}</p>` : ''}
+          ${m.publications ? `
+
+            <div>
+
+              <strong class="block text-slate-900 mb-1">Publications:</strong>
+
+              <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg text-xs text-gray-600 max-h-44 overflow-y-auto leading-relaxed whitespace-pre-line shadow-inner">
+
+                ${m.publications}
+
+              </div>
+
+            </div>
+
+          ` : ''}
 
           ${m.email ? `<p><strong>Email:</strong> <a href="mailto:${m.email}" class="text-blue-600 hover:underline">${m.email}</a></p>` : ''}
 
@@ -1183,29 +1197,29 @@
 
         </div>
 
+      </div>
+
+
+
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700 uppercase tracking-wide shrink-0 pr-2">
+
+        <a href="index.html" class="text-amber-600 font-bold transition">Home</a>
+
+        <a href="faculty.html" class="hover:text-amber-600 transition">Faculty</a>
+
+        <a href="toppers.html" class="hover:text-amber-600 transition">Academic Excellence</a>
+
+        <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
+
+        <a href="events.html" class="hover:text-amber-600 transition">Events</a>
+
+         
+
+        <button onclick="openAdminLogin()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs cursor-pointer tracking-wider">ADMIN</button>
+
+      </nav>
+
     </div>
-
-
-
-    <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700 uppercase tracking-wide shrink-0 pr-2">
-
-      <a href="index.html" class="text-amber-600 font-bold transition">Home</a>
-
-      <a href="faculty.html" class="hover:text-amber-600 transition">Faculty</a>
-
-      <a href="toppers.html" class="hover:text-amber-600 transition">Academic Excellence</a>
-
-      <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
-
-      <a href="events.html" class="hover:text-amber-600 transition">Events</a>
-
-       
-
-      <button onclick="openAdminLogin()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs cursor-pointer tracking-wider">ADMIN</button>
-
-    </nav>
-
-  </div>
 
   </header>
 
@@ -1785,7 +1799,7 @@
 
 
 
-  <!-- FACULTY POPUP MODAL (FIXED "KNOW MORE" BUTTON) -->
+  <!-- FACULTY POPUP MODAL -->
   <div id="faculty-modal" class="fixed inset-0 bg-slate-950/80 z-[99999] hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
     <div class="bg-white border-2 border-amber-500 p-6 md:p-8 rounded-2xl shadow-2xl max-w-lg w-full relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-slate-950 font-bold text-xl cursor-pointer">✕</button>
