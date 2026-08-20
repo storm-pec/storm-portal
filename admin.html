@@ -1,336 +1,117 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Portal | STORM Association</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  
-  <style>
-    /* Hide page content immediately to prevent unauthorized flashing before authentication check */
-    body { display: none; }
-  </style>
-
-  <script>
-    const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    async function checkAuth() {
-      const { data: { session } } = await db.auth.getSession();
-      if (!session) {
-        window.location.href = "index.html";
-      } else {
-        document.addEventListener("DOMContentLoaded", () => {
-          document.body.style.display = "block";
-          // Initial Load
-          fetchBearers();
-          fetchExec();
-          fetchFacultyAdmin();
-          fetchMinutesAdmin();
-          fetchEventsAdmin();
-          fetchToppersAdmin();
-          fetchAlumniAdmin();
-        });
-      }
-    }
-
-    checkAuth();
-  </script>
 </head>
-<body class="bg-slate-100 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
+<body class="bg-slate-900 text-gray-100 font-sans antialiased flex flex-col min-h-screen">
 
-  <!-- TOP HEADER -->
-  <header class="bg-[#121212] text-white py-4 px-6 flex justify-between items-center shadow-md">
-    <div class="flex items-center gap-3">
-      <span class="font-black text-lg tracking-wider text-amber-400">STORM ADMIN PORTAL</span>
-    </div>
-    <div class="flex items-center gap-2">
-      <a href="index.html" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition">← Back to Website</a>
-      <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg text-xs transition cursor-pointer">Logout</button>
+  <!-- HEADER -->
+  <header class="bg-slate-950 sticky top-0 z-50 shadow-md border-b border-slate-800">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="font-black text-lg text-amber-400 tracking-wider uppercase">STORM Admin Dashboard</h1>
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="text-xs text-gray-400 hover:text-white transition uppercase font-bold">View Portal →</a>
+        <button onclick="logoutAdmin()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-xs transition cursor-pointer">Logout</button>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
-    <h1 class="text-3xl font-black text-slate-900 mb-6 uppercase tracking-tight">Portal Management Dashboard</h1>
-
-    <!-- TABS NAVIGATION -->
-    <div class="flex border-b border-gray-300 overflow-x-auto bg-white shadow-sm rounded-t-xl mb-6">
-      <button class="admin-tab-btn active px-5 py-3 border-b-4 border-amber-500 text-slate-900 font-bold text-xs uppercase shrink-0 transition cursor-pointer" onclick="switchAdminTab('bearers', event)">Office Bearers</button>
-      <button class="admin-tab-btn px-5 py-3 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-bold text-xs uppercase shrink-0 transition cursor-pointer" onclick="switchAdminTab('exec', event)">Executive Committee</button>
-      <button class="admin-tab-btn px-5 py-3 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-bold text-xs uppercase shrink-0 transition cursor-pointer" onclick="switchAdminTab('faculty', event)">Faculty</button>
-      <button class="admin-tab-btn px-5 py-3 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-bold text-xs uppercase shrink-0 transition cursor-pointer" onclick="switchAdminTab('minutes', event)">Meeting Minutes</button>
-      <button class="admin-tab-btn px-5 py-3 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-bold text-xs uppercase shrink-0 transition cursor-pointer" onclick="switchAdminTab('events', event)">Events</button>
-      <button class="admin-tab-btn px-5 py-3 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-bold text-xs uppercase shrink-0 transition cursor-pointer" onclick="switchAdminTab('toppers', event)">Toppers</button>
-      <button class="admin-tab-btn px-5 py-3 border-b-4 border-transparent text-gray-500 hover:text-slate-900 font-bold text-xs uppercase shrink-0 transition cursor-pointer" onclick="switchAdminTab('alumni', event)">Alumni</button>
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="max-w-7xl mx-auto px-6 py-10 flex-grow w-full">
+    
+    <!-- SECTION TABS -->
+    <div class="flex flex-wrap gap-2 mb-8 border-b border-slate-800 pb-4">
+      <button onclick="switchAdminTab('media')" class="admin-tab-btn active bg-amber-500 text-slate-950 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition cursor-pointer">Media Team</button>
+      <button onclick="switchAdminTab('bearers')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Office Bearers</button>
+      <button onclick="switchAdminTab('exec')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Executive Committee</button>
+      <button onclick="switchAdminTab('faculty')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Faculty</button>
+      <button onclick="switchAdminTab('events')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Events</button>
+      <button onclick="switchAdminTab('toppers')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Toppers</button>
+      <button onclick="switchAdminTab('alumni')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Alumni</button>
+      <button onclick="switchAdminTab('minutes')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Meeting Minutes</button>
     </div>
 
-    <!-- TAB 1: OFFICE BEARERS -->
-    <div id="section-bearers" class="admin-section grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 id="bearer-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Add / Edit Office Bearer</h2>
-        <form id="bearer-form" onsubmit="saveBearer(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="bearer-id">
-          <input type="text" id="bearer-name" placeholder="Full Name" oninput="updatePreview('bearer')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="bearer-position" placeholder="Position" oninput="updatePreview('bearer')" required class="border p-2.5 rounded-lg text-sm">
-          <div class="flex gap-2 items-center md:col-span-2">
-            <input type="text" id="bearer-photo" placeholder="Photo URL" required class="border p-2.5 rounded-lg text-sm flex-grow" oninput="updatePreview('bearer')">
-            <input type="file" id="bearer-file" accept="image/*" class="text-xs" onchange="uploadFileToSupabase('bearer-file', 'bearer-photo', 'bearer')">
+    <!-- MEDIA TEAM MANAGEMENT SECTION -->
+    <div id="section-media" class="admin-section space-y-8">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 id="media-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add New Media Team Member</h3>
+        <form id="media-form" onsubmit="handleMediaSubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <input type="hidden" id="media-id">
+          <input type="text" id="media-name" placeholder="Full Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+          <input type="text" id="media-position" placeholder="Position (e.g., Media Head)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+          <input type="number" id="media-order" placeholder="Display Order (1, 2...)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+          <div class="flex flex-col gap-1">
+            <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo (Optimized & Fast)</label>
+            <input type="file" id="media-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
           </div>
-          <input type="number" id="bearer-order" placeholder="Display Order" value="1" class="border p-2.5 rounded-lg text-sm md:col-span-2">
-          <div class="md:col-span-2 flex gap-2">
-            <button type="submit" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-6 py-2.5 rounded-lg text-xs uppercase transition cursor-pointer">Save Bearer</button>
-            <button type="button" onclick="resetBearerForm()" class="bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-lg text-xs uppercase cursor-pointer">Cancel</button>
+          <div class="md:col-span-4 flex gap-4 mt-2">
+            <button type="submit" id="media-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Member</button>
+            <button type="button" onclick="resetMediaForm()" id="media-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
           </div>
         </form>
       </div>
-      <!-- LIVE PREVIEW BOX -->
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 flex flex-col items-center justify-center text-center">
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3">Live Website Preview</span>
-        <div id="preview-bearer" class="bg-white border border-gray-100 p-6 flex flex-col items-center shadow-md rounded-xl w-full max-w-xs">
-          <img id="prev-bearer-img" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-slate-900 mb-4 shadow-md" />
-          <h4 id="prev-bearer-name" class="font-bold text-lg text-slate-900 text-center leading-tight">Student Name</h4>
-          <p id="prev-bearer-pos" class="text-xs text-amber-600 font-black uppercase tracking-widest mt-2 text-center">Position</p>
+
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Media Team Members</h3>
+        <div id="admin-media-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <p class="text-gray-500 text-sm">Loading media team...</p>
         </div>
       </div>
-      <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-        <h3 class="font-bold text-slate-900 mb-4 uppercase text-sm">Existing Office Bearers</h3>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead><tr class="bg-slate-100 border-b"><th class="p-3">Name</th><th class="p-3">Position</th><th class="p-3">Order</th><th class="p-3 text-right">Actions</th></tr></thead>
-          <tbody id="bearers-table-body"><tr><td colspan="4" class="p-4 text-center text-gray-500">Loading...</td></tr></tbody>
-        </table>
+    </div>
+
+    <!-- PLACEHOLDERS FOR OTHER ADMIN SECTIONS (Office Bearers, Faculty, etc.) -->
+    <div id="section-bearers" class="admin-section hidden space-y-6">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Office Bearers Management</h3>
+        <p class="text-gray-400 text-sm">Manage core association office bearers through Supabase table `office_bearers`.</p>
+      </div>
+    </div>
+    
+    <div id="section-exec" class="admin-section hidden space-y-6">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Executive Committee Management</h3>
+        <p class="text-gray-400 text-sm">Manage executive committee members through Supabase table `executive_committee`.</p>
       </div>
     </div>
 
-    <!-- TAB 2: EXECUTIVE COMMITTEE -->
-    <div id="section-exec" class="admin-section grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
-      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 id="exec-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Add / Edit Executive Member</h2>
-        <form id="exec-form" onsubmit="saveExec(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="exec-id">
-          <input type="text" id="exec-name" placeholder="Full Name" oninput="updatePreview('exec')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="exec-position" placeholder="Position / Batch" oninput="updatePreview('exec')" required class="border p-2.5 rounded-lg text-sm">
-          <div class="flex gap-2 items-center md:col-span-2">
-            <input type="text" id="exec-photo" placeholder="Photo URL" required class="border p-2.5 rounded-lg text-sm flex-grow" oninput="updatePreview('exec')">
-            <input type="file" id="exec-file" accept="image/*" class="text-xs" onchange="uploadFileToSupabase('exec-file', 'exec-photo', 'exec')">
-          </div>
-          <input type="number" id="exec-order" placeholder="Display Order" value="1" class="border p-2.5 rounded-lg text-sm md:col-span-2">
-          <div class="md:col-span-2 flex gap-2">
-            <button type="submit" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-6 py-2.5 rounded-lg text-xs uppercase transition cursor-pointer">Save Executive</button>
-            <button type="button" onclick="resetExecForm()" class="bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-lg text-xs uppercase cursor-pointer">Cancel</button>
-          </div>
-        </form>
-      </div>
-      <!-- LIVE PREVIEW BOX -->
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 flex flex-col items-center justify-center text-center">
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3">Live Website Preview</span>
-        <div id="preview-exec" class="bg-white border border-gray-100 p-6 flex flex-col items-center shadow-md rounded-xl w-full max-w-xs">
-          <img id="prev-exec-img" src="https://via.placeholder.com/150" class="w-20 h-20 rounded-full object-cover border-3 border-slate-900 mb-3 shadow-md" />
-          <h4 id="prev-exec-name" class="font-bold text-base text-slate-900 text-center leading-tight">Member Name</h4>
-          <p id="prev-exec-pos" class="text-xs text-amber-600 font-bold uppercase tracking-widest mt-1 text-center">Position</p>
-        </div>
-      </div>
-      <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-        <h3 class="font-bold text-slate-900 mb-4 uppercase text-sm">Existing Executive Members</h3>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead><tr class="bg-slate-100 border-b"><th class="p-3">Name</th><th class="p-3">Position</th><th class="p-3">Order</th><th class="p-3 text-right">Actions</th></tr></thead>
-          <tbody id="exec-table-body"><tr><td colspan="4" class="p-4 text-center text-gray-500">Loading...</td></tr></tbody>
-        </table>
+    <div id="section-faculty" class="admin-section hidden space-y-6">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Faculty Management</h3>
+        <p class="text-gray-400 text-sm">Manage faculty profiles through Supabase table `faculty`.</p>
       </div>
     </div>
 
-    <!-- TAB 3: FACULTY -->
-    <div id="section-faculty" class="admin-section grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
-      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 id="faculty-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Add / Edit Faculty Member</h2>
-        <form id="faculty-form" onsubmit="saveFaculty(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="faculty-id">
-          <input type="text" id="faculty-name" placeholder="Faculty Name" oninput="updatePreview('faculty')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="faculty-role" placeholder="Role / Designation" oninput="updatePreview('faculty')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="faculty-email" placeholder="Email Address" class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="faculty-phone" placeholder="Phone Number" class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="faculty-qualification" placeholder="Qualification" class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="faculty-experience" placeholder="Professional Experience" class="border p-2.5 rounded-lg text-sm">
-          <textarea id="faculty-interests" placeholder="Areas of Interest" rows="2" class="border p-2.5 rounded-lg text-sm md:col-span-2"></textarea>
-          <textarea id="faculty-publications" placeholder="Publications Details" rows="3" class="border p-2.5 rounded-lg text-sm md:col-span-2"></textarea>
-          <div class="flex gap-2 items-center md:col-span-2">
-            <input type="text" id="faculty-photo" placeholder="Photo URL" required class="border p-2.5 rounded-lg text-sm flex-grow" oninput="updatePreview('faculty')">
-            <input type="file" id="faculty-file" accept="image/*" class="text-xs" onchange="uploadFileToSupabase('faculty-file', 'faculty-photo', 'faculty')">
-          </div>
-          <input type="number" id="faculty-order" placeholder="Display Order" value="1" class="border p-2.5 rounded-lg text-sm md:col-span-2">
-          <div class="md:col-span-2 flex gap-2">
-            <button type="submit" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-6 py-2.5 rounded-lg text-xs uppercase transition cursor-pointer">Save Faculty</button>
-            <button type="button" onclick="resetFacultyForm()" class="bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-lg text-xs uppercase cursor-pointer">Cancel</button>
-          </div>
-        </form>
-      </div>
-      <!-- LIVE PREVIEW BOX -->
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 flex flex-col items-center justify-center text-center">
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3">Live Website Preview</span>
-        <div id="preview-faculty" class="border border-gray-200 bg-[#FDFBF7] rounded-xl shadow-md p-6 w-full max-w-xs flex flex-col items-center text-center">
-          <img id="prev-faculty-img" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md mb-3" />
-          <h4 id="prev-faculty-name" class="font-serif font-bold text-lg text-slate-900 leading-tight mb-1">Faculty Name</h4>
-          <p id="prev-faculty-role" class="text-[10px] text-gray-600 font-bold uppercase tracking-wider mt-1">Role</p>
-        </div>
-      </div>
-      <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-        <h3 class="font-bold text-slate-900 mb-4 uppercase text-sm">Existing Faculty</h3>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead><tr class="bg-slate-100 border-b"><th class="p-3">Name</th><th class="p-3">Role</th><th class="p-3">Order</th><th class="p-3 text-right">Actions</th></tr></thead>
-          <tbody id="faculty-table-body"><tr><td colspan="4" class="p-4 text-center text-gray-500">Loading...</td></tr></tbody>
-        </table>
+    <div id="section-events" class="admin-section hidden space-y-6">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Events Management</h3>
+        <p class="text-gray-400 text-sm">Manage posters and events through Supabase table `main_events`.</p>
       </div>
     </div>
 
-    <!-- TAB 4: MEETING MINUTES -->
-    <div id="section-minutes" class="admin-section space-y-6 hidden">
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 id="minutes-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Upload / Edit Meeting Minutes</h2>
-        <form id="minutes-form" onsubmit="saveMinutes(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="minutes-id">
-          <input type="text" id="minutes-title" placeholder="Meeting Title" required class="border p-2.5 rounded-lg text-sm md:col-span-2">
-          <input type="text" id="minutes-date" placeholder="Meeting Date (e.g., 30th July 2026)" required class="border p-2.5 rounded-lg text-sm">
-          <div class="flex gap-2 items-center">
-            <input type="text" id="minutes-url" placeholder="PDF File URL" required class="border p-2.5 rounded-lg text-sm flex-grow">
-            <input type="file" id="minutes-file" accept="application/pdf" class="text-xs" onchange="uploadFileToSupabase('minutes-file', 'minutes-url')">
-          </div>
-          <textarea id="minutes-text" placeholder="Agenda / Summary Details" rows="3" class="border p-2.5 rounded-lg text-sm md:col-span-2"></textarea>
-          <div class="md:col-span-2 flex gap-2">
-            <button type="submit" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-6 py-2.5 rounded-lg text-xs uppercase transition cursor-pointer">Save Minutes Record</button>
-            <button type="button" onclick="resetMinutesForm()" class="bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-lg text-xs uppercase cursor-pointer">Cancel</button>
-          </div>
-        </form>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-        <h3 class="font-bold text-slate-900 mb-4 uppercase text-sm">Uploaded Meeting Minutes</h3>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead><tr class="bg-slate-100 border-b"><th class="p-3">Date</th><th class="p-3">Title</th><th class="p-3">PDF Link</th><th class="p-3 text-right">Actions</th></tr></thead>
-          <tbody id="minutes-table-body"><tr><td colspan="4" class="p-4 text-center text-gray-500">Loading...</td></tr></tbody>
-        </table>
+    <div id="section-toppers" class="admin-section hidden space-y-6">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Academic Toppers Management</h3>
+        <p class="text-gray-400 text-sm">Manage achievers through Supabase table `toppers`.</p>
       </div>
     </div>
 
-    <!-- TAB 5: EVENTS -->
-    <div id="section-events" class="admin-section grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
-      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 id="event-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Add / Edit Association Event & Poster</h2>
-        <form id="event-form" onsubmit="saveEvent(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="event-id">
-          <input type="text" id="event-title" placeholder="Event Title" oninput="updatePreview('event')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="event-date-str" placeholder="Event Date / Subtitle" oninput="updatePreview('event')" class="border p-2.5 rounded-lg text-sm">
-          <div class="flex gap-2 items-center md:col-span-2">
-            <input type="text" id="event-image" placeholder="Cover Image URL / Poster URL" oninput="updatePreview('event')" required class="border p-2.5 rounded-lg text-sm flex-grow">
-            <input type="file" id="event-file" accept="image/*" class="text-xs" onchange="uploadFileToSupabase('event-file', 'event-image', 'event')">
-          </div>
-          <textarea id="event-desc" placeholder="Event Description" oninput="updatePreview('event')" rows="3" class="border p-2.5 rounded-lg text-sm md:col-span-2"></textarea>
-          <div class="md:col-span-2 flex gap-2">
-            <button type="submit" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-6 py-2.5 rounded-lg text-xs uppercase transition cursor-pointer">Save Event</button>
-            <button type="button" onclick="resetEventForm()" class="bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-lg text-xs uppercase cursor-pointer">Cancel</button>
-          </div>
-        </form>
-      </div>
-      <!-- LIVE PREVIEW BOX -->
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 flex flex-col items-center justify-center text-center">
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3">Live Website Preview</span>
-        <div id="preview-event" class="bg-white shadow-md border border-gray-200 rounded-xl overflow-hidden w-full max-w-xs flex flex-col">
-          <div class="bg-slate-950 h-48 flex items-center justify-center overflow-hidden p-2">
-            <img id="prev-event-img" src="https://via.placeholder.com/150?text=Event+Poster" class="max-h-full max-w-full object-contain" />
-          </div>
-          <div class="p-4 text-left">
-            <span id="prev-event-date" class="text-[10px] font-bold text-amber-600 uppercase mb-1 block">Date</span>
-            <h4 id="prev-event-title" class="font-bold text-base text-slate-900 leading-tight mb-1">Event Title</h4>
-            <p id="prev-event-desc" class="text-xs text-gray-600 line-clamp-2">Description preview...</p>
-          </div>
-        </div>
-      </div>
-      <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-        <h3 class="font-bold text-slate-900 mb-4 uppercase text-sm">Existing Events</h3>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead><tr class="bg-slate-100 border-b"><th class="p-3">Title</th><th class="p-3">Event Date</th><th class="p-3 text-right">Actions</th></tr></thead>
-          <tbody id="events-table-body"><tr><td colspan="3" class="p-4 text-center text-gray-500">Loading...</td></tr></tbody>
-        </table>
+    <div id="section-alumni" class="admin-section hidden space-y-6">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Notable Alumni Management</h3>
+        <p class="text-gray-400 text-sm">Manage alumni records through Supabase table `alumni`.</p>
       </div>
     </div>
 
-    <!-- TAB 6: TOPPERS -->
-    <div id="section-toppers" class="admin-section grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
-      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 id="topper-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Add / Edit Academic Topper</h2>
-        <form id="topper-form" onsubmit="saveTopper(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="topper-id">
-          <input type="text" id="topper-name" placeholder="Student Name" oninput="updatePreview('topper')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="topper-semester" placeholder="Semester" oninput="updatePreview('topper')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="topper-cgpa" placeholder="CGPA" oninput="updatePreview('topper')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="topper-year" placeholder="Academic Year" oninput="updatePreview('topper')" required class="border p-2.5 rounded-lg text-sm">
-          <div class="flex gap-2 items-center md:col-span-2">
-            <input type="text" id="topper-photo" placeholder="Photo URL" oninput="updatePreview('topper')" required class="border p-2.5 rounded-lg text-sm flex-grow">
-            <input type="file" id="topper-file" accept="image/*" class="text-xs" onchange="uploadFileToSupabase('topper-file', 'topper-photo', 'topper')">
-          </div>
-          <div class="md:col-span-2 flex gap-2">
-            <button type="submit" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-6 py-2.5 rounded-lg text-xs uppercase transition cursor-pointer">Save Topper</button>
-            <button type="button" onclick="resetTopperForm()" class="bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-lg text-xs uppercase cursor-pointer">Cancel</button>
-          </div>
-        </form>
-      </div>
-      <!-- LIVE PREVIEW BOX -->
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 flex flex-col items-center justify-center text-center">
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3">Live Website Preview</span>
-        <div id="preview-topper" class="bg-white border border-gray-200 p-5 text-center relative shadow-md rounded-xl w-full max-w-xs">
-          <div id="prev-topper-year" class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">2025-26</div>
-          <img id="prev-topper-img" src="https://via.placeholder.com/150" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
-          <h4 id="prev-topper-name" class="font-bold text-sm text-slate-900">Student Name</h4>
-          <p id="prev-topper-sem" class="text-xs text-gray-500 mt-1">Semester</p>
-          <div class="mt-3 bg-slate-50 py-1.5 rounded-lg text-xs text-slate-700 border border-gray-100 font-bold">CGPA: <span id="prev-topper-cgpa" class="text-amber-600">0.0</span></div>
-        </div>
-      </div>
-      <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-        <h3 class="font-bold text-slate-900 mb-4 uppercase text-sm">Existing Toppers</h3>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead><tr class="bg-slate-100 border-b"><th class="p-3">Name</th><th class="p-3">Semester</th><th class="p-3">CGPA</th><th class="p-3 text-right">Actions</th></tr></thead>
-          <tbody id="toppers-table-body"><tr><td colspan="4" class="p-4 text-center text-gray-500">Loading...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- TAB 7: ALUMNI -->
-    <div id="section-alumni" class="admin-section grid grid-cols-1 lg:grid-cols-3 gap-6 hidden">
-      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 id="alumni-form-title" class="text-xl font-bold text-slate-900 mb-4 uppercase">Add / Edit Notable Alumni</h2>
-        <form id="alumni-form" onsubmit="saveAlumni(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="alumni-id">
-          <input type="text" id="alumni-name" placeholder="Full Name" oninput="updatePreview('alumni')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="alumni-job" placeholder="Job Designation" oninput="updatePreview('alumni')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="text" id="alumni-company" placeholder="Company Name" oninput="updatePreview('alumni')" required class="border p-2.5 rounded-lg text-sm">
-          <input type="number" id="alumni-year" placeholder="Graduation Year" oninput="updatePreview('alumni')" required class="border p-2.5 rounded-lg text-sm">
-          <div class="flex gap-2 items-center md:col-span-2">
-            <input type="text" id="alumni-photo" placeholder="Photo URL" oninput="updatePreview('alumni')" required class="border p-2.5 rounded-lg text-sm flex-grow">
-            <input type="file" id="alumni-file" accept="image/*" class="text-xs" onchange="uploadFileToSupabase('alumni-file', 'alumni-photo', 'alumni')">
-          </div>
-          <div class="md:col-span-2 flex gap-2">
-            <button type="submit" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white font-bold px-6 py-2.5 rounded-lg text-xs uppercase transition cursor-pointer">Save Alumni</button>
-            <button type="button" onclick="resetAlumniForm()" class="bg-gray-200 text-gray-700 font-bold px-4 py-2.5 rounded-lg text-xs uppercase cursor-pointer">Cancel</button>
-          </div>
-        </form>
-      </div>
-      <!-- LIVE PREVIEW BOX -->
-      <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 flex flex-col items-center justify-center text-center">
-        <span class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-3">Live Website Preview</span>
-        <div id="preview-alumni" class="bg-white p-5 border border-gray-200 rounded-xl shadow-md w-full max-w-xs flex flex-col items-center text-center">
-          <img id="prev-alumni-img" src="https://via.placeholder.com/150" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500 mb-3 shadow-sm" />
-          <h4 id="prev-alumni-name" class="font-bold text-slate-900 text-base">Full Name</h4>
-          <p id="prev-alumni-job" class="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">Designation</p>
-          <p class="text-xs text-gray-600 font-semibold mt-1">@ <span id="prev-alumni-company">Company</span></p>
-        </div>
-      </div>
-      <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-        <h3 class="font-bold text-slate-900 mb-4 uppercase text-sm">Existing Alumni</h3>
-        <table class="w-full text-left border-collapse text-sm">
-          <thead><tr class="bg-slate-100 border-b"><th class="p-3">Name</th><th class="p-3">Designation</th><th class="p-3">Batch</th><th class="p-3 text-right">Actions</th></tr></thead>
-          <tbody id="alumni-table-body"><tr><td colspan="4" class="p-4 text-center text-gray-500">No alumni found.</td></tr></tbody>
-        </table>
+    <div id="section-minutes" class="admin-section hidden space-y-6">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Meeting Minutes Management</h3>
+        <p class="text-gray-400 text-sm">Manage records and documents through Supabase table `meeting_minutes`.</p>
       </div>
     </div>
 
@@ -338,461 +119,189 @@
 
   <!-- SCRIPTS -->
   <script>
-    function switchAdminTab(tab, event) {
-      document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
-      document.querySelectorAll('.admin-tab-btn').forEach(b => {
-        b.classList.remove('active', 'border-amber-500', 'text-slate-900');
-        b.classList.add('border-transparent', 'text-gray-500');
+    const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // AUTH CHECK ON LOAD
+    async function checkAdminAuth() {
+      const { data: { session } } = await db.auth.getSession();
+      if (!session) {
+        window.location.href = "index.html";
+      }
+    }
+    checkAdminAuth();
+
+    function logoutAdmin() {
+      db.auth.signOut().then(() => { window.location.href = "index.html"; });
+    }
+
+    // TAB SWITCHING
+    function switchAdminTab(tabName) {
+      document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.classList.remove('bg-amber-500', 'text-slate-950');
+        btn.classList.add('bg-slate-800', 'text-gray-300');
       });
-      document.getElementById('section-' + tab).classList.remove('hidden');
-      event.currentTarget.classList.add('active', 'border-amber-500', 'text-slate-900');
-      event.currentTarget.classList.remove('border-transparent', 'text-gray-500');
+      
+      document.getElementById('section-' + tabName).classList.remove('hidden');
+      event.currentTarget.classList.remove('bg-slate-800', 'text-gray-300');
+      event.currentTarget.classList.add('bg-amber-500', 'text-slate-950');
+
+      if (tabName === 'media') fetchAdminMedia();
     }
 
-    async function handleLogout() {
-      await db.auth.signOut();
-      window.location.href = "index.html";
+    // LIGHTNING-FAST CLIENT-SIDE IMAGE COMPRESSOR
+    async function compressImage(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height *= MAX_WIDTH / width;
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width *= MAX_HEIGHT / height;
+                height = MAX_HEIGHT;
+              }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            canvas.toBlob((blob) => {
+              resolve(new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              }));
+            }, 'image/jpeg', 0.75); // 75% quality for lightning-fast uploads
+          };
+        };
+      });
     }
 
-    // AUTO UPLOAD TO SUPABASE ON FILE SELECT
-    async function uploadFileToSupabase(fileInputId, targetUrlInputId, previewType = null) {
-      const fileInput = document.getElementById(fileInputId);
-      const file = fileInput.files[0];
-      if (!file) return;
-
-      const fileName = Date.now() + '-' + file.name.replace(/\s+/g, '_');
-      const { data, error } = await db.storage.from('posters').upload(fileName, file);
-
-      if (error) {
-        alert('Upload failed: ' + error.message + '. Ensure your Supabase bucket is named "posters" and public.');
+    // MEDIA TEAM CRUD LOGIC
+    async function fetchAdminMedia() {
+      const container = document.getElementById('admin-media-list');
+      const { data, error } = await db.from('media_team').select('*').order('display_order', { ascending: true });
+      
+      if (error || !data || data.length === 0) {
+        container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No media team members found.</p>";
         return;
       }
 
-      const { data: publicURLData } = db.storage.from('posters').getPublicUrl(fileName);
-      document.getElementById(targetUrlInputId).value = publicURLData.publicUrl;
+      container.innerHTML = data.map(m => `
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <img src="${m.photo_url || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded-full object-cover border border-amber-500" />
+            <div>
+              <h4 class="font-bold text-sm text-white">${m.name}</h4>
+              <p class="text-[10px] text-amber-400 uppercase tracking-widest">${m.position}</p>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick='editMedia(${JSON.stringify(m)})' class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteMedia(${m.id})' class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function handleMediaSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('media-id').value;
+      const name = document.getElementById('media-name').value;
+      const position = document.getElementById('media-position').value;
+      const display_order = parseInt(document.getElementById('media-order').value);
+      const fileInput = document.getElementById('media-file');
       
-      if(previewType) {
-        updatePreview(previewType);
+      let photo_url = id ? document.getElementById('media-submit-btn').dataset.currentPhoto || '' : '';
+
+      if (fileInput.files.length > 0) {
+        const submitBtn = document.getElementById('media-submit-btn');
+        submitBtn.innerText = "Compressing & Uploading...";
+        submitBtn.disabled = true;
+
+        const compressedFile = await compressImage(fileInput.files[0]);
+        const fileName = `media_${Date.now()}_${Math.random().toString(36.substring(2, 7))}.jpg`;
+        
+        const { data, error } = await db.storage.from('images').upload(fileName, compressedFile);
+        
+        if (error) {
+          alert('Upload failed: ' + error.message);
+          submitBtn.innerText = "Save Member";
+          submitBtn.disabled = false;
+          return;
+        }
+
+        const { data: urlData } = db.storage.from('images').getPublicUrl(fileName);
+        photo_url = urlData.publicUrl;
       }
-      alert('File uploaded and linked successfully!');
+
+      const payload = { name, position, display_order, photo_url };
+      
+      let res;
+      if (id) {
+        res = await db.from('media_team').update(payload).eq('id', id);
+      } else {
+        res = await db.from('media_team').insert([payload]);
+      }
+
+      if (res.error) {
+        alert('Error saving record: ' + res.error.message);
+      } else {
+        resetMediaForm();
+        fetchAdminMedia();
+      }
+      
+      document.getElementById('media-submit-btn').innerText = "Save Member";
+      document.getElementById('media-submit-btn').disabled = false;
     }
 
-    // LIVE PREVIEW UPDATER
-    function updatePreview(type) {
-      if(type === 'bearer') {
-        document.getElementById('prev-bearer-name').innerText = document.getElementById('bearer-name').value || 'Student Name';
-        document.getElementById('prev-bearer-pos').innerText = document.getElementById('bearer-position').value || 'Position';
-        const img = document.getElementById('bearer-photo').value;
-        if(img) document.getElementById('prev-bearer-img').src = img;
-      } else if(type === 'exec') {
-        document.getElementById('prev-exec-name').innerText = document.getElementById('exec-name').value || 'Member Name';
-        document.getElementById('prev-exec-pos').innerText = document.getElementById('exec-position').value || 'Position';
-        const img = document.getElementById('exec-photo').value;
-        if(img) document.getElementById('prev-exec-img').src = img;
-      } else if(type === 'faculty') {
-        document.getElementById('prev-faculty-name').innerText = document.getElementById('faculty-name').value || 'Faculty Name';
-        document.getElementById('prev-faculty-role').innerText = document.getElementById('faculty-role').value || 'Role';
-        const img = document.getElementById('faculty-photo').value;
-        if(img) document.getElementById('prev-faculty-img').src = img;
-      } else if(type === 'event') {
-        document.getElementById('prev-event-title').innerText = document.getElementById('event-title').value || 'Event Title';
-        document.getElementById('prev-event-date').innerText = document.getElementById('event-date-str').value || 'Date';
-        document.getElementById('prev-event-desc').innerText = document.getElementById('event-desc').value || 'Description preview...';
-        const img = document.getElementById('event-image').value;
-        if(img) document.getElementById('prev-event-img').src = img;
-      } else if(type === 'topper') {
-        document.getElementById('prev-topper-name').innerText = document.getElementById('topper-name').value || 'Student Name';
-        document.getElementById('prev-topper-sem').innerText = document.getElementById('topper-semester').value || 'Semester';
-        document.getElementById('prev-topper-cgpa').innerText = document.getElementById('topper-cgpa').value || '0.0';
-        document.getElementById('prev-topper-year').innerText = document.getElementById('topper-year').value || '2025-26';
-        const img = document.getElementById('topper-photo').value;
-        if(img) document.getElementById('prev-topper-img').src = img;
-      } else if(type === 'alumni') {
-        document.getElementById('prev-alumni-name').innerText = document.getElementById('alumni-name').value || 'Full Name';
-        document.getElementById('prev-alumni-job').innerText = document.getElementById('alumni-job').value || 'Designation';
-        document.getElementById('prev-alumni-company').innerText = document.getElementById('alumni-company').value || 'Company';
-        const img = document.getElementById('alumni-photo').value;
-        if(img) document.getElementById('prev-alumni-img').src = img;
-      }
+    function editMedia(m) {
+      document.getElementById('media-id').value = m.id;
+      document.getElementById('media-name').value = m.name;
+      document.getElementById('media-position').value = m.position;
+      document.getElementById('media-order').value = m.display_order;
+      document.getElementById('media-submit-btn').dataset.currentPhoto = m.photo_url;
+      document.getElementById('media-form-title').innerText = "Edit Media Team Member: " + m.name;
+      document.getElementById('media-submit-btn').innerText = "Update Member";
+      document.getElementById('media-cancel-btn').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- OFFICE BEARERS CRUD ---
-    async function fetchBearers() {
-      const { data } = await db.from('office_bearers').select('*').order('display_order');
-      const tbody = document.getElementById('bearers-table-body');
-      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No records found.</td></tr>`; return; }
-      tbody.innerHTML = data.map(b => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3 flex items-center gap-3"><img src="${b.photo_url || ''}" onerror="this.src='https://via.placeholder.com/150'" class="w-8 h-8 rounded-full object-cover"> ${b.name}</td>
-          <td class="p-3 text-amber-600 font-bold">${b.position}</td>
-          <td class="p-3">${b.display_order}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick='editBearer(${JSON.stringify(b).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick="deleteBearer(${b.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Delete</button>
-          </td>
-        </tr>
-      `).join('');
+    function resetMediaForm() {
+      document.getElementById('media-form').reset();
+      document.getElementById('media-id').value = "";
+      document.getElementById('media-form-title').innerText = "Add New Media Team Member";
+      document.getElementById('media-submit-btn').innerText = "Save Member";
+      document.getElementById('media-cancel-btn').classList.add('hidden');
     }
-    async function saveBearer(e) {
-      e.preventDefault();
-      const id = document.getElementById('bearer-id').value;
-      const payload = {
-        name: document.getElementById('bearer-name').value,
-        position: document.getElementById('bearer-position').value,
-        photo_url: document.getElementById('bearer-photo').value,
-        display_order: parseInt(document.getElementById('bearer-order').value) || 1
-      };
-      let error = id ? (await db.from('office_bearers').update(payload).eq('id', id)).error : (await db.from('office_bearers').insert([payload])).error;
-      if (error) { alert('Error: ' + error.message); return; }
-      alert('Saved successfully!');
-      resetBearerForm(); fetchBearers();
-    }
-    function editBearer(b) {
-      document.getElementById('bearer-id').value = b.id;
-      document.getElementById('bearer-name').value = b.name;
-      document.getElementById('bearer-position').value = b.position;
-      document.getElementById('bearer-photo').value = b.photo_url;
-      document.getElementById('bearer-order').value = b.display_order;
-      document.getElementById('bearer-form-title').innerText = "Edit Office Bearer";
-      updatePreview('bearer');
-    }
-    function resetBearerForm() {
-      document.getElementById('bearer-form').reset();
-      document.getElementById('bearer-id').value = '';
-      document.getElementById('bearer-form-title').innerText = "Add / Edit Office Bearer";
-    }
-    async function deleteBearer(id) {
-      if(confirm('Are you sure you want to delete this record?')) {
-        await db.from('office_bearers').delete().eq('id', id);
-        fetchBearers();
+
+    async function deleteMedia(id) {
+      if (confirm("Are you sure you want to delete this member?")) {
+        const { error } = await db.from('media_team').delete().eq('id', id);
+        if (error) alert('Error deleting: ' + error.message);
+        else fetchAdminMedia();
       }
     }
 
-    // --- EXECUTIVE COMMITTEE CRUD ---
-    async function fetchExec() {
-      const { data } = await db.from('executive_committee').select('*').order('display_order');
-      const tbody = document.getElementById('exec-table-body');
-      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No records found.</td></tr>`; return; }
-      tbody.innerHTML = data.map(m => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3 flex items-center gap-3"><img src="${m.photo_url || ''}" onerror="this.src='https://via.placeholder.com/150'" class="w-8 h-8 rounded-full object-cover"> ${m.name}</td>
-          <td class="p-3 text-amber-600 font-bold">${m.position}</td>
-          <td class="p-3">${m.display_order}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick='editExec(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick="deleteExec(${m.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-    async function saveExec(e) {
-      e.preventDefault();
-      const id = document.getElementById('exec-id').value;
-      const payload = {
-        name: document.getElementById('exec-name').value,
-        position: document.getElementById('exec-position').value,
-        photo_url: document.getElementById('exec-photo').value,
-        display_order: parseInt(document.getElementById('exec-order').value) || 1
-      };
-      let error = id ? (await db.from('executive_committee').update(payload).eq('id', id)).error : (await db.from('executive_committee').insert([payload])).error;
-      if (error) { alert('Error: ' + error.message); return; }
-      alert('Saved successfully!');
-      resetExecForm(); fetchExec();
-    }
-    function editExec(m) {
-      document.getElementById('exec-id').value = m.id;
-      document.getElementById('exec-name').value = m.name;
-      document.getElementById('exec-position').value = m.position;
-      document.getElementById('exec-photo').value = m.photo_url;
-      document.getElementById('exec-order').value = m.display_order;
-      document.getElementById('exec-form-title').innerText = "Edit Executive Member";
-      updatePreview('exec');
-    }
-    function resetExecForm() {
-      document.getElementById('exec-form').reset();
-      document.getElementById('exec-id').value = '';
-      document.getElementById('exec-form-title').innerText = "Add / Edit Executive Member";
-    }
-    async function deleteExec(id) {
-      if(confirm('Are you sure you want to delete this member?')) {
-        await db.from('executive_committee').delete().eq('id', id);
-        fetchExec();
-      }
-    }
-
-    // --- FACULTY CRUD ---
-    async function fetchFacultyAdmin() {
-      const { data } = await db.from('faculty').select('*').order('display_order');
-      const tbody = document.getElementById('faculty-table-body');
-      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No records found.</td></tr>`; return; }
-      tbody.innerHTML = data.map(f => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3 flex items-center gap-3"><img src="${f.photo_url || ''}" onerror="this.src='https://via.placeholder.com/150'" class="w-8 h-8 rounded-full object-cover"> ${f.name}</td>
-          <td class="p-3 text-amber-600 font-bold">${f.role}</td>
-          <td class="p-3">${f.display_order}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick='editFaculty(${JSON.stringify(f).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick="deleteFaculty(${f.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-    async function saveFaculty(e) {
-      e.preventDefault();
-      const id = document.getElementById('faculty-id').value;
-      const payload = {
-        name: document.getElementById('faculty-name').value,
-        role: document.getElementById('faculty-role').value,
-        email: document.getElementById('faculty-email').value,
-        phone: document.getElementById('faculty-phone').value,
-        qualification: document.getElementById('faculty-qualification').value,
-        experience: document.getElementById('faculty-experience').value,
-        areas_of_interest: document.getElementById('faculty-interests').value,
-        publications: document.getElementById('faculty-publications').value,
-        photo_url: document.getElementById('faculty-photo').value,
-        display_order: parseInt(document.getElementById('faculty-order').value) || 1
-      };
-      let error = id ? (await db.from('faculty').update(payload).eq('id', id)).error : (await db.from('faculty').insert([payload])).error;
-      if (error) { alert('Error: ' + error.message); return; }
-      alert('Saved successfully!');
-      resetFacultyForm(); fetchFacultyAdmin();
-    }
-    function editFaculty(f) {
-      document.getElementById('faculty-id').value = f.id;
-      document.getElementById('faculty-name').value = f.name;
-      document.getElementById('faculty-role').value = f.role;
-      document.getElementById('faculty-email').value = f.email || '';
-      document.getElementById('faculty-phone').value = f.phone || '';
-      document.getElementById('faculty-qualification').value = f.qualification || '';
-      document.getElementById('faculty-experience').value = f.experience || '';
-      document.getElementById('faculty-interests').value = f.areas_of_interest || '';
-      document.getElementById('faculty-publications').value = f.publications || '';
-      document.getElementById('faculty-photo').value = f.photo_url || '';
-      document.getElementById('faculty-order').value = f.display_order || 1;
-      document.getElementById('faculty-form-title').innerText = "Edit Faculty Member";
-      updatePreview('faculty');
-    }
-    function resetFacultyForm() {
-      document.getElementById('faculty-form').reset();
-      document.getElementById('faculty-id').value = '';
-      document.getElementById('faculty-form-title').innerText = "Add / Edit Faculty Member";
-    }
-    async function deleteFaculty(id) {
-      if(confirm('Are you sure you want to delete this faculty member?')) {
-        await db.from('faculty').delete().eq('id', id);
-        fetchFacultyAdmin();
-      }
-    }
-
-    // --- MEETING MINUTES CRUD ---
-    async function fetchMinutesAdmin() {
-      const { data } = await db.from('meeting_minutes').select('*').order('meeting_date', { ascending: false });
-      const tbody = document.getElementById('minutes-table-body');
-      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No meeting minutes uploaded yet.</td></tr>`; return; }
-      tbody.innerHTML = data.map(m => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3 font-bold">${m.meeting_date}</td>
-          <td class="p-3">${m.title}</td>
-          <td class="p-3"><a href="${m.document_url}" target="_blank" class="text-blue-600 underline text-xs">View PDF</a></td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick='editMinutes(${JSON.stringify(m).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick="deleteMinutes(${m.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-    async function saveMinutes(e) {
-      e.preventDefault();
-      const id = document.getElementById('minutes-id').value;
-      const payload = {
-        title: document.getElementById('minutes-title').value,
-        meeting_date: document.getElementById('minutes-date').value,
-        document_url: document.getElementById('minutes-url').value,
-        minutes_text: document.getElementById('minutes-text').value
-      };
-      let error = id ? (await db.from('meeting_minutes').update(payload).eq('id', id)).error : (await db.from('meeting_minutes').insert([payload])).error;
-      if (error) { alert('Error: ' + error.message); return; }
-      alert('Saved successfully!');
-      resetMinutesForm(); fetchMinutesAdmin();
-    }
-    function editMinutes(m) {
-      document.getElementById('minutes-id').value = m.id;
-      document.getElementById('minutes-title').value = m.title;
-      document.getElementById('minutes-date').value = m.meeting_date;
-      document.getElementById('minutes-url').value = m.document_url;
-      document.getElementById('minutes-text').value = m.minutes_text || '';
-      document.getElementById('minutes-form-title').innerText = "Edit Meeting Minutes";
-    }
-    function resetMinutesForm() {
-      document.getElementById('minutes-form').reset();
-      document.getElementById('minutes-id').value = '';
-      document.getElementById('minutes-form-title').innerText = "Upload / Edit Meeting Minutes";
-    }
-    async function deleteMinutes(id) {
-      if(confirm('Are you sure you want to delete this meeting minutes record?')) {
-        await db.from('meeting_minutes').delete().eq('id', id);
-        fetchMinutesAdmin();
-      }
-    }
-
-    // --- EVENTS CRUD ---
-    async function fetchEventsAdmin() {
-      const { data } = await db.from('main_events').select('*').order('created_at', { ascending: false });
-      const tbody = document.getElementById('events-table-body');
-      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-gray-500">No events found.</td></tr>`; return; }
-      tbody.innerHTML = data.map(ev => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3 font-bold">${ev.title}</td>
-          <td class="p-3 text-amber-600 font-semibold">${ev.event_date || 'Not Specified'}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick='editEvent(${JSON.stringify(ev).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick="deleteEvent(${ev.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-    async function saveEvent(e) {
-      e.preventDefault();
-      const id = document.getElementById('event-id').value;
-      const payload = {
-        title: document.getElementById('event-title').value,
-        event_date: document.getElementById('event-date-str').value,
-        cover_image_url: document.getElementById('event-image').value,
-        description: document.getElementById('event-desc').value
-      };
-      let error = id ? (await db.from('main_events').update(payload).eq('id', id)).error : (await db.from('main_events').insert([payload])).error;
-      if (error) { alert('Error: ' + error.message); return; }
-      alert('Saved successfully!');
-      resetEventForm(); fetchEventsAdmin();
-    }
-    function editEvent(ev) {
-      document.getElementById('event-id').value = ev.id;
-      document.getElementById('event-title').value = ev.title;
-      document.getElementById('event-date-str').value = ev.event_date || '';
-      document.getElementById('event-image').value = ev.cover_image_url || '';
-      document.getElementById('event-desc').value = ev.description || '';
-      document.getElementById('event-form-title').innerText = "Edit Association Event";
-      updatePreview('event');
-    }
-    function resetEventForm() {
-      document.getElementById('event-form').reset();
-      document.getElementById('event-id').value = '';
-      document.getElementById('event-form-title').innerText = "Add / Edit Association Event & Poster";
-    }
-    async function deleteEvent(id) {
-      if(confirm('Are you sure you want to delete this event?')) {
-        await db.from('main_events').delete().eq('id', id);
-        fetchEventsAdmin();
-      }
-    }
-
-    // --- TOPPERS CRUD ---
-    async function fetchToppersAdmin() {
-      const { data } = await db.from('toppers').select('*').order('created_at', { ascending: false });
-      const tbody = document.getElementById('toppers-table-body');
-      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No toppers found.</td></tr>`; return; }
-      tbody.innerHTML = data.map(t => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3 flex items-center gap-3"><img src="${t.photo_url || ''}" onerror="this.src='https://via.placeholder.com/150'" class="w-8 h-8 rounded-full object-cover"> ${t.student_name}</td>
-          <td class="p-3">${t.semester}</td>
-          <td class="p-3 font-bold text-amber-600">${t.cgpa}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick='editTopper(${JSON.stringify(t).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick="deleteTopper(${t.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-    async function saveTopper(e) {
-      e.preventDefault();
-      const id = document.getElementById('topper-id').value;
-      const payload = {
-        student_name: document.getElementById('topper-name').value,
-        semester: document.getElementById('topper-semester').value,
-        cgpa: parseFloat(document.getElementById('topper-cgpa').value) || 0,
-        academic_year: document.getElementById('topper-year').value,
-        photo_url: document.getElementById('topper-photo').value
-      };
-      let error = id ? (await db.from('toppers').update(payload).eq('id', id)).error : (await db.from('toppers').insert([payload])).error;
-      if (error) { alert('Error: ' + error.message); return; }
-      alert('Saved successfully!');
-      resetTopperForm(); fetchToppersAdmin();
-    }
-    function editTopper(t) {
-      document.getElementById('topper-id').value = t.id;
-      document.getElementById('topper-name').value = t.student_name;
-      document.getElementById('topper-semester').value = t.semester;
-      document.getElementById('topper-cgpa').value = t.cgpa;
-      document.getElementById('topper-year').value = t.academic_year;
-      document.getElementById('topper-photo').value = t.photo_url;
-      document.getElementById('topper-form-title').innerText = "Edit Academic Topper";
-      updatePreview('topper');
-    }
-    function resetTopperForm() {
-      document.getElementById('topper-form').reset();
-      document.getElementById('topper-id').value = '';
-      document.getElementById('topper-form-title').innerText = "Add / Edit Academic Topper";
-    }
-    async function deleteTopper(id) {
-      if(confirm('Are you sure you want to delete this topper?')) {
-        await db.from('toppers').delete().eq('id', id);
-        fetchToppersAdmin();
-      }
-    }
-
-    // --- ALUMNI CRUD ---
-    async function fetchAlumniAdmin() {
-      const { data } = await db.from('alumni').select('*').order('graduation_year', { ascending: false });
-      const tbody = document.getElementById('alumni-table-body');
-      if(!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-gray-500">No alumni found.</td></tr>`; return; }
-      tbody.innerHTML = data.map(a => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3 flex items-center gap-3"><img src="${a.photo_url || ''}" onerror="this.src='https://via.placeholder.com/150'" class="w-8 h-8 rounded-full object-cover"> ${a.full_name}</td>
-          <td class="p-3 text-amber-600">${a.job_designation} @ ${a.company_name}</td>
-          <td class="p-3">${a.graduation_year}</td>
-          <td class="p-3 text-right space-x-2">
-            <button onclick='editAlumni(${JSON.stringify(a).replace(/'/g, "&#39;")})' class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick="deleteAlumni(${a.id})" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-bold cursor-pointer">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-    async function saveAlumni(e) {
-      e.preventDefault();
-      const id = document.getElementById('alumni-id').value;
-      const payload = {
-        full_name: document.getElementById('alumni-name').value,
-        job_designation: document.getElementById('alumni-job').value,
-        company_name: document.getElementById('alumni-company').value,
-        graduation_year: parseInt(document.getElementById('alumni-year').value) || 2024,
-        photo_url: document.getElementById('alumni-photo').value
-      };
-      let error = id ? (await db.from('alumni').update(payload).eq('id', id)).error : (await db.from('alumni').insert([payload])).error;
-      if (error) { alert('Error: ' + error.message); return; }
-      alert('Saved successfully!');
-      resetAlumniForm(); fetchAlumniAdmin();
-    }
-    function editAlumni(a) {
-      document.getElementById('alumni-id').value = a.id;
-      document.getElementById('alumni-name').value = a.full_name;
-      document.getElementById('alumni-job').value = a.job_designation;
-      document.getElementById('alumni-company').value = a.company_name;
-      document.getElementById('alumni-year').value = a.graduation_year;
-      document.getElementById('alumni-photo').value = a.photo_url || '';
-      document.getElementById('alumni-form-title').innerText = "Edit Notable Alumni";
-      updatePreview('alumni');
-    }
-    function resetAlumniForm() {
-      document.getElementById('alumni-form').reset();
-      document.getElementById('alumni-id').value = '';
-      document.getElementById('alumni-form-title').innerText = "Add / Edit Notable Alumni";
-    }
-    async function deleteAlumni(id) {
-      if(confirm('Are you sure you want to delete this alumni record?')) {
-        await db.from('alumni').delete().eq('id', id);
-        fetchAlumniAdmin();
-      }
-    }
+    // Initial load
+    fetchAdminMedia();
   </script>
 </body>
 </html>
