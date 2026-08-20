@@ -45,7 +45,7 @@
           <input type="hidden" id="media-id">
           <input type="text" id="media-name" placeholder="Full Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
           <input type="text" id="media-position" placeholder="Position (e.g., Media Head)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="number" id="media-order" placeholder="Display Order (1, 2...)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+          <input type="number" id="media-order" placeholder="Display Order (1, 2...)" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
           <div class="flex flex-col gap-1">
             <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo (Optimized & Fast)</label>
             <input type="file" id="media-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
@@ -65,7 +65,7 @@
       </div>
     </div>
 
-    <!-- PLACEHOLDERS FOR OTHER ADMIN SECTIONS (Office Bearers, Faculty, etc.) -->
+    <!-- PLACEHOLDERS FOR OTHER ADMIN SECTIONS -->
     <div id="section-bearers" class="admin-section hidden space-y-6">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Office Bearers Management</h3>
@@ -123,6 +123,8 @@
     const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    let currentEditingPhotoUrl = "";
+
     // AUTH CHECK ON LOAD
     async function checkAdminAuth() {
       const { data: { session } } = await db.auth.getSession();
@@ -151,9 +153,13 @@
       if (tabName === 'media') fetchAdminMedia();
     }
 
-    // LIGHTNING-FAST CLIENT-SIDE IMAGE COMPRESSOR
+    // LIGHTNING-FAST CLIENT-SIDE IMAGE COMPRESSOR WITH SAFE FALLBACK
     async function compressImage(file) {
       return new Promise((resolve) => {
+        if (!file || !file.type.startsWith('image/')) {
+          resolve(file);
+          return;
+        }
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = (event) => {
@@ -184,13 +190,19 @@
             ctx.drawImage(img, 0, 0, width, height);
 
             canvas.toBlob((blob) => {
+              if (!blob) {
+                resolve(file);
+                return;
+              }
               resolve(new File([blob], file.name, {
                 type: 'image/jpeg',
                 lastModified: Date.now()
               }));
-            }, 'image/jpeg', 0.75); // 75% quality for lightning-fast uploads
+            }, 'image/jpeg', 0.75);
           };
+          img.onerror = () => resolve(file);
         };
+        reader.onerror = () => resolve(file);
       });
     }
 
@@ -223,21 +235,22 @@
 
     async function handleMediaSubmit(e) {
       e.preventDefault();
+      const submitBtn = document.getElementById('media-submit-btn');
       const id = document.getElementById('media-id').value;
       const name = document.getElementById('media-name').value;
       const position = document.getElementById('media-position').value;
-      const display_order = parseInt(document.getElementById('media-order').value);
+      const display_order = parseInt(document.getElementById('media-order').value) || 1;
       const fileInput = document.getElementById('media-file');
       
-      let photo_url = id ? document.getElementById('media-submit-btn').dataset.currentPhoto || '' : '';
+      submitBtn.innerText = "Processing...";
+      submitBtn.disabled = true;
+
+      let photo_url = currentEditingPhotoUrl;
 
       if (fileInput.files.length > 0) {
-        const submitBtn = document.getElementById('media-submit-btn');
         submitBtn.innerText = "Compressing & Uploading...";
-        submitBtn.disabled = true;
-
         const compressedFile = await compressImage(fileInput.files[0]);
-        const fileName = `media_${Date.now()}_${Math.random().toString(36.substring(2, 7))}.jpg`;
+        const fileName = `media_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.jpg`;
         
         const { data, error } = await db.storage.from('images').upload(fileName, compressedFile);
         
@@ -268,16 +281,16 @@
         fetchAdminMedia();
       }
       
-      document.getElementById('media-submit-btn').innerText = "Save Member";
-      document.getElementById('media-submit-btn').disabled = false;
+      submitBtn.innerText = "Save Member";
+      submitBtn.disabled = false;
     }
 
     function editMedia(m) {
       document.getElementById('media-id').value = m.id;
       document.getElementById('media-name').value = m.name;
       document.getElementById('media-position').value = m.position;
-      document.getElementById('media-order').value = m.display_order;
-      document.getElementById('media-submit-btn').dataset.currentPhoto = m.photo_url;
+      document.getElementById('media-order').value = m.display_order || 1;
+      currentEditingPhotoUrl = m.photo_url || "";
       document.getElementById('media-form-title').innerText = "Edit Media Team Member: " + m.name;
       document.getElementById('media-submit-btn').innerText = "Update Member";
       document.getElementById('media-cancel-btn').classList.remove('hidden');
@@ -287,6 +300,7 @@
     function resetMediaForm() {
       document.getElementById('media-form').reset();
       document.getElementById('media-id').value = "";
+      currentEditingPhotoUrl = "";
       document.getElementById('media-form-title').innerText = "Add New Media Team Member";
       document.getElementById('media-submit-btn').innerText = "Save Member";
       document.getElementById('media-cancel-btn').classList.add('hidden');
