@@ -353,6 +353,23 @@
       `).join('');
     }
 
+    async function fetchMediaTeam() {
+      const container = document.getElementById('media-container');
+      if (!container) return;
+      const { data, error } = await db.from('media_team').select('*').order('display_order', { ascending: true });
+      if (error || !data || data.length === 0) { 
+        container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-4'>Media team members will be updated soon.</p>"; 
+        return; 
+      }
+      container.innerHTML = data.map(m => `
+        <div class="bg-white border border-gray-100 p-6 flex flex-col items-center shadow-md rounded-xl creative-card">
+          <img src="${m.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-20 h-20 rounded-full object-cover border-3 border-slate-900 mb-3 shadow-md" />
+          <h4 class="font-bold text-base text-slate-900 text-center leading-tight">${m.name}</h4>
+          <p class="text-xs text-amber-600 font-bold uppercase tracking-widest mt-1 text-center">${m.position || 'Media Team Member'}</p>
+        </div>
+      `).join('');
+    }
+
     async function fetchFaculty() {
       const container = document.getElementById('faculty-container');
       if (!container) return;
@@ -442,7 +459,7 @@
       container.innerHTML = data.map(t => `
         <div class="bg-white border border-gray-200 p-5 text-center relative shadow-md hover:shadow-xl transition rounded-xl creative-card">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year}</div>
-          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
+          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
           <h4 class="font-bold text-sm text-slate-900">${t.student_name}</h4>
           <p class="text-xs text-gray-500 mt-1">${t.semester || 'Achiever'}</p>
           <div class="mt-3 bg-slate-50 py-1.5 rounded-lg text-xs text-slate-700 border border-gray-100 font-bold">CGPA: <span class="text-amber-600">${t.cgpa || 'N/A'}</span></div>
@@ -468,7 +485,7 @@
       container.innerHTML = data.map(person => `
         <div class="bg-white p-5 border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition creative-card flex flex-col items-center text-center relative">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">Batch ${person.graduation_year || ''}</div>
-          <img src="${person.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
+          <img src="${person.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
           <h4 class="font-bold text-slate-900 text-base">${person.full_name}</h4>
           <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">${person.job_designation}</p>
           <p class="text-xs text-gray-600 font-semibold mt-1">${person.company_name ? '@ ' + person.company_name : ''}</p>
@@ -534,6 +551,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       fetchOfficeBearers();
       fetchExecutiveCommittee();
+      fetchMediaTeam();
       fetchFaculty();
       fetchMeetingMinutes();
       fetchEvents();
@@ -728,6 +746,15 @@
           </h3>
           <div id="exec-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div class="col-span-full text-center text-gray-500 py-6">Loading executive committee members...</div>
+          </div>
+        </div>
+
+        <div class="pt-4">
+          <h3 class="text-xl font-black text-slate-900 uppercase tracking-wide mb-6 border-b-2 border-amber-500 pb-2 flex items-center gap-2">
+            <span class="w-3 h-3 bg-amber-500 rounded-full inline-block"></span> Media Team
+          </h3>
+          <div id="media-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="col-span-full text-center text-gray-500 py-6">Loading media team members...</div>
           </div>
         </div>
       </div>
