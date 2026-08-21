@@ -322,9 +322,10 @@
       document.getElementById('main-tabs-section').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // SMART DATE FORMATTER (Converts YYYY-MM-DD to DD-MM-YYYY)
+    // EXACT DD-MM-YYYY FORMATTER (Displays whatever format/string entered)
     function formatDate(dateStr) {
       if (!dateStr) return '';
+      // If entered as YYYY-MM-DD by accident, convert to DD-MM-YYYY
       const parts = dateStr.split(/[-/]/);
       if (parts.length === 3 && parts[0].length === 4) {
         return `${parts[2].padStart(2, '0')}-${parts[1].padStart(2, '0')}-${parts[0]}`;
