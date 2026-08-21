@@ -322,9 +322,15 @@
       document.getElementById('main-tabs-section').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // EXACT PASS-THROUGH (Displays whatever text string is entered verbatim)
+    // AUTO DATE FORMATTER (Converts old YYYY-MM-DD to DD-MM-YYYY automatically)
     function formatDate(dateStr) {
-      return dateStr || '';
+      if (!dateStr) return '';
+      const trimmed = dateStr.trim();
+      const parts = trimmed.split(/[-/]/);
+      if (parts.length === 3 && parts[0].length === 4) {
+        return `${parts[2].padStart(2, '0')}-${parts[1].padStart(2, '0')}-${parts[0]}`;
+      }
+      return trimmed;
     }
 
     async function fetchOfficeBearers() {
