@@ -322,6 +322,16 @@
       document.getElementById('main-tabs-section').scrollIntoView({ behavior: 'smooth' });
     }
 
+    // SMART DATE FORMATTER (Converts YYYY-MM-DD to DD-MM-YYYY)
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split(/[-/]/);
+      if (parts.length === 3 && parts[0].length === 4) {
+        return `${parts[2].padStart(2, '0')}-${parts[1].padStart(2, '0')}-${parts[0]}`;
+      }
+      return dateStr;
+    }
+
     async function fetchOfficeBearers() {
       const container = document.getElementById('bearers-container');
       if (!container) return;
@@ -410,7 +420,7 @@
       container.innerHTML = data.map(m => `
         <div class="bg-white p-4 border border-gray-200 rounded-xl shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md transition">
           <div>
-            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">${m.meeting_date}</span>
+            <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">${formatDate(m.meeting_date)}</span>
             <h4 class="font-bold text-slate-900 mt-2">${m.title}</h4>
             ${m.minutes_text ? `<p class="text-sm text-gray-600 mt-1 line-clamp-2">${m.minutes_text}</p>` : ''}
           </div>
@@ -433,7 +443,7 @@
             <img src="${ev.cover_image_url || ''}" class="max-h-full max-w-full object-contain drop-shadow-md" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Event+Poster'"/>
           </div>
           <div class="p-5 flex flex-col flex-grow">
-            ${ev.event_date ? `<span class="text-[10px] font-bold text-amber-600 uppercase mb-1">${ev.event_date}</span>` : ''}
+            ${ev.event_date ? `<span class="text-[10px] font-bold text-amber-600 uppercase mb-1">${formatDate(ev.event_date)}</span>` : ''}
             <h4 class="font-bold text-lg text-slate-900 mb-2 leading-tight">${ev.title}</h4>
             <p class="text-sm text-gray-600 line-clamp-2">${ev.description || ''}</p>
           </div>
@@ -459,7 +469,7 @@
       container.innerHTML = data.map(t => `
         <div class="bg-white border border-gray-200 p-5 text-center relative shadow-md hover:shadow-xl transition rounded-xl creative-card">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year}</div>
-          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
+          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
           <h4 class="font-bold text-sm text-slate-900">${t.student_name}</h4>
           <p class="text-xs text-gray-500 mt-1">${t.semester || 'Achiever'}</p>
           <div class="mt-3 bg-slate-50 py-1.5 rounded-lg text-xs text-slate-700 border border-gray-100 font-bold"><span class="text-amber-600">${t.cgpa || 'N/A'}</span></div>
@@ -485,7 +495,7 @@
       container.innerHTML = data.map(person => `
         <div class="bg-white p-5 border border-gray-200 rounded-xl shadow-md hover:shadow-xl transition creative-card flex flex-col items-center text-center relative">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">Batch ${person.graduation_year || ''}</div>
-          <img src="${person.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
+          <img src="${person.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
           <h4 class="font-bold text-slate-900 text-base">${person.full_name}</h4>
           <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest mt-1">${person.job_designation}</p>
           <p class="text-xs text-gray-600 font-semibold mt-1">${person.company_name ? '@ ' + person.company_name : ''}</p>
@@ -527,7 +537,7 @@
 
     function openEventModal(ev) {
       document.getElementById('modal-event-title').innerText = ev.title;
-      document.getElementById('modal-event-date').innerText = ev.event_date || '';
+      document.getElementById('modal-event-date').innerText = formatDate(ev.event_date) || '';
       
       // Auto-Linker: Detects links and makes them clickable
       let descText = ev.description || '';
