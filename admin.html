@@ -175,7 +175,7 @@
       </div>
     </div>
 
-    <!-- 5. EVENTS SECTION (DD-MM-YYYY) -->
+    <!-- 5. EVENTS SECTION -->
     <div id="section-events" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="event-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add New Event Poster</h3>
@@ -281,7 +281,7 @@
       </div>
     </div>
 
-    <!-- 8. MEETING MINUTES SECTION (DD-MM-YYYY) -->
+    <!-- 8. MEETING MINUTES SECTION -->
     <div id="section-minutes" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="minute-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Meeting Minutes</h3>
@@ -320,6 +320,7 @@
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let editUrls = { media: "", bearer: "", exec: "", faculty: "", event: "", topper: "", alumni: "" };
+    let eventsDataMap = {};
 
     // AUTH CHECK ON LOAD
     async function checkAdminAuth() {
@@ -664,11 +665,15 @@
       document.getElementById('faculty-cancel-btn').classList.add('hidden');
     }
 
-    // 5. EVENTS CRUD
+    // 5. EVENTS CRUD (FIXED ID MAPPING FOR TITLES WITH HYPHENS)
     async function fetchAdminEvents() {
       const container = document.getElementById('admin-event-list');
       const { data, error } = await db.from('main_events').select('*').order('created_at', { ascending: false });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No events found.</p>"; return; }
+      
+      eventsDataMap = {};
+      data.forEach(ev => { eventsDataMap[ev.id] = ev; });
+
       container.innerHTML = data.map(ev => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -676,7 +681,7 @@
             <div><h4 class="font-bold text-sm text-white">${ev.title}</h4><p class="text-[10px] text-amber-400">${ev.event_date || ''}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editEvent(${JSON.stringify(ev)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editEvent(${ev.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("main_events", ${ev.id}, fetchAdminEvents)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -698,7 +703,9 @@
       else { resetEventForm(); fetchAdminEvents(); }
     }
 
-    function editEvent(ev) {
+    function editEvent(id) {
+      const ev = eventsDataMap[id];
+      if (!ev) return;
       document.getElementById('event-id').value = ev.id;
       document.getElementById('event-title').value = ev.title;
       document.getElementById('event-date').value = ev.event_date || "";
@@ -900,7 +907,7 @@
       document.getElementById('preview-minute-text').innerText = min.minutes_text || "";
       document.getElementById('minute-form-title').innerText = "Edit Minutes: " + min.title;
       document.getElementById('minute-submit-btn').innerText = "Update Minutes";
-      document.getElementById('minute-cancel-btn').classList.add('hidden');
+      document.getElementById('minute-cancel-btn').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
