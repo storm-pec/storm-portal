@@ -8,11 +8,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  
+
   <style>
-    .creative-card {
-      transition: all 0.3s ease;
-    }
+    .storm-font { font-family: 'Orbitron', sans-serif; }
+    .creative-card { transition: all 0.3s ease; }
     .creative-card:hover {
       transform: translateY(-4px);
       box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.12);
@@ -21,125 +20,117 @@
 </head>
 <body class="bg-slate-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
 
-  <!-- HEADER -->
+  <!-- TOP BLACK BAR -->
+  <div class="bg-[#121212] text-white text-xs py-2 px-6 flex flex-col md:flex-row justify-between items-center border-b border-gray-800 gap-2">
+    <div class="flex items-center gap-3 flex-wrap justify-center md:justify-start">
+      <img src="pec-logo.png" alt="PEC Logo" class="h-8 md:h-10 w-auto object-contain" onerror="this.onerror=null; this.style.display='none'">
+      <a href="https://www.cepathanapuram.ac.in/" target="_blank" class="hover:underline font-semibold tracking-wide whitespace-nowrap">College of Engineering Pathanapuram</a>
+      <a href="https://www.cepathanapuram.ac.in/me" target="_blank" class="hover:underline text-gray-400 hidden md:inline whitespace-nowrap">| Department of Mechanical Engineering</a>
+    </div>
+    <div class="flex items-center gap-4 shrink-0">
+      <span class="font-medium whitespace-nowrap tracking-wider">ISO 9001:2015 CERTIFIED</span>
+      <span class="bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full text-[10px]">PEC</span>
+    </div>
+  </div>
+
+  <!-- HEADER NAVIGATION -->
   <header class="bg-white sticky top-0 z-50 shadow-md border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <h1 class="font-black text-lg text-slate-900 tracking-wider uppercase">Academic Excellence</h1>
+    <div class="w-full px-4 md:px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-4 h-full">
+        <img src="storm-logo.png" alt="STORM Logo" class="h-10 md:h-12 w-auto object-contain shrink-0 self-center" onerror="this.onerror=null; this.style.display='none'">
+        <div class="flex flex-col w-max items-center">
+          <div class="storm-font font-black text-2xl md:text-3xl text-slate-900 uppercase flex items-center justify-center gap-1 tracking-wide">
+            <span>S.</span><span>T.</span>
+            <img src="storm-o-icon-black.png" alt="O" class="h-[1.4em] w-auto object-contain inline-block align-middle" onerror="this.onerror=null; this.style.display='none'">
+            <span>.R.</span><span>M</span>
+          </div>
+          <div class="w-full mt-0.5 border-t-2 border-amber-500 pt-1 text-[9px] md:text-[11px] text-slate-800 font-black uppercase whitespace-nowrap tracking-wider text-center">
+            DEPARTMENT OF MECHANICAL ENGINEERING
+          </div>
+        </div>
       </div>
-      <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700 uppercase tracking-wide">
+
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-gray-700 uppercase tracking-wide shrink-0 pr-2">
         <a href="index.html" class="hover:text-amber-600 transition">Home</a>
         <a href="faculty.html" class="hover:text-amber-600 transition">Faculty</a>
         <a href="toppers.html" class="text-amber-600 font-bold transition">Academic Excellence</a>
         <a href="alumni.html" class="hover:text-amber-600 transition">Notable Alumni</a>
         <a href="events.html" class="hover:text-amber-600 transition">Events</a>
-        <button onclick="openAdminLogin()" class="bg-slate-900 hover:bg-amber-500 hover:text-slate-950 text-white px-5 py-2 rounded-full font-bold transition shadow-md text-xs cursor-pointer tracking-wider">ADMIN</button>
       </nav>
     </div>
   </header>
 
   <!-- MAIN CONTENT -->
-  <main class="max-w-7xl mx-auto px-6 py-12 flex-grow w-full">
-    
-    <!-- Title Section with Professional Emoji (Fixed Broken Image) -->
+  <main class="max-w-7xl mx-auto px-6 py-16 flex-grow w-full">
     <div class="text-center mb-12">
-      <h2 class="text-3xl font-black text-slate-900 uppercase tracking-wide flex items-center justify-center gap-3">
-        <span class="text-3xl">🏆</span> ACADEMIC TOPPERS
+      <h2 class="text-3xl md:text-4xl font-black text-slate-900 uppercase tracking-wide flex items-center justify-center gap-2">
+        <span>🏆</span> ACADEMIC EXCELLENCE
       </h2>
-      <div class="w-20 h-1.5 bg-amber-500 mx-auto mt-2 rounded-full"></div>
-      <p class="text-gray-600 text-sm mt-3">Honoring the academic brilliance and top-performing students of Mechanical Engineering.</p>
+      <div class="w-24 h-1.5 bg-amber-500 mx-auto mt-3 rounded-full"></div>
+      <p class="text-gray-600 text-sm mt-3 uppercase tracking-wider font-semibold">Honoring our top-performing mechanical engineering achievers</p>
     </div>
 
-    <!-- Toppers Grid -->
-    <div id="toppers-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-      <div class="col-span-full text-center text-gray-500 py-12">Loading academic toppers...</div>
+    <div id="full-toppers-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div class="col-span-full text-center text-gray-500 py-12">Loading academic achievers...</div>
     </div>
   </main>
 
-  <!-- SECURE ADMIN LOGIN MODAL -->
-  <div id="admin-login-modal" class="fixed inset-0 bg-slate-950/90 z-[99999] hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
-    <div class="bg-slate-900 border-2 border-amber-500 p-8 rounded-2xl shadow-[0_0_40px_rgba(245,158,11,0.3)] max-w-sm w-full relative text-center">
-      <button onclick="closeAdminLogin()" class="absolute top-4 right-4 text-gray-500 hover:text-amber-400 font-bold text-xl cursor-pointer">✕</button>
-      <h3 class="storm-font text-amber-400 text-2xl font-black mb-1 tracking-widest">ACCESS</h3>
-      <p class="text-xs text-gray-400 mb-8 uppercase tracking-widest">Authorized Personnel Only</p>
-      
-      <input type="email" id="adminEmail" placeholder="Admin Email" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-4 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
-      <input type="password" id="adminPassword" placeholder="Password" class="w-full bg-slate-950 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm mb-6 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
-      
-      <button onclick="loginAdmin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black tracking-widest uppercase py-3.5 rounded-lg transition shadow-lg cursor-pointer">Authenticate</button>
-      <p id="loginError" class="text-red-500 font-bold text-xs mt-4 hidden"></p>
-    </div>
-  </div>
-
   <!-- FOOTER -->
-  <footer class="bg-[#121212] text-gray-400 py-6 text-center text-xs uppercase tracking-widest border-t-4 border-amber-500 mt-auto">
-    <span>Department of Mechanical Engineering || College of Engineering Pathanapuram</span>
-    <div class="mt-2 text-[10px] text-gray-500">Designed & Developed By <a href="https://share.google/ifivL6bAiou0fFubP" target="_blank" class="text-white font-bold hover:underline">Athul J</a></div>
+  <footer class="bg-[#111111] text-gray-300 pt-16">
+    <div class="max-w-[90rem] mx-auto px-8 lg:px-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-12 w-full">
+        <div class="flex flex-col items-center lg:items-start text-center lg:text-left mx-auto max-w-sm w-full">
+          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-l-2 border-amber-500 pl-3 w-full text-left">STORM ASSOCIATION</h4>
+          <p class="leading-loose text-gray-400 text-sm text-left">The official student body of the Mechanical Engineering Department, College of Engineering Pathanapuram, dedicated to empowering future engineers.</p>
+        </div>
+        <div class="flex flex-col items-center text-center mx-auto max-w-sm w-full">
+          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-b-2 border-amber-500 pb-1">QUICK LINKS</h4>
+          <ul class="space-y-4 text-gray-300 text-sm flex flex-col items-center">
+            <li><a href="index.html" class="hover:text-amber-400 transition flex items-center gap-2"><span class="text-amber-500 font-bold">✓</span> Home</a></li>
+            <li><a href="alumni.html" class="hover:text-amber-400 transition flex items-center gap-2"><span class="text-amber-500 font-bold">✓</span> Notable Alumni</a></li>
+          </ul>
+        </div>
+        <div class="flex flex-col items-center lg:items-end text-center lg:text-right mx-auto max-w-sm w-full">
+          <h4 class="text-white font-black mb-6 tracking-wider uppercase text-sm border-r-2 border-amber-500 pr-3 w-full text-right">CONTACT INFO</h4>
+          <address class="not-italic leading-loose text-gray-400 text-sm uppercase flex flex-col items-end text-right">
+            <p>COLLEGE OF ENGINEERING PATHANAPURAM</p>
+            <p>ELIKKATOOR P.O, PATHANAPURAM, KOLLAM 689696</p>
+            <p class="text-amber-400 font-medium lowercase flex items-center gap-2 mt-2 tracking-wide">
+              instagram: <a href="https://www.instagram.com/storm.pec" target="_blank" class="font-bold hover:text-white transition ml-1">@storm.pec</a> | <a href="https://www.instagram.com/rmx.ofpec/" target="_blank" class="font-bold hover:text-white transition ml-1">@rmx.ofpec</a>
+            </p>
+          </address>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-gray-800 bg-[#0a0a0a] py-6 text-center text-xs text-gray-500 uppercase tracking-widest">
+      <p>COPYRIGHT © ALL RIGHTS RESERVED BY STORM ASSOCIATION | DESIGNED BY ATHUL J</p>
+    </div>
   </footer>
 
-  <!-- SCRIPTS -->
   <script>
     const SUPABASE_URL = "https://qzaeuohpeyuajscgosbs.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // --- ADMIN LOGIN LOGIC ---
-    function openAdminLogin() {
-      document.getElementById('admin-login-modal').classList.remove('hidden');
-    }
-    
-    function closeAdminLogin() {
-      document.getElementById('admin-login-modal').classList.add('hidden');
-      document.getElementById('loginError').classList.add('hidden');
-    }
-
-    async function loginAdmin() {
-      const email = document.getElementById('adminEmail').value;
-      const password = document.getElementById('adminPassword').value;
-      const errorEl = document.getElementById('loginError');
-      
-      errorEl.classList.add('hidden');
-      errorEl.innerText = "Authenticating...";
-      errorEl.classList.remove('hidden', 'text-red-500');
-      errorEl.classList.add('text-amber-500');
-
-      const { data, error } = await db.auth.signInWithPassword({ email, password });
-      
-      if (error) {
-        errorEl.classList.remove('text-amber-500');
-        errorEl.classList.add('text-red-500');
-        errorEl.innerText = "Access Denied: Invalid login credentials";
-      } else {
-        errorEl.classList.remove('text-amber-500', 'text-red-500');
-        errorEl.classList.add('text-green-500');
-        errorEl.innerText = "Access Granted. Redirecting...";
-        setTimeout(() => { window.location.href = "admin.html"; }, 800);
-      }
-    }
-
-    async function fetchToppersDirectory() {
-      const container = document.getElementById('toppers-container');
+    async function fetchAllToppers() {
+      const container = document.getElementById('full-toppers-container');
       const { data, error } = await db.from('toppers').select('*').order('created_at', { ascending: false });
-      
       if (error || !data || data.length === 0) {
         container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-12'>No academic toppers found.</p>";
         return;
       }
-
       container.innerHTML = data.map(t => `
-        <div class="bg-white border border-gray-200 p-6 text-center relative shadow-md rounded-xl creative-card flex flex-col items-center">
+        <div class="bg-white border border-gray-200 p-6 text-center relative shadow-md hover:shadow-xl transition rounded-xl creative-card flex flex-col items-center">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year || ''}</div>
-          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-24 h-24 rounded-full object-cover border-4 border-amber-500 mb-4 shadow-md" />
-          <h4 class="font-bold text-base text-slate-900 leading-tight mb-1">${t.student_name}</h4>
-          <p class="text-xs text-gray-500 uppercase tracking-wide mb-3">${t.semester || ''}</p>
-          <div class="mt-auto w-full bg-slate-50 py-2 rounded-lg text-xs font-bold border border-gray-100 text-slate-700">
-            CGPA: <span class="text-amber-600 font-black">${t.cgpa || 'N/A'}</span>
-          </div>
+          <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-20 h-20 rounded-full object-cover border-3 border-amber-500 mb-4 mt-2 shadow-sm" />
+          <h4 class="font-bold text-base text-slate-900 leading-tight">${t.student_name}</h4>
+          <p class="text-xs text-gray-500 mt-1">${t.semester || 'Achiever'}</p>
+          <div class="mt-4 w-full bg-slate-50 py-2 rounded-lg text-xs text-slate-700 border border-gray-100 font-bold"><span class="text-amber-600">${t.cgpa || 'N/A'}</span></div>
         </div>
       `).join('');
     }
 
-    fetchToppersDirectory();
+    document.addEventListener("DOMContentLoaded", fetchAllToppers);
   </script>
 </body>
 </html>
