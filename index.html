@@ -322,15 +322,9 @@
       document.getElementById('main-tabs-section').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // EXACT DD-MM-YYYY FORMATTER (Displays whatever format/string entered)
+    // EXACT PASS-THROUGH (Displays whatever text string is entered verbatim)
     function formatDate(dateStr) {
-      if (!dateStr) return '';
-      // If entered as YYYY-MM-DD by accident, convert to DD-MM-YYYY
-      const parts = dateStr.split(/[-/]/);
-      if (parts.length === 3 && parts[0].length === 4) {
-        return `${parts[2].padStart(2, '0')}-${parts[1].padStart(2, '0')}-${parts[0]}`;
-      }
-      return dateStr;
+      return dateStr || '';
     }
 
     async function fetchOfficeBearers() {
