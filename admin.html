@@ -211,7 +211,7 @@
       </div>
     </div>
 
-    <!-- 6. TOPPERS SECTION (CGPA / SGPA) -->
+    <!-- 6. TOPPERS SECTION (MANUAL CGPA / SGPA) -->
     <div id="section-toppers" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="topper-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Academic Topper</h3>
@@ -221,7 +221,7 @@
             <input type="text" id="topper-name" placeholder="Student Name" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <input type="text" id="topper-sem" placeholder="Semester (e.g., S4 Mechanical)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <input type="text" id="topper-year" placeholder="Academic Year (e.g., 2025-26)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            <input type="text" id="topper-cgpa" placeholder="CGPA / SGPA (e.g., 9.5 or 8.2 SGPA)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="topper-cgpa" placeholder="Score (e.g., CGPA: 9.5 or SGPA: 8.2)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <div class="flex flex-col gap-1 md:col-span-2">
               <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Student Photo</label>
               <input type="file" id="topper-file" accept="image/*" onchange="previewImage(event, 'preview-topper-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
@@ -236,7 +236,7 @@
             <img id="preview-topper-img" src="https://via.placeholder.com/150" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500 mb-3 shadow-sm" />
             <h4 id="preview-topper-name" class="font-bold text-sm text-white">Student Name</h4>
             <p id="preview-topper-sem" class="text-xs text-gray-400 mt-1">Semester</p>
-            <div class="mt-3 bg-slate-950 py-1.5 px-3 rounded-lg text-xs text-white border border-slate-800 font-bold">CGPA / SGPA: <span id="preview-topper-cgpa" class="text-amber-400">N/A</span></div>
+            <div class="mt-3 bg-slate-950 py-1.5 px-3 rounded-lg text-xs text-white border border-slate-800 font-bold"><span id="preview-topper-cgpa" class="text-amber-400">CGPA / SGPA</span></div>
           </div>
         </div>
       </div>
@@ -375,7 +375,7 @@
       } else if (type === 'topper') {
         document.getElementById('preview-topper-name').innerText = document.getElementById('topper-name').value || "Student Name";
         document.getElementById('preview-topper-sem').innerText = document.getElementById('topper-sem').value || "Semester";
-        document.getElementById('preview-topper-cgpa').innerText = document.getElementById('topper-cgpa').value || "N/A";
+        document.getElementById('preview-topper-cgpa').innerText = document.getElementById('topper-cgpa').value || "CGPA / SGPA";
       } else if (type === 'alumni') {
         document.getElementById('preview-alumni-name').innerText = document.getElementById('alumni-name').value || "Alumni Name";
         document.getElementById('preview-alumni-desig').innerText = document.getElementById('alumni-desig').value || "Designation";
@@ -736,7 +736,7 @@
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <img src="${t.photo_url || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded-full object-cover border border-amber-500" />
-            <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">CGPA / SGPA: ${t.cgpa}</p></div>
+            <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">${t.cgpa}</p></div>
           </div>
           <div class="flex gap-2">
             <button onclick='editTopper(${JSON.stringify(t)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
@@ -771,7 +771,7 @@
       editUrls.topper = t.photo_url || "";
       document.getElementById('preview-topper-name').innerText = t.student_name;
       document.getElementById('preview-topper-sem').innerText = t.semester || "";
-      document.getElementById('preview-topper-cgpa').innerText = t.cgpa || "N/A";
+      document.getElementById('preview-topper-cgpa').innerText = t.cgpa || "CGPA / SGPA";
       if (t.photo_url) document.getElementById('preview-topper-img').src = t.photo_url;
       document.getElementById('topper-form-title').innerText = "Edit Topper: " + t.student_name;
       document.getElementById('topper-submit-btn').innerText = "Update Topper";
@@ -785,7 +785,7 @@
       editUrls.topper = "";
       document.getElementById('preview-topper-name').innerText = "Student Name";
       document.getElementById('preview-topper-sem').innerText = "Semester";
-      document.getElementById('preview-topper-cgpa').innerText = "N/A";
+      document.getElementById('preview-topper-cgpa').innerText = "CGPA / SGPA";
       document.getElementById('preview-topper-img').src = "https://via.placeholder.com/150";
       document.getElementById('topper-form-title').innerText = "Add Academic Topper";
       document.getElementById('topper-submit-btn').innerText = "Save Topper";
