@@ -37,52 +37,36 @@
       <button onclick="switchAdminTab('minutes')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Meeting Minutes</button>
     </div>
 
-    <!-- 1. MEDIA TEAM SECTION WITH LIVE PREVIEW -->
+    <!-- 1. MEDIA TEAM SECTION -->
     <div id="section-media" class="admin-section space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="media-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add New Media Team Member</h3>
-        
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <!-- Form Inputs -->
           <form id="media-form" onsubmit="handleMediaSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
             <input type="hidden" id="media-id">
+            <input type="text" id="media-name" placeholder="Full Name" required oninput="updatePreview('media')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="media-position" placeholder="Position (e.g., Media Head)" required oninput="updatePreview('media')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="number" id="media-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 uppercase font-bold">Full Name</label>
-              <input type="text" id="media-name" placeholder="e.g. Rahul Raj" required oninput="updateMediaPreview()" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 uppercase font-bold">Position / Role</label>
-              <input type="text" id="media-position" placeholder="e.g. Media Head" required oninput="updateMediaPreview()" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 uppercase font-bold">Display Order</label>
-              <input type="number" id="media-order" placeholder="1, 2..." value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo (Instant)</label>
-              <input type="file" id="media-file" accept="image/*" onchange="previewMediaImage(event)" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo</label>
+              <input type="file" id="media-file" accept="image/*" onchange="previewImage(event, 'preview-media-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
             </div>
             <div class="md:col-span-2 flex gap-4 mt-2">
               <button type="submit" id="media-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Member</button>
               <button type="button" onclick="resetMediaForm()" id="media-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
             </div>
           </form>
-
-          <!-- Live Card Preview Box -->
           <div class="bg-slate-900 border-2 border-amber-500/40 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
-            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4">Live Card Preview</span>
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4">Live Preview</span>
             <img id="preview-media-img" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-slate-950 mb-3 shadow-md" />
             <h4 id="preview-media-name" class="font-bold text-base text-white leading-tight">Member Name</h4>
             <p id="preview-media-pos" class="text-xs text-amber-400 font-bold uppercase tracking-wider mt-1">Position</p>
           </div>
         </div>
       </div>
-
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Media Team Members</h3>
-        <div id="admin-media-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <p class="text-gray-500 text-sm">Loading media team...</p>
-        </div>
+        <div id="admin-media-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
       </div>
     </div>
 
@@ -90,20 +74,28 @@
     <div id="section-bearers" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="bearer-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Office Bearer</h3>
-        <form id="bearer-form" onsubmit="handleBearerSubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input type="hidden" id="bearer-id">
-          <input type="text" id="bearer-name" placeholder="Full Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="bearer-position" placeholder="Position (e.g., General Secretary)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="number" id="bearer-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo</label>
-            <input type="file" id="bearer-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="bearer-form" onsubmit="handleBearerSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="bearer-id">
+            <input type="text" id="bearer-name" placeholder="Full Name" required oninput="updatePreview('bearer')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="bearer-position" placeholder="Position (e.g., General Secretary)" required oninput="updatePreview('bearer')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="number" id="bearer-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo</label>
+              <input type="file" id="bearer-file" accept="image/*" onchange="previewImage(event, 'preview-bearer-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="bearer-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Bearer</button>
+              <button type="button" onclick="resetBearerForm()" id="bearer-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4">Live Preview</span>
+            <img id="preview-bearer-img" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-slate-950 mb-3 shadow-md" />
+            <h4 id="preview-bearer-name" class="font-bold text-base text-white leading-tight">Bearer Name</h4>
+            <p id="preview-bearer-pos" class="text-xs text-amber-400 font-bold uppercase tracking-wider mt-1">Position</p>
           </div>
-          <div class="md:col-span-4 flex gap-4 mt-2">
-            <button type="submit" id="bearer-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Bearer</button>
-            <button type="button" onclick="resetBearerForm()" id="bearer-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
-          </div>
-        </form>
+        </div>
       </div>
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Office Bearers</h3>
@@ -115,20 +107,28 @@
     <div id="section-exec" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="exec-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Executive Member</h3>
-        <form id="exec-form" onsubmit="handleExecSubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input type="hidden" id="exec-id">
-          <input type="text" id="exec-name" placeholder="Full Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="exec-position" placeholder="Position / Batch" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="number" id="exec-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo</label>
-            <input type="file" id="exec-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="exec-form" onsubmit="handleExecSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="exec-id">
+            <input type="text" id="exec-name" placeholder="Full Name" required oninput="updatePreview('exec')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="exec-position" placeholder="Position / Batch" required oninput="updatePreview('exec')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="number" id="exec-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <div class="flex flex-col gap-1">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo</label>
+              <input type="file" id="exec-file" accept="image/*" onchange="previewImage(event, 'preview-exec-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="exec-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Member</button>
+              <button type="button" onclick="resetExecForm()" id="exec-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4">Live Preview</span>
+            <img id="preview-exec-img" src="https://via.placeholder.com/150" class="w-20 h-20 rounded-full object-cover border-3 border-slate-950 mb-3 shadow-md" />
+            <h4 id="preview-exec-name" class="font-bold text-base text-white leading-tight">Member Name</h4>
+            <p id="preview-exec-pos" class="text-xs text-amber-400 font-bold uppercase tracking-wider mt-1">Position / Batch</p>
           </div>
-          <div class="md:col-span-4 flex gap-4 mt-2">
-            <button type="submit" id="exec-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Member</button>
-            <button type="button" onclick="resetExecForm()" id="exec-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
-          </div>
-        </form>
+        </div>
       </div>
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Executive Members</h3>
@@ -140,26 +140,34 @@
     <div id="section-faculty" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="faculty-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Faculty Member</h3>
-        <form id="faculty-form" onsubmit="handleFacultySubmit(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <input type="hidden" id="faculty-id">
-          <input type="text" id="faculty-name" placeholder="Full Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="faculty-role" placeholder="Role (e.g., Head of Department)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="faculty-qual" placeholder="Qualification" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="faculty-exp" placeholder="Experience" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="faculty-email" placeholder="Email" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="faculty-phone" placeholder="Phone" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="number" id="faculty-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <textarea id="faculty-interest" placeholder="Areas of Interest" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
-          <textarea id="faculty-pubs" placeholder="Publications" class="md:col-span-3 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo</label>
-            <input type="file" id="faculty-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="faculty-form" onsubmit="handleFacultySubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="faculty-id">
+            <input type="text" id="faculty-name" placeholder="Full Name" required oninput="updatePreview('faculty')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="faculty-role" placeholder="Role (e.g., Head of Department)" required oninput="updatePreview('faculty')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="faculty-qual" placeholder="Qualification" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="faculty-exp" placeholder="Experience" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="faculty-email" placeholder="Email" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="faculty-phone" placeholder="Phone" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="number" id="faculty-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <textarea id="faculty-interest" placeholder="Areas of Interest" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
+            <textarea id="faculty-pubs" placeholder="Publications" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
+            <div class="flex flex-col gap-1 md:col-span-2">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Photo</label>
+              <input type="file" id="faculty-file" accept="image/*" onchange="previewImage(event, 'preview-faculty-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="faculty-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Faculty</button>
+              <button type="button" onclick="resetFacultyForm()" id="faculty-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4">Live Preview</span>
+            <img id="preview-faculty-img" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white mb-3 shadow-md" />
+            <h4 id="preview-faculty-name" class="font-bold text-base text-slate-900 leading-tight bg-slate-100 px-3 py-1 rounded w-full">Faculty Name</h4>
+            <p id="preview-faculty-role" class="text-xs text-amber-500 font-bold uppercase tracking-wider mt-2">Role</p>
           </div>
-          <div class="md:col-span-3 flex gap-4 mt-2">
-            <button type="submit" id="faculty-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Faculty</button>
-            <button type="button" onclick="resetFacultyForm()" id="faculty-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
-          </div>
-        </form>
+        </div>
       </div>
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Faculty Directory</h3>
@@ -171,20 +179,31 @@
     <div id="section-events" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="event-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add New Event Poster</h3>
-        <form id="event-form" onsubmit="handleEventSubmit(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <input type="hidden" id="event-id">
-          <input type="text" id="event-title" placeholder="Event Title" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="event-date" placeholder="Event Date (e.g., 20 Aug 2026)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <textarea id="event-desc" placeholder="Event Description / Details" required class="md:col-span-3 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Event Poster Image</label>
-            <input type="file" id="event-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="event-form" onsubmit="handleEventSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="event-id">
+            <input type="text" id="event-title" placeholder="Event Title" required oninput="updatePreview('event')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="event-date" placeholder="Event Date (e.g., 20 Aug 2026)" required oninput="updatePreview('event')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <textarea id="event-desc" placeholder="Event Description / Details" required oninput="updatePreview('event')" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
+            <div class="flex flex-col gap-1 md:col-span-2">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Event Poster Image</label>
+              <input type="file" id="event-file" accept="image/*" onchange="previewImage(event, 'preview-event-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="event-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Event</button>
+              <button type="button" onclick="resetEventForm()" id="event-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-3">Live Preview</span>
+            <div class="bg-slate-950 h-48 w-full flex items-center justify-center overflow-hidden rounded-lg mb-3 border border-slate-800">
+              <img id="preview-event-img" src="https://via.placeholder.com/150?text=Event+Poster" class="max-h-full max-w-full object-contain" />
+            </div>
+            <span id="preview-event-date" class="text-[10px] font-bold text-amber-400 uppercase mb-1">Date</span>
+            <h4 id="preview-event-title" class="font-bold text-sm text-white mb-1">Event Title</h4>
+            <p id="preview-event-desc" class="text-xs text-gray-400 line-clamp-2">Description details...</p>
           </div>
-          <div class="md:col-span-3 flex gap-4 mt-2">
-            <button type="submit" id="event-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Event</button>
-            <button type="button" onclick="resetEventForm()" id="event-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
-          </div>
-        </form>
+        </div>
       </div>
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Events</h3>
@@ -192,25 +211,34 @@
       </div>
     </div>
 
-    <!-- 6. TOPPERS SECTION -->
+    <!-- 6. TOPPERS SECTION (CGPA / SGPA) -->
     <div id="section-toppers" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="topper-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Academic Topper</h3>
-        <form id="topper-form" onsubmit="handleTopperSubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input type="hidden" id="topper-id">
-          <input type="text" id="topper-name" placeholder="Student Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="topper-sem" placeholder="Semester (e.g., S4 Mechanical)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="topper-year" placeholder="Academic Year (e.g., 2025-26)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="topper-cgpa" placeholder="CGPA (e.g., 9.5)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Student Photo</label>
-            <input type="file" id="topper-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="topper-form" onsubmit="handleTopperSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="topper-id">
+            <input type="text" id="topper-name" placeholder="Student Name" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="topper-sem" placeholder="Semester (e.g., S4 Mechanical)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="topper-year" placeholder="Academic Year (e.g., 2025-26)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="topper-cgpa" placeholder="CGPA / SGPA (e.g., 9.5 or 8.2 SGPA)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <div class="flex flex-col gap-1 md:col-span-2">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Student Photo</label>
+              <input type="file" id="topper-file" accept="image/*" onchange="previewImage(event, 'preview-topper-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="topper-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Topper</button>
+              <button type="button" onclick="resetTopperForm()" id="topper-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4">Live Preview</span>
+            <img id="preview-topper-img" src="https://via.placeholder.com/150" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500 mb-3 shadow-sm" />
+            <h4 id="preview-topper-name" class="font-bold text-sm text-white">Student Name</h4>
+            <p id="preview-topper-sem" class="text-xs text-gray-400 mt-1">Semester</p>
+            <div class="mt-3 bg-slate-950 py-1.5 px-3 rounded-lg text-xs text-white border border-slate-800 font-bold">CGPA / SGPA: <span id="preview-topper-cgpa" class="text-amber-400">N/A</span></div>
           </div>
-          <div class="md:col-span-4 flex gap-4 mt-2">
-            <button type="submit" id="topper-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Topper</button>
-            <button type="button" onclick="resetTopperForm()" id="topper-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
-          </div>
-        </form>
+        </div>
       </div>
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Toppers</h3>
@@ -222,21 +250,30 @@
     <div id="section-alumni" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="alumni-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Notable Alumni</h3>
-        <form id="alumni-form" onsubmit="handleAlumniSubmit(event)" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <input type="hidden" id="alumni-id">
-          <input type="text" id="alumni-name" placeholder="Full Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="number" id="alumni-batch" placeholder="Graduation Year (e.g., 2024)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="alumni-desig" placeholder="Job Designation" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="alumni-company" placeholder="Company Name" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <div class="flex flex-col gap-1">
-            <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Alumni Photo</label>
-            <input type="file" id="alumni-file" accept="image/*" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="alumni-form" onsubmit="handleAlumniSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="alumni-id">
+            <input type="text" id="alumni-name" placeholder="Full Name" required oninput="updatePreview('alumni')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="number" id="alumni-batch" placeholder="Graduation Year (e.g., 2024)" required oninput="updatePreview('alumni')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="alumni-desig" placeholder="Job Designation" required oninput="updatePreview('alumni')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="alumni-company" placeholder="Company Name" required oninput="updatePreview('alumni')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <div class="flex flex-col gap-1 md:col-span-2">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Alumni Photo</label>
+              <input type="file" id="alumni-file" accept="image/*" onchange="previewImage(event, 'preview-alumni-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="alumni-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Alumni</button>
+              <button type="button" onclick="resetAlumniForm()" id="alumni-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4">Live Preview</span>
+            <img id="preview-alumni-img" src="https://via.placeholder.com/150" class="w-16 h-16 rounded-full object-cover border-2 border-amber-500 mb-3 shadow-sm" />
+            <h4 id="preview-alumni-name" class="font-bold text-white text-base">Alumni Name</h4>
+            <p id="preview-alumni-desig" class="text-[10px] font-black text-amber-400 uppercase tracking-widest mt-1">Designation</p>
+            <p id="preview-alumni-company" class="text-xs text-gray-400 font-semibold mt-1">Company</p>
           </div>
-          <div class="md:col-span-4 flex gap-4 mt-2">
-            <button type="submit" id="alumni-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Alumni</button>
-            <button type="button" onclick="resetAlumniForm()" id="alumni-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
-          </div>
-        </form>
+        </div>
       </div>
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Alumni</h3>
@@ -248,17 +285,25 @@
     <div id="section-minutes" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="minute-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add Meeting Minutes</h3>
-        <form id="minute-form" onsubmit="handleMinuteSubmit(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input type="hidden" id="minute-id">
-          <input type="text" id="minute-title" placeholder="Meeting Title" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <input type="text" id="minute-date" placeholder="Meeting Date (e.g., 15 Aug 2026)" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <textarea id="minute-text" placeholder="Summary of Minutes" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
-          <input type="text" id="minute-url" placeholder="Document / PDF URL (optional)" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-          <div class="md:col-span-2 flex gap-4 mt-2">
-            <button type="submit" id="minute-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Minutes</button>
-            <button type="button" onclick="resetMinuteForm()" id="minute-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="minute-form" onsubmit="handleMinuteSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="minute-id">
+            <input type="text" id="minute-title" placeholder="Meeting Title" required oninput="updatePreview('minute')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="minute-date" placeholder="Meeting Date (e.g., 15 Aug 2026)" required oninput="updatePreview('minute')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <textarea id="minute-text" placeholder="Summary of Minutes" oninput="updatePreview('minute')" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none"></textarea>
+            <input type="text" id="minute-url" placeholder="Document / PDF URL (optional)" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="minute-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Minutes</button>
+              <button type="button" onclick="resetMinuteForm()" id="minute-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-6 rounded-2xl flex flex-col items-start text-left shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-4 mx-auto">Live Preview</span>
+            <span id="preview-minute-date" class="bg-amber-950 text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">Date</span>
+            <h4 id="preview-minute-title" class="font-bold text-white mt-2 text-base">Meeting Title</h4>
+            <p id="preview-minute-text" class="text-xs text-gray-400 mt-2 line-clamp-3">Summary of minutes description...</p>
           </div>
-        </form>
+        </div>
       </div>
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Meeting Minutes</h3>
@@ -309,35 +354,56 @@
       if (tabName === 'minutes') fetchAdminMinutes();
     }
 
-    // LIVE PREVIEW FUNCTIONS FOR MEDIA TEAM
-    function updateMediaPreview() {
-      const name = document.getElementById('media-name').value.trim();
-      const pos = document.getElementById('media-position').value.trim();
-      document.getElementById('preview-media-name').innerText = name !== "" ? name : "Member Name";
-      document.getElementById('preview-media-pos').innerText = pos !== "" ? pos : "Position";
+    // GENERAL LIVE PREVIEWS
+    function updatePreview(type) {
+      if (type === 'media') {
+        document.getElementById('preview-media-name').innerText = document.getElementById('media-name').value || "Member Name";
+        document.getElementById('preview-media-pos').innerText = document.getElementById('media-position').value || "Position";
+      } else if (type === 'bearer') {
+        document.getElementById('preview-bearer-name').innerText = document.getElementById('bearer-name').value || "Bearer Name";
+        document.getElementById('preview-bearer-pos').innerText = document.getElementById('bearer-position').value || "Position";
+      } else if (type === 'exec') {
+        document.getElementById('preview-exec-name').innerText = document.getElementById('exec-name').value || "Member Name";
+        document.getElementById('preview-exec-pos').innerText = document.getElementById('exec-position').value || "Position / Batch";
+      } else if (type === 'faculty') {
+        document.getElementById('preview-faculty-name').innerText = document.getElementById('faculty-name').value || "Faculty Name";
+        document.getElementById('preview-faculty-role').innerText = document.getElementById('faculty-role').value || "Role";
+      } else if (type === 'event') {
+        document.getElementById('preview-event-title').innerText = document.getElementById('event-title').value || "Event Title";
+        document.getElementById('preview-event-date').innerText = document.getElementById('event-date').value || "Date";
+        document.getElementById('preview-event-desc').innerText = document.getElementById('event-desc').value || "Description details...";
+      } else if (type === 'topper') {
+        document.getElementById('preview-topper-name').innerText = document.getElementById('topper-name').value || "Student Name";
+        document.getElementById('preview-topper-sem').innerText = document.getElementById('topper-sem').value || "Semester";
+        document.getElementById('preview-topper-cgpa').innerText = document.getElementById('topper-cgpa').value || "N/A";
+      } else if (type === 'alumni') {
+        document.getElementById('preview-alumni-name').innerText = document.getElementById('alumni-name').value || "Alumni Name";
+        document.getElementById('preview-alumni-desig').innerText = document.getElementById('alumni-desig').value || "Designation";
+        document.getElementById('preview-alumni-company').innerText = document.getElementById('alumni-company').value ? "@ " + document.getElementById('alumni-company').value : "Company";
+      } else if (type === 'minute') {
+        document.getElementById('preview-minute-title').innerText = document.getElementById('minute-title').value || "Meeting Title";
+        document.getElementById('preview-minute-date').innerText = document.getElementById('minute-date').value || "Date";
+        document.getElementById('preview-minute-text').innerText = document.getElementById('minute-text').value || "Summary of minutes description...";
+      }
     }
 
-    function previewMediaImage(event) {
+    function previewImage(event, previewImgId) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('preview-media-img').src = e.target.result;
-        }
+        reader.onload = function(e) { document.getElementById(previewImgId).src = e.target.result; }
         reader.readAsDataURL(file);
       }
     }
 
-    // FORMER FAST DIRECT UPLOAD METHOD
+    // INSTANT UPLOAD METHOD
     async function uploadFileDirect(fileInputId) {
       const fileInput = document.getElementById(fileInputId);
       if (fileInput.files.length === 0) return null;
       const file = fileInput.files[0];
       const fileName = `img_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${file.name.split('.').pop()}`;
-      
       const { error } = await db.storage.from('images').upload(fileName, file);
       if (error) { alert('Upload failed: ' + error.message); return null; }
-      
       const { data: urlData } = db.storage.from('images').getPublicUrl(fileName);
       return urlData.publicUrl;
     }
@@ -351,10 +417,7 @@
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <img src="${m.photo_url || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded-full object-cover border border-amber-500" />
-            <div>
-              <h4 class="font-bold text-sm text-white">${m.name}</h4>
-              <p class="text-[10px] text-amber-400 uppercase tracking-widest">${m.position}</p>
-            </div>
+            <div><h4 class="font-bold text-sm text-white">${m.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${m.position}</p></div>
           </div>
           <div class="flex gap-2">
             <button onclick='editMedia(${JSON.stringify(m)})' class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
@@ -371,13 +434,10 @@
       const position = document.getElementById('media-position').value;
       const display_order = parseInt(document.getElementById('media-order').value) || 1;
       let photo_url = editUrls.media;
-
       const uploadedUrl = await uploadFileDirect('media-file');
       if (uploadedUrl) photo_url = uploadedUrl;
-
       const payload = { name, position, display_order, photo_url };
       const res = id ? await db.from('media_team').update(payload).eq('id', id) : await db.from('media_team').insert([payload]);
-      
       if (res.error) alert('Error: ' + res.error.message);
       else { resetMediaForm(); fetchAdminMedia(); }
     }
@@ -449,6 +509,9 @@
       document.getElementById('bearer-position').value = b.position;
       document.getElementById('bearer-order').value = b.display_order || 1;
       editUrls.bearer = b.photo_url || "";
+      document.getElementById('preview-bearer-name').innerText = b.name;
+      document.getElementById('preview-bearer-pos').innerText = b.position;
+      if (b.photo_url) document.getElementById('preview-bearer-img').src = b.photo_url;
       document.getElementById('bearer-form-title').innerText = "Edit Bearer: " + b.name;
       document.getElementById('bearer-submit-btn').innerText = "Update Bearer";
       document.getElementById('bearer-cancel-btn').classList.remove('hidden');
@@ -459,6 +522,9 @@
       document.getElementById('bearer-form').reset();
       document.getElementById('bearer-id').value = "";
       editUrls.bearer = "";
+      document.getElementById('preview-bearer-name').innerText = "Bearer Name";
+      document.getElementById('preview-bearer-pos').innerText = "Position";
+      document.getElementById('preview-bearer-img').src = "https://via.placeholder.com/150";
       document.getElementById('bearer-form-title').innerText = "Add Office Bearer";
       document.getElementById('bearer-submit-btn').innerText = "Save Bearer";
       document.getElementById('bearer-cancel-btn').classList.add('hidden');
@@ -504,6 +570,9 @@
       document.getElementById('exec-position').value = m.position || m.year_batch || "";
       document.getElementById('exec-order').value = m.display_order || 1;
       editUrls.exec = m.photo_url || "";
+      document.getElementById('preview-exec-name').innerText = m.name;
+      document.getElementById('preview-exec-pos').innerText = m.position || m.year_batch || "";
+      if (m.photo_url) document.getElementById('preview-exec-img').src = m.photo_url;
       document.getElementById('exec-form-title').innerText = "Edit Member: " + m.name;
       document.getElementById('exec-submit-btn').innerText = "Update Member";
       document.getElementById('exec-cancel-btn').classList.remove('hidden');
@@ -514,6 +583,9 @@
       document.getElementById('exec-form').reset();
       document.getElementById('exec-id').value = "";
       editUrls.exec = "";
+      document.getElementById('preview-exec-name').innerText = "Member Name";
+      document.getElementById('preview-exec-pos').innerText = "Position / Batch";
+      document.getElementById('preview-exec-img').src = "https://via.placeholder.com/150";
       document.getElementById('exec-form-title').innerText = "Add Executive Member";
       document.getElementById('exec-submit-btn').innerText = "Save Member";
       document.getElementById('exec-cancel-btn').classList.add('hidden');
@@ -571,6 +643,9 @@
       document.getElementById('faculty-interest').value = f.areas_of_interest || "";
       document.getElementById('faculty-pubs').value = f.publications || "";
       editUrls.faculty = f.photo_url || "";
+      document.getElementById('preview-faculty-name').innerText = f.name;
+      document.getElementById('preview-faculty-role').innerText = f.role;
+      if (f.photo_url) document.getElementById('preview-faculty-img').src = f.photo_url;
       document.getElementById('faculty-form-title').innerText = "Edit Faculty: " + f.name;
       document.getElementById('faculty-submit-btn').innerText = "Update Faculty";
       document.getElementById('faculty-cancel-btn').classList.remove('hidden');
@@ -581,6 +656,9 @@
       document.getElementById('faculty-form').reset();
       document.getElementById('faculty-id').value = "";
       editUrls.faculty = "";
+      document.getElementById('preview-faculty-name').innerText = "Faculty Name";
+      document.getElementById('preview-faculty-role').innerText = "Role";
+      document.getElementById('preview-faculty-img').src = "https://via.placeholder.com/150";
       document.getElementById('faculty-form-title').innerText = "Add Faculty Member";
       document.getElementById('faculty-submit-btn').innerText = "Save Faculty";
       document.getElementById('faculty-cancel-btn').classList.add('hidden');
@@ -626,6 +704,10 @@
       document.getElementById('event-date').value = ev.event_date || "";
       document.getElementById('event-desc').value = ev.description || "";
       editUrls.event = ev.cover_image_url || "";
+      document.getElementById('preview-event-title').innerText = ev.title;
+      document.getElementById('preview-event-date').innerText = ev.event_date || "";
+      document.getElementById('preview-event-desc').innerText = ev.description || "";
+      if (ev.cover_image_url) document.getElementById('preview-event-img').src = ev.cover_image_url;
       document.getElementById('event-form-title').innerText = "Edit Event: " + ev.title;
       document.getElementById('event-submit-btn').innerText = "Update Event";
       document.getElementById('event-cancel-btn').classList.remove('hidden');
@@ -636,6 +718,10 @@
       document.getElementById('event-form').reset();
       document.getElementById('event-id').value = "";
       editUrls.event = "";
+      document.getElementById('preview-event-title').innerText = "Event Title";
+      document.getElementById('preview-event-date').innerText = "Date";
+      document.getElementById('preview-event-desc').innerText = "Description details...";
+      document.getElementById('preview-event-img').src = "https://via.placeholder.com/150?text=Event+Poster";
       document.getElementById('event-form-title').innerText = "Add New Event Poster";
       document.getElementById('event-submit-btn').innerText = "Save Event";
       document.getElementById('event-cancel-btn').classList.add('hidden');
@@ -650,7 +736,7 @@
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <img src="${t.photo_url || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded-full object-cover border border-amber-500" />
-            <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">CGPA: ${t.cgpa}</p></div>
+            <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">CGPA / SGPA: ${t.cgpa}</p></div>
           </div>
           <div class="flex gap-2">
             <button onclick='editTopper(${JSON.stringify(t)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
@@ -683,6 +769,10 @@
       document.getElementById('topper-year').value = t.academic_year || "";
       document.getElementById('topper-cgpa').value = t.cgpa || "";
       editUrls.topper = t.photo_url || "";
+      document.getElementById('preview-topper-name').innerText = t.student_name;
+      document.getElementById('preview-topper-sem').innerText = t.semester || "";
+      document.getElementById('preview-topper-cgpa').innerText = t.cgpa || "N/A";
+      if (t.photo_url) document.getElementById('preview-topper-img').src = t.photo_url;
       document.getElementById('topper-form-title').innerText = "Edit Topper: " + t.student_name;
       document.getElementById('topper-submit-btn').innerText = "Update Topper";
       document.getElementById('topper-cancel-btn').classList.remove('hidden');
@@ -693,6 +783,10 @@
       document.getElementById('topper-form').reset();
       document.getElementById('topper-id').value = "";
       editUrls.topper = "";
+      document.getElementById('preview-topper-name').innerText = "Student Name";
+      document.getElementById('preview-topper-sem').innerText = "Semester";
+      document.getElementById('preview-topper-cgpa').innerText = "N/A";
+      document.getElementById('preview-topper-img').src = "https://via.placeholder.com/150";
       document.getElementById('topper-form-title').innerText = "Add Academic Topper";
       document.getElementById('topper-submit-btn').innerText = "Save Topper";
       document.getElementById('topper-cancel-btn').classList.add('hidden');
@@ -740,6 +834,10 @@
       document.getElementById('alumni-desig').value = a.job_designation || "";
       document.getElementById('alumni-company').value = a.company_name || "";
       editUrls.alumni = a.photo_url || "";
+      document.getElementById('preview-alumni-name').innerText = a.full_name;
+      document.getElementById('preview-alumni-desig').innerText = a.job_designation || "";
+      document.getElementById('preview-alumni-company').innerText = a.company_name ? "@ " + a.company_name : "";
+      if (a.photo_url) document.getElementById('preview-alumni-img').src = a.photo_url;
       document.getElementById('alumni-form-title').innerText = "Edit Alumni: " + a.full_name;
       document.getElementById('alumni-submit-btn').innerText = "Update Alumni";
       document.getElementById('alumni-cancel-btn').classList.remove('hidden');
@@ -750,6 +848,10 @@
       document.getElementById('alumni-form').reset();
       document.getElementById('alumni-id').value = "";
       editUrls.alumni = "";
+      document.getElementById('preview-alumni-name').innerText = "Alumni Name";
+      document.getElementById('preview-alumni-desig').innerText = "Designation";
+      document.getElementById('preview-alumni-company').innerText = "Company";
+      document.getElementById('preview-alumni-img').src = "https://via.placeholder.com/150";
       document.getElementById('alumni-form-title').innerText = "Add Notable Alumni";
       document.getElementById('alumni-submit-btn').innerText = "Save Alumni";
       document.getElementById('alumni-cancel-btn').classList.add('hidden');
@@ -793,6 +895,9 @@
       document.getElementById('minute-date').value = min.meeting_date || "";
       document.getElementById('minute-text').value = min.minutes_text || "";
       document.getElementById('minute-url').value = min.document_url || "";
+      document.getElementById('preview-minute-title').innerText = min.title;
+      document.getElementById('preview-minute-date').innerText = min.meeting_date || "";
+      document.getElementById('preview-minute-text').innerText = min.minutes_text || "";
       document.getElementById('minute-form-title').innerText = "Edit Minutes: " + min.title;
       document.getElementById('minute-submit-btn').innerText = "Update Minutes";
       document.getElementById('minute-cancel-btn').classList.remove('hidden');
@@ -802,6 +907,9 @@
     function resetMinuteForm() {
       document.getElementById('minute-form').reset();
       document.getElementById('minute-id').value = "";
+      document.getElementById('preview-minute-title').innerText = "Meeting Title";
+      document.getElementById('preview-minute-date').innerText = "Date";
+      document.getElementById('preview-minute-text').innerText = "Summary of minutes description...";
       document.getElementById('minute-form-title').innerText = "Add Meeting Minutes";
       document.getElementById('minute-submit-btn').innerText = "Save Minutes";
       document.getElementById('minute-cancel-btn').classList.add('hidden');
