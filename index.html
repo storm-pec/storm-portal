@@ -430,15 +430,35 @@
       `).join('');
     }
 
+    // SORT EVENTS BY ACTUAL EVENT DATE (NEWEST FIRST)
     async function fetchEvents() {
       const container = document.getElementById('events-container');
       if (!container) return;
-      const { data, error } = await db.from('main_events').select('*').order('created_at', { ascending: false }).limit(3);
+      const { data, error } = await db.from('main_events').select('*');
       if (error || !data || data.length === 0) { 
         container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-4'>No events found.</p>"; 
         return; 
       }
-      container.innerHTML = data.map(ev => `
+
+      // Sort events chronologically by event_date (Newest date first)
+      data.sort((a, b) => {
+        const getSortableVal = (dStr) => {
+          if (!dStr) return '';
+          const parts = dStr.trim().split(/[-/]/);
+          if (parts.length === 3) {
+            // Convert DD-MM-YYYY or YYYY-MM-DD into YYYYMMDD for correct sorting
+            if (parts[0].length === 4) return `${parts[0]}${parts[1]}${parts[2]}`; // YYYY-MM-DD
+            return `${parts[2]}${parts[1]}${parts[0]}`; // DD-MM-YYYY
+          }
+          return dStr;
+        };
+        return getSortableVal(b.event_date).localeCompare(getSortableVal(a.event_date));
+      });
+
+      // Take only the top 3 most recent events for the home page preview
+      const topEvents = data.slice(0, 3);
+
+      container.innerHTML = topEvents.map(ev => `
         <div onclick='openEventModal(${JSON.stringify(ev).replace(/'/g, "&#39;")})' class="bg-white shadow-md border border-gray-200 rounded-xl overflow-hidden creative-card cursor-pointer flex flex-col h-full">
           <div class="bg-slate-950 h-72 md:h-80 flex items-center justify-center overflow-hidden p-2">
             <img src="${ev.cover_image_url || ''}" class="max-h-full max-w-full object-contain drop-shadow-md" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Event+Poster'"/>
