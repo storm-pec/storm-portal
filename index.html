@@ -440,22 +440,19 @@
         return; 
       }
 
-      // Sort events chronologically by event_date (Newest date first)
       data.sort((a, b) => {
         const getSortableVal = (dStr) => {
           if (!dStr) return '';
           const parts = dStr.trim().split(/[-/]/);
           if (parts.length === 3) {
-            // Convert DD-MM-YYYY or YYYY-MM-DD into YYYYMMDD for correct sorting
-            if (parts[0].length === 4) return `${parts[0]}${parts[1]}${parts[2]}`; // YYYY-MM-DD
-            return `${parts[2]}${parts[1]}${parts[0]}`; // DD-MM-YYYY
+            if (parts[0].length === 4) return `${parts[0]}${parts[1]}${parts[2]}`;
+            return `${parts[2]}${parts[1]}${parts[0]}`;
           }
           return dStr;
         };
         return getSortableVal(b.event_date).localeCompare(getSortableVal(a.event_date));
       });
 
-      // Take only the top 3 most recent events for the home page preview
       const topEvents = data.slice(0, 3);
 
       container.innerHTML = topEvents.map(ev => `
@@ -472,22 +469,39 @@
       `).join('');
     }
 
+    // SORT TOPPERS: Final Year First, then highest score
     async function fetchToppersPreview() {
       const container = document.getElementById('toppers-preview');
       if (!container) return;
       
-      const { data, error } = await db.from('toppers')
-        .select('*')
-        .order('semester', { ascending: false })
-        .order('cgpa', { ascending: false })
-        .limit(4);
+      const { data, error } = await db.from('toppers').select('*');
         
       if (error || !data || data.length === 0) {
         container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-4'>No toppers listed yet.</p>";
         return;
       }
       
-      container.innerHTML = data.map(t => `
+      data.sort((a, b) => {
+        const getSemNum = (sem) => {
+          if (!sem) return 0;
+          const match = sem.match(/\d+/);
+          return match ? parseInt(match[0]) : 0;
+        };
+        const semA = getSemNum(a.semester);
+        const semB = getSemNum(b.semester);
+        if (semB !== semA) return semB - semA;
+
+        const getScore = (str) => {
+          if (!str) return 0;
+          const match = str.match(/[\d.]+/);
+          return match ? parseFloat(match[0]) : 0;
+        };
+        return getScore(b.cgpa) - getScore(a.cgpa);
+      });
+
+      const topData = data.slice(0, 4);
+      
+      container.innerHTML = topData.map(t => `
         <div class="bg-white border border-gray-200 p-5 text-center relative shadow-md hover:shadow-xl transition rounded-xl creative-card">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year}</div>
           <img src="${t.photo_url || 'https://via.placeholder.com/150'}" onerror="this.src='https://via.placeholder.com/150'" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-amber-500 mb-3 mt-2 shadow-sm" />
@@ -560,15 +574,13 @@
       document.getElementById('modal-event-title').innerText = ev.title;
       document.getElementById('modal-event-date').innerText = formatDate(ev.event_date) || '';
       
-      // Auto-Linker: Detects links and makes them clickable
       let descText = ev.description || '';
       let formattedDesc = descText
         .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-amber-500 font-bold hover:underline break-all">$1</a>')
-        .replace(/\n/g, '<br>'); // Preserves paragraph breaks
+        .replace(/\n/g, '<br>');
 
       document.getElementById('modal-event-desc').innerHTML = formattedDesc;
       
-      // Smart Image Hider: Removes the broken image icon if no valid picture is provided
       const imgEl = document.getElementById('modal-event-img');
       if (ev.cover_image_url && ev.cover_image_url.trim() !== '') {
         imgEl.src = ev.cover_image_url;
@@ -585,7 +597,6 @@
       document.getElementById('event-modal').classList.add('hidden');
     }
 
-    // TRIGGER INITIAL DATA FETCHING ON PAGE LOAD
     document.addEventListener("DOMContentLoaded", () => {
       fetchOfficeBearers();
       fetchExecutiveCommittee();
