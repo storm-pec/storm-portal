@@ -114,11 +114,31 @@
 
     async function fetchAllToppers() {
       const container = document.getElementById('full-toppers-container');
-      const { data, error } = await db.from('toppers').select('*').order('created_at', { ascending: false });
+      const { data, error } = await db.from('toppers').select('*');
       if (error || !data || data.length === 0) {
         container.innerHTML = "<p class='col-span-full text-center text-gray-500 py-12'>No academic toppers found.</p>";
         return;
       }
+
+      // SORT LOGIC: Final year first (S8/S7), then 3rd (S6/S5), 2nd (S4/S3), 1st (S2/S1), with highest score first
+      data.sort((a, b) => {
+        const getSemNum = (sem) => {
+          if (!sem) return 0;
+          const match = sem.match(/\d+/);
+          return match ? parseInt(match[0]) : 0;
+        };
+        const semA = getSemNum(a.semester);
+        const semB = getSemNum(b.semester);
+        if (semB !== semA) return semB - semA; // Higher semester first
+
+        const getScore = (str) => {
+          if (!str) return 0;
+          const match = str.match(/[\d.]+/);
+          return match ? parseFloat(match[0]) : 0;
+        };
+        return getScore(b.cgpa) - getScore(a.cgpa); // Highest score first
+      });
+
       container.innerHTML = data.map(t => `
         <div class="bg-white border border-gray-200 p-6 text-center relative shadow-md hover:shadow-xl transition rounded-xl creative-card flex flex-col items-center">
           <div class="absolute top-0 right-0 bg-amber-500 text-slate-950 text-[10px] font-black px-3 py-1 rounded-bl-xl">${t.academic_year || ''}</div>
