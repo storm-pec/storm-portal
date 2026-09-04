@@ -221,7 +221,8 @@
             <input type="text" id="topper-name" placeholder="Student Name" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <input type="text" id="topper-sem" placeholder="Semester (e.g., S4 Mechanical)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <input type="text" id="topper-year" placeholder="Academic Year (e.g., 2025-26)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            <input type="text" id="topper-cgpa" placeholder="Score (e.g., CGPA: 9.5 or SGPA: 8.2)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <!-- SCORE FIELD MADE OPTIONAL (REMOVED required) -->
+            <input type="text" id="topper-cgpa" placeholder="Score or Status (optional, e.g., Topper / Distinction)" oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <div class="flex flex-col gap-1 md:col-span-2">
               <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Student Photo</label>
               <input type="file" id="topper-file" accept="image/*" onchange="previewImage(event, 'preview-topper-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
@@ -322,7 +323,6 @@
     let editUrls = { media: "", bearer: "", exec: "", faculty: "", event: "", topper: "", alumni: "" };
     let eventsDataMap = {};
 
-    // AUTH CHECK ON LOAD
     async function checkAdminAuth() {
       const { data: { session } } = await db.auth.getSession();
       if (!session) { window.location.href = "index.html"; }
@@ -333,7 +333,6 @@
       db.auth.signOut().then(() => { window.location.href = "index.html"; });
     }
 
-    // TAB SWITCHING
     function switchAdminTab(tabName) {
       document.querySelectorAll('.admin-section').forEach(sec => sec.classList.add('hidden'));
       document.querySelectorAll('.admin-tab-btn').forEach(btn => {
@@ -355,7 +354,6 @@
       if (tabName === 'minutes') fetchAdminMinutes();
     }
 
-    // GENERAL LIVE PREVIEWS
     function updatePreview(type) {
       if (type === 'media') {
         document.getElementById('preview-media-name').innerText = document.getElementById('media-name').value || "Member Name";
@@ -397,7 +395,6 @@
       }
     }
 
-    // INSTANT UPLOAD METHOD
     async function uploadFileDirect(fileInputId) {
       const fileInput = document.getElementById(fileInputId);
       if (fileInput.files.length === 0) return null;
@@ -409,7 +406,6 @@
       return urlData.publicUrl;
     }
 
-    // 1. MEDIA TEAM CRUD
     async function fetchAdminMedia() {
       const container = document.getElementById('admin-media-list');
       const { data, error } = await db.from('media_team').select('*').order('display_order', { ascending: true });
@@ -470,7 +466,6 @@
       document.getElementById('media-cancel-btn').classList.add('hidden');
     }
 
-    // 2. OFFICE BEARERS CRUD
     async function fetchAdminBearers() {
       const container = document.getElementById('admin-bearer-list');
       const { data, error } = await db.from('office_bearers').select('*').order('display_order', { ascending: true });
@@ -531,7 +526,6 @@
       document.getElementById('bearer-cancel-btn').classList.add('hidden');
     }
 
-    // 3. EXECUTIVE COMMITTEE CRUD
     async function fetchAdminExec() {
       const container = document.getElementById('admin-exec-list');
       const { data, error } = await db.from('executive_committee').select('*').order('display_order', { ascending: true });
@@ -592,7 +586,6 @@
       document.getElementById('exec-cancel-btn').classList.add('hidden');
     }
 
-    // 4. FACULTY CRUD
     async function fetchAdminFaculty() {
       const container = document.getElementById('admin-faculty-list');
       const { data, error } = await db.from('faculty').select('*').order('display_order', { ascending: true });
@@ -665,7 +658,6 @@
       document.getElementById('faculty-cancel-btn').classList.add('hidden');
     }
 
-    // 5. EVENTS CRUD (FIXED ID MAPPING FOR TITLES WITH HYPHENS)
     async function fetchAdminEvents() {
       const container = document.getElementById('admin-event-list');
       const { data, error } = await db.from('main_events').select('*').order('created_at', { ascending: false });
@@ -734,7 +726,6 @@
       document.getElementById('event-cancel-btn').classList.add('hidden');
     }
 
-    // 6. TOPPERS CRUD
     async function fetchAdminToppers() {
       const container = document.getElementById('admin-topper-list');
       const { data, error } = await db.from('toppers').select('*').order('created_at', { ascending: false });
@@ -743,7 +734,7 @@
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <img src="${t.photo_url || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded-full object-cover border border-amber-500" />
-            <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">${t.cgpa}</p></div>
+            <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">${t.cgpa || 'No score'}</p></div>
           </div>
           <div class="flex gap-2">
             <button onclick='editTopper(${JSON.stringify(t)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
@@ -799,7 +790,6 @@
       document.getElementById('topper-cancel-btn').classList.add('hidden');
     }
 
-    // 7. ALUMNI CRUD
     async function fetchAdminAlumni() {
       const container = document.getElementById('admin-alumni-list');
       const { data, error } = await db.from('alumni').select('*').order('graduation_year', { ascending: false });
@@ -864,7 +854,6 @@
       document.getElementById('alumni-cancel-btn').classList.add('hidden');
     }
 
-    // 8. MEETING MINUTES CRUD
     async function fetchAdminMinutes() {
       const container = document.getElementById('admin-minute-list');
       const { data, error } = await db.from('meeting_minutes').select('*').order('meeting_date', { ascending: false });
@@ -922,7 +911,6 @@
       document.getElementById('minute-cancel-btn').classList.add('hidden');
     }
 
-    // UNIVERSAL DELETE HELPER
     async function deleteRecord(table, id, callback) {
       if (confirm("Are you sure you want to delete this record?")) {
         const { error } = await db.from(table).delete().eq('id', id);
@@ -931,7 +919,6 @@
       }
     }
 
-    // Initial load
     fetchAdminMedia();
   </script>
 </body>
