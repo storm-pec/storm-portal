@@ -27,7 +27,8 @@
     
     <!-- SECTION TABS -->
     <div class="flex flex-wrap gap-2 mb-8 border-b border-slate-800 pb-4">
-      <button onclick="switchAdminTab('media')" class="admin-tab-btn active bg-amber-500 text-slate-950 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition cursor-pointer">Media Team</button>
+      <button onclick="switchAdminTab('announcements')" class="admin-tab-btn active bg-amber-500 text-slate-950 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-wider transition cursor-pointer">Announcements</button>
+      <button onclick="switchAdminTab('media')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Media Team</button>
       <button onclick="switchAdminTab('bearers')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Office Bearers</button>
       <button onclick="switchAdminTab('exec')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Executive Committee</button>
       <button onclick="switchAdminTab('faculty')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Faculty</button>
@@ -37,8 +38,43 @@
       <button onclick="switchAdminTab('minutes')" class="admin-tab-btn bg-slate-800 text-gray-300 px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition cursor-pointer">Meeting Minutes</button>
     </div>
 
+    <!-- 0. ANNOUNCEMENTS SECTION -->
+    <div id="section-announcements" class="admin-section space-y-8">
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 id="announcement-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add New Announcement Poster</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          <form id="announcement-form" onsubmit="handleAnnouncementSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="hidden" id="announcement-id">
+            <input type="text" id="announcement-title" placeholder="Announcement Heading / Title" required oninput="updatePreview('announcement')" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="number" id="announcement-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <div class="flex flex-col gap-1 md:col-span-2">
+              <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Announcement Poster Image</label>
+              <input type="file" id="announcement-file" accept="image/*" onchange="previewImage(event, 'preview-announcement-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
+            </div>
+            <textarea id="announcement-desc" placeholder="Announcement Content / Description" required oninput="updatePreview('announcement')" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white p-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none h-32"></textarea>
+            <div class="md:col-span-2 flex gap-4 mt-2">
+              <button type="submit" id="announcement-submit-btn" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Save Announcement</button>
+              <button type="button" onclick="resetAnnouncementForm()" id="announcement-cancel-btn" class="hidden bg-slate-800 hover:bg-slate-700 text-white font-bold uppercase text-xs px-6 py-3 rounded-lg transition cursor-pointer">Cancel Edit</button>
+            </div>
+          </form>
+          <div class="bg-slate-900 border-2 border-amber-500/40 p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg sticky top-24">
+            <span class="text-[10px] bg-amber-500 text-slate-950 font-black px-3 py-0.5 rounded-full uppercase tracking-widest mb-3">Live Preview</span>
+            <div class="bg-slate-950 h-48 w-full flex items-center justify-center overflow-hidden rounded-lg mb-3 border border-slate-800">
+              <img id="preview-announcement-img" src="https://via.placeholder.com/150?text=Poster+Preview" class="max-h-full max-w-full object-contain" />
+            </div>
+            <h4 id="preview-announcement-title" class="font-bold text-sm text-white mb-1">Announcement Heading</h4>
+            <p id="preview-announcement-desc" class="text-xs text-gray-400 line-clamp-2">Content details...</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
+        <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-wide">Existing Announcements</h3>
+        <div id="admin-announcement-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+      </div>
+    </div>
+
     <!-- 1. MEDIA TEAM SECTION -->
-    <div id="section-media" class="admin-section space-y-8">
+    <div id="section-media" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="media-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add New Media Team Member</h3>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -221,8 +257,7 @@
             <input type="text" id="topper-name" placeholder="Student Name" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <input type="text" id="topper-sem" placeholder="Semester (e.g., S4 Mechanical)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <input type="text" id="topper-year" placeholder="Academic Year (e.g., 2025-26)" required oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            <!-- SCORE FIELD MADE OPTIONAL (REMOVED required) -->
-            <input type="text" id="topper-cgpa" placeholder="Score or Status (optional, e.g., Topper / Distinction)" oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="topper-cgpa" placeholder="Score or Status (optional)" oninput="updatePreview('topper')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <div class="flex flex-col gap-1 md:col-span-2">
               <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Student Photo</label>
               <input type="file" id="topper-file" accept="image/*" onchange="previewImage(event, 'preview-topper-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
@@ -320,7 +355,8 @@
     const SUPABASE_ANON_KEY = "sb_publishable_03xlqMbi--TtDWT3pJJEWg_u6MiW9Sc";
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let editUrls = { media: "", bearer: "", exec: "", faculty: "", event: "", topper: "", alumni: "" };
+    let editUrls = { announcement: "", media: "", bearer: "", exec: "", faculty: "", event: "", topper: "", alumni: "" };
+    let announcementsDataMap = {};
     let eventsDataMap = {};
 
     async function checkAdminAuth() {
@@ -344,6 +380,7 @@
       event.currentTarget.classList.remove('bg-slate-800', 'text-gray-300');
       event.currentTarget.classList.add('bg-amber-500', 'text-slate-950');
 
+      if (tabName === 'announcements') fetchAdminAnnouncements();
       if (tabName === 'media') fetchAdminMedia();
       if (tabName === 'bearers') fetchAdminBearers();
       if (tabName === 'exec') fetchAdminExec();
@@ -355,7 +392,10 @@
     }
 
     function updatePreview(type) {
-      if (type === 'media') {
+      if (type === 'announcement') {
+        document.getElementById('preview-announcement-title').innerText = document.getElementById('announcement-title').value || "Announcement Heading";
+        document.getElementById('preview-announcement-desc').innerText = document.getElementById('announcement-desc').value || "Content details...";
+      } else if (type === 'media') {
         document.getElementById('preview-media-name').innerText = document.getElementById('media-name').value || "Member Name";
         document.getElementById('preview-media-pos').innerText = document.getElementById('media-position').value || "Position";
       } else if (type === 'bearer') {
@@ -404,6 +444,73 @@
       if (error) { alert('Upload failed: ' + error.message); return null; }
       const { data: urlData } = db.storage.from('images').getPublicUrl(fileName);
       return urlData.publicUrl;
+    }
+
+    // 0. ANNOUNCEMENTS CRUD
+    async function fetchAdminAnnouncements() {
+      const container = document.getElementById('admin-announcement-list');
+      const { data, error } = await db.from('announcements').select('*').order('display_order', { ascending: true });
+      if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No announcements found.</p>"; return; }
+      
+      announcementsDataMap = {};
+      data.forEach(a => { announcementsDataMap[a.id] = a; });
+
+      container.innerHTML = data.map(a => `
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <img src="${a.poster_url || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded object-cover border border-amber-500" />
+            <div><h4 class="font-bold text-sm text-white">${a.title}</h4><p class="text-[10px] text-amber-400">Order: ${a.display_order || 1}</p></div>
+          </div>
+          <div class="flex gap-2">
+            <button onclick='editAnnouncement(${a.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("announcements", ${a.id}, fetchAdminAnnouncements)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function handleAnnouncementSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('announcement-id').value;
+      const title = document.getElementById('announcement-title').value;
+      const description = document.getElementById('announcement-desc').value;
+      const display_order = parseInt(document.getElementById('announcement-order').value) || 1;
+      let poster_url = editUrls.announcement;
+      const uploadedUrl = await uploadFileDirect('announcement-file');
+      if (uploadedUrl) poster_url = uploadedUrl;
+      const payload = { title, description, display_order, poster_url };
+      const res = id ? await db.from('announcements').update(payload).eq('id', id) : await db.from('announcements').insert([payload]);
+      if (res.error) alert('Error: ' + res.error.message);
+      else { resetAnnouncementForm(); fetchAdminAnnouncements(); }
+    }
+
+    function editAnnouncement(id) {
+      const a = announcementsDataMap[id];
+      if (!a) return;
+      document.getElementById('announcement-id').value = a.id;
+      document.getElementById('announcement-title').value = a.title;
+      document.getElementById('announcement-desc').value = a.description || "";
+      document.getElementById('announcement-order').value = a.display_order || 1;
+      editUrls.announcement = a.poster_url || "";
+      document.getElementById('preview-announcement-title').innerText = a.title;
+      document.getElementById('preview-announcement-desc').innerText = a.description || "";
+      if (a.poster_url) document.getElementById('preview-announcement-img').src = a.poster_url;
+      document.getElementById('announcement-form-title').innerText = "Edit Announcement: " + a.title;
+      document.getElementById('announcement-submit-btn').innerText = "Update Announcement";
+      document.getElementById('announcement-cancel-btn').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function resetAnnouncementForm() {
+      document.getElementById('announcement-form').reset();
+      document.getElementById('announcement-id').value = "";
+      editUrls.announcement = "";
+      document.getElementById('preview-announcement-title').innerText = "Announcement Heading";
+      document.getElementById('preview-announcement-desc').innerText = "Content details...";
+      document.getElementById('preview-announcement-img').src = "https://via.placeholder.com/150?text=Poster+Preview";
+      document.getElementById('announcement-form-title').innerText = "Add New Announcement Poster";
+      document.getElementById('announcement-submit-btn').innerText = "Save Announcement";
+      document.getElementById('announcement-cancel-btn').classList.add('hidden');
     }
 
     async function fetchAdminMedia() {
@@ -896,7 +1003,7 @@
       document.getElementById('preview-minute-text').innerText = min.minutes_text || "";
       document.getElementById('minute-form-title').innerText = "Edit Minutes: " + min.title;
       document.getElementById('minute-submit-btn').innerText = "Update Minutes";
-      document.getElementById('minute-cancel-btn').classList.remove('hidden');
+      document.getElementById('minute-cancel-btn').classList.add('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -919,7 +1026,7 @@
       }
     }
 
-    fetchAdminMedia();
+    fetchAdminAnnouncements();
   </script>
 </body>
 </html>
