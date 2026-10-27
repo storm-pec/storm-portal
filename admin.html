@@ -471,8 +471,8 @@
             <div><h4 class="font-bold text-sm text-white">${a.title}</h4><p class="text-[10px] text-amber-400">Order: ${a.display_order || 1}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editAnnouncement(${JSON.stringify(a.title)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("announcements", ${JSON.stringify(a.title)}, fetchAdminAnnouncements, "title")' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editAnnouncement(${JSON.stringify(a.title).replace(/'/g, "&#39;")})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("announcements", ${JSON.stringify(a.title).replace(/'/g, "&#39;")}, fetchAdminAnnouncements, "title")' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
