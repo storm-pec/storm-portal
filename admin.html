@@ -44,7 +44,7 @@
         <h3 id="announcement-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add New Announcement Poster</h3>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <form id="announcement-form" onsubmit="handleAnnouncementSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="hidden" id="announcement-id">
+            <input type="hidden" id="announcement-original-title">
             <input type="text" id="announcement-title" placeholder="Announcement Heading / Title" required oninput="updatePreview('announcement')" class="md:col-span-2 bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <input type="number" id="announcement-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
             <div class="flex flex-col gap-1 md:col-span-2">
@@ -455,14 +455,14 @@
       return urlData.publicUrl;
     }
 
-    // 0. ANNOUNCEMENTS CRUD
+    // 0. ANNOUNCEMENTS CRUD (Uses 'title' as Primary Key)
     async function fetchAdminAnnouncements() {
       const container = document.getElementById('admin-announcement-list');
       const { data, error } = await db.from('announcements').select('*').order('display_order', { ascending: true });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No announcements found.</p>"; return; }
       
       announcementsDataMap = {};
-      data.forEach(a => { announcementsDataMap[a.id] = a; });
+      data.forEach(a => { announcementsDataMap[a.title] = a; });
 
       container.innerHTML = data.map(a => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
@@ -471,8 +471,8 @@
             <div><h4 class="font-bold text-sm text-white">${a.title}</h4><p class="text-[10px] text-amber-400">Order: ${a.display_order || 1}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editAnnouncement("${a.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("announcements", "${a.id}", fetchAdminAnnouncements)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editAnnouncement(${JSON.stringify(a.title)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("announcements", ${JSON.stringify(a.title)}, fetchAdminAnnouncements, "title")' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -480,7 +480,7 @@
 
     async function handleAnnouncementSubmit(e) {
       e.preventDefault();
-      const id = document.getElementById('announcement-id').value;
+      const originalTitle = document.getElementById('announcement-original-title').value;
       const title = document.getElementById('announcement-title').value;
       const description = document.getElementById('announcement-desc').value;
       const display_order = parseInt(document.getElementById('announcement-order').value) || 1;
@@ -488,15 +488,16 @@
       const uploadedUrl = await uploadFileDirect('announcement-file');
       if (uploadedUrl) poster_url = uploadedUrl;
       const payload = { title, description, display_order, poster_url };
-      const res = id ? await db.from('announcements').update(payload).eq('id', id) : await db.from('announcements').insert([payload]);
+      
+      const res = originalTitle ? await db.from('announcements').update(payload).eq('title', originalTitle) : await db.from('announcements').insert([payload]);
       if (res.error) alert('Error: ' + res.error.message);
       else { resetAnnouncementForm(); fetchAdminAnnouncements(); }
     }
 
-    function editAnnouncement(id) {
-      const a = announcementsDataMap[id];
+    function editAnnouncement(title) {
+      const a = announcementsDataMap[title];
       if (!a) return;
-      document.getElementById('announcement-id').value = a.id;
+      document.getElementById('announcement-original-title').value = a.title;
       document.getElementById('announcement-title').value = a.title;
       document.getElementById('announcement-desc').value = a.description || "";
       document.getElementById('announcement-order').value = a.display_order || 1;
@@ -512,7 +513,7 @@
 
     function resetAnnouncementForm() {
       document.getElementById('announcement-form').reset();
-      document.getElementById('announcement-id').value = "";
+      document.getElementById('announcement-original-title').value = "";
       editUrls.announcement = "";
       document.getElementById('preview-announcement-title').innerText = "Announcement Heading";
       document.getElementById('preview-announcement-desc').innerText = "Content details...";
@@ -1069,9 +1070,9 @@
       document.getElementById('minute-cancel-btn').classList.add('hidden');
     }
 
-    async function deleteRecord(table, id, callback) {
+    async function deleteRecord(table, id, callback, idCol = 'id') {
       if (confirm("Are you sure you want to delete this record?")) {
-        const { error } = await db.from(table).delete().eq('id', id);
+        const { error } = await db.from(table).delete().eq(idCol, id);
         if (error) alert('Error deleting: ' + error.message);
         else callback();
       }
