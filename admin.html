@@ -356,8 +356,17 @@
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let editUrls = { announcement: "", media: "", bearer: "", exec: "", faculty: "", event: "", topper: "", alumni: "" };
+    
+    // Lookup maps for safe ID-based editing
     let announcementsDataMap = {};
+    let mediaDataMap = {};
+    let bearersDataMap = {};
+    let execDataMap = {};
+    let facultyDataMap = {};
     let eventsDataMap = {};
+    let toppersDataMap = {};
+    let alumniDataMap = {};
+    let minutesDataMap = {};
 
     async function checkAdminAuth() {
       const { data: { session } } = await db.auth.getSession();
@@ -517,6 +526,10 @@
       const container = document.getElementById('admin-media-list');
       const { data, error } = await db.from('media_team').select('*').order('display_order', { ascending: true });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No media members found.</p>"; return; }
+      
+      mediaDataMap = {};
+      data.forEach(m => { mediaDataMap[m.id] = m; });
+
       container.innerHTML = data.map(m => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -524,7 +537,7 @@
             <div><h4 class="font-bold text-sm text-white">${m.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${m.position}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editMedia(${JSON.stringify(m)})' class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editMedia(${m.id})' class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("media_team", ${m.id}, fetchAdminMedia)' class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -546,7 +559,9 @@
       else { resetMediaForm(); fetchAdminMedia(); }
     }
 
-    function editMedia(m) {
+    function editMedia(id) {
+      const m = mediaDataMap[id];
+      if (!m) return;
       document.getElementById('media-id').value = m.id;
       document.getElementById('media-name').value = m.name;
       document.getElementById('media-position').value = m.position;
@@ -577,6 +592,10 @@
       const container = document.getElementById('admin-bearer-list');
       const { data, error } = await db.from('office_bearers').select('*').order('display_order', { ascending: true });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No office bearers found.</p>"; return; }
+      
+      bearersDataMap = {};
+      data.forEach(b => { bearersDataMap[b.id] = b; });
+
       container.innerHTML = data.map(b => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -584,7 +603,7 @@
             <div><h4 class="font-bold text-sm text-white">${b.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${b.position}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editBearer(${JSON.stringify(b)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editBearer(${b.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("office_bearers", ${b.id}, fetchAdminBearers)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -606,7 +625,9 @@
       else { resetBearerForm(); fetchAdminBearers(); }
     }
 
-    function editBearer(b) {
+    function editBearer(id) {
+      const b = bearersDataMap[id];
+      if (!b) return;
       document.getElementById('bearer-id').value = b.id;
       document.getElementById('bearer-name').value = b.name;
       document.getElementById('bearer-position').value = b.position;
@@ -637,6 +658,10 @@
       const container = document.getElementById('admin-exec-list');
       const { data, error } = await db.from('executive_committee').select('*').order('display_order', { ascending: true });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No executive members found.</p>"; return; }
+      
+      execDataMap = {};
+      data.forEach(m => { execDataMap[m.id] = m; });
+
       container.innerHTML = data.map(m => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -644,7 +669,7 @@
             <div><h4 class="font-bold text-sm text-white">${m.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${m.position || m.year_batch}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editExec(${JSON.stringify(m)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editExec(${m.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("executive_committee", ${m.id}, fetchAdminExec)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -666,7 +691,9 @@
       else { resetExecForm(); fetchAdminExec(); }
     }
 
-    function editExec(m) {
+    function editExec(id) {
+      const m = execDataMap[id];
+      if (!m) return;
       document.getElementById('exec-id').value = m.id;
       document.getElementById('exec-name').value = m.name;
       document.getElementById('exec-position').value = m.position || m.year_batch || "";
@@ -697,6 +724,10 @@
       const container = document.getElementById('admin-faculty-list');
       const { data, error } = await db.from('faculty').select('*').order('display_order', { ascending: true });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No faculty found.</p>"; return; }
+      
+      facultyDataMap = {};
+      data.forEach(f => { facultyDataMap[f.id] = f; });
+
       container.innerHTML = data.map(f => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -704,7 +735,7 @@
             <div><h4 class="font-bold text-sm text-white">${f.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${f.role}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editFaculty(${JSON.stringify(f)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editFaculty(${f.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("faculty", ${f.id}, fetchAdminFaculty)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -732,7 +763,9 @@
       else { resetFacultyForm(); fetchAdminFaculty(); }
     }
 
-    function editFaculty(f) {
+    function editFaculty(id) {
+      const f = facultyDataMap[id];
+      if (!f) return;
       document.getElementById('faculty-id').value = f.id;
       document.getElementById('faculty-name').value = f.name;
       document.getElementById('faculty-role').value = f.role || "";
@@ -837,6 +870,10 @@
       const container = document.getElementById('admin-topper-list');
       const { data, error } = await db.from('toppers').select('*').order('created_at', { ascending: false });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No toppers found.</p>"; return; }
+      
+      toppersDataMap = {};
+      data.forEach(t => { toppersDataMap[t.id] = t; });
+
       container.innerHTML = data.map(t => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -844,7 +881,7 @@
             <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">${t.cgpa || 'No score'}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editTopper(${JSON.stringify(t)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editTopper(${t.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("toppers", ${t.id}, fetchAdminToppers)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -867,7 +904,9 @@
       else { resetTopperForm(); fetchAdminToppers(); }
     }
 
-    function editTopper(t) {
+    function editTopper(id) {
+      const t = toppersDataMap[id];
+      if (!t) return;
       document.getElementById('topper-id').value = t.id;
       document.getElementById('topper-name').value = t.student_name;
       document.getElementById('topper-sem').value = t.semester || "";
@@ -901,6 +940,10 @@
       const container = document.getElementById('admin-alumni-list');
       const { data, error } = await db.from('alumni').select('*').order('graduation_year', { ascending: false });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm col-span-full'>No alumni found.</p>"; return; }
+      
+      alumniDataMap = {};
+      data.forEach(a => { alumniDataMap[a.id] = a; });
+
       container.innerHTML = data.map(a => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
@@ -908,7 +951,7 @@
             <div><h4 class="font-bold text-sm text-white">${a.full_name}</h4><p class="text-[10px] text-amber-400">${a.job_designation} @ ${a.company_name}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editAlumni(${JSON.stringify(a)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editAlumni(${a.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("alumni", ${a.id}, fetchAdminAlumni)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -931,7 +974,9 @@
       else { resetAlumniForm(); fetchAdminAlumni(); }
     }
 
-    function editAlumni(a) {
+    function editAlumni(id) {
+      const a = alumniDataMap[id];
+      if (!a) return;
       document.getElementById('alumni-id').value = a.id;
       document.getElementById('alumni-name').value = a.full_name;
       document.getElementById('alumni-batch').value = a.graduation_year || "";
@@ -965,6 +1010,10 @@
       const container = document.getElementById('admin-minute-list');
       const { data, error } = await db.from('meeting_minutes').select('*').order('meeting_date', { ascending: false });
       if (error || !data || data.length === 0) { container.innerHTML = "<p class='text-gray-500 text-sm'>No meeting minutes found.</p>"; return; }
+      
+      minutesDataMap = {};
+      data.forEach(min => { minutesDataMap[min.id] = min; });
+
       container.innerHTML = data.map(min => `
         <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex items-center justify-between gap-4">
           <div>
@@ -972,7 +1021,7 @@
             <p class="text-[10px] text-amber-400 uppercase">${min.meeting_date}</p>
           </div>
           <div class="flex gap-2">
-            <button onclick='editMinute(${JSON.stringify(min)})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='editMinute(${min.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
             <button onclick='deleteRecord("meeting_minutes", ${min.id}, fetchAdminMinutes)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
@@ -992,7 +1041,9 @@
       else { resetMinuteForm(); fetchAdminMinutes(); }
     }
 
-    function editMinute(min) {
+    function editMinute(id) {
+      const min = minutesDataMap[id];
+      if (!min) return;
       document.getElementById('minute-id').value = min.id;
       document.getElementById('minute-title').value = min.title;
       document.getElementById('minute-date').value = min.meeting_date || "";
@@ -1003,7 +1054,7 @@
       document.getElementById('preview-minute-text').innerText = min.minutes_text || "";
       document.getElementById('minute-form-title').innerText = "Edit Minutes: " + min.title;
       document.getElementById('minute-submit-btn').innerText = "Update Minutes";
-      document.getElementById('minute-cancel-btn').classList.add('hidden');
+      document.getElementById('minute-cancel-btn').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
