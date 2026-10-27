@@ -471,8 +471,8 @@
             <div><h4 class="font-bold text-sm text-white">${a.title}</h4><p class="text-[10px] text-amber-400">Order: ${a.display_order || 1}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editAnnouncement(${a.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("announcements", ${a.id}, fetchAdminAnnouncements)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editAnnouncement("${a.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("announcements", "${a.id}", fetchAdminAnnouncements)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -537,8 +537,8 @@
             <div><h4 class="font-bold text-sm text-white">${m.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${m.position}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editMedia(${m.id})' class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("media_team", ${m.id}, fetchAdminMedia)' class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editMedia("${m.id}")' class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("media_team", "${m.id}", fetchAdminMedia)' class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -603,8 +603,8 @@
             <div><h4 class="font-bold text-sm text-white">${b.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${b.position}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editBearer(${b.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("office_bearers", ${b.id}, fetchAdminBearers)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editBearer("${b.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("office_bearers", "${b.id}", fetchAdminBearers)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -669,8 +669,8 @@
             <div><h4 class="font-bold text-sm text-white">${m.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${m.position || m.year_batch}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editExec(${m.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("executive_committee", ${m.id}, fetchAdminExec)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editExec("${m.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("executive_committee", "${m.id}", fetchAdminExec)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -735,8 +735,8 @@
             <div><h4 class="font-bold text-sm text-white">${f.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${f.role}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editFaculty(${f.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("faculty", ${f.id}, fetchAdminFaculty)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editFaculty("${f.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("faculty", "${f.id}", fetchAdminFaculty)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -813,8 +813,8 @@
             <div><h4 class="font-bold text-sm text-white">${ev.title}</h4><p class="text-[10px] text-amber-400">${ev.event_date || ''}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editEvent(${ev.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("main_events", ${ev.id}, fetchAdminEvents)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editEvent("${ev.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("main_events", "${ev.id}", fetchAdminEvents)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -881,8 +881,8 @@
             <div><h4 class="font-bold text-sm text-white">${t.student_name}</h4><p class="text-[10px] text-amber-400">${t.cgpa || 'No score'}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editTopper(${t.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("toppers", ${t.id}, fetchAdminToppers)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editTopper("${t.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("toppers", "${t.id}", fetchAdminToppers)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -951,8 +951,8 @@
             <div><h4 class="font-bold text-sm text-white">${a.full_name}</h4><p class="text-[10px] text-amber-400">${a.job_designation} @ ${a.company_name}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editAlumni(${a.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("alumni", ${a.id}, fetchAdminAlumni)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editAlumni("${a.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("alumni", "${a.id}", fetchAdminAlumni)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
@@ -1021,8 +1021,8 @@
             <p class="text-[10px] text-amber-400 uppercase">${min.meeting_date}</p>
           </div>
           <div class="flex gap-2">
-            <button onclick='editMinute(${min.id})' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("meeting_minutes", ${min.id}, fetchAdminMinutes)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editMinute("${min.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("meeting_minutes", "${min.id}", fetchAdminMinutes)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
