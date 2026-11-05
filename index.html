@@ -360,6 +360,24 @@
       `).join('');
     }
 
+    // ASME POSITION HOLDERS FETCHER
+    async function fetchAsmePositionHolders() {
+      const container = document.getElementById('public-asme-container');
+      if (!container) return;
+      const { data, error } = await db.from('asme_position_holders').select('*').order('display_order', { ascending: true });
+      if (error || !data || data.length === 0) {
+        container.innerHTML = "<p class='text-gray-500 text-center col-span-full py-4'>ASME leadership details coming soon.</p>";
+        return;
+      }
+      container.innerHTML = data.map(l => `
+        <div class="bg-white border border-gray-200 p-6 flex flex-col items-center shadow-md rounded-xl creative-card">
+          <img src="${l.photo_url || 'https://via.placeholder.com/150'}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150'" class="w-24 h-24 rounded-full object-cover border-4 border-slate-900 mb-4 shadow-md" />
+          <h4 class="font-bold text-lg text-slate-900 text-center leading-tight">${l.name}</h4>
+          <p class="text-xs text-amber-600 font-black uppercase tracking-widest mt-2 text-center">${l.position}</p>
+        </div>
+      `).join('');
+    }
+
     function openFacultyModal(m) {
       const modal = document.getElementById('faculty-modal');
       const body = document.getElementById('modal-body');
@@ -425,6 +443,7 @@
       fetchEvents();
       fetchToppersPreview();
       fetchAlumniPreview();
+      fetchAsmePositionHolders();
     });
   </script>
 
@@ -692,6 +711,17 @@
           </div>
           <h4 class="font-bold text-slate-900 text-base">IMechE Student Chapter</h4>
           <p class="text-xs text-gray-500 font-semibold mt-1">Updating soon..</p>
+        </div>
+      </div>
+
+      <!-- ASME POSITION HOLDERS SECTION -->
+      <div class="pt-8 border-t border-gray-100">
+        <div class="text-center mb-8">
+          <span class="text-amber-600 font-bold uppercase tracking-widest text-xs bg-amber-50 border border-amber-500/30 px-3 py-1 rounded-full">Leadership</span>
+          <h3 class="text-2xl font-black text-slate-900 uppercase tracking-wide mt-2">ASME PEC Position Holders</h3>
+        </div>
+        <div id="public-asme-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <!-- Populated dynamically via script -->
         </div>
       </div>
 
