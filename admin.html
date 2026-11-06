@@ -74,17 +74,17 @@
       </div>
     </div>
 
-    <!-- 0.1 ASME POSITION HOLDERS SECTION -->
+    <!-- ASME LEADERS SECTION -->
     <div id="section-asme" class="admin-section hidden space-y-8">
       <div class="bg-slate-950 border border-slate-800 p-6 rounded-2xl shadow-xl">
         <h3 id="asme-form-title" class="text-lg font-bold text-amber-400 mb-4 uppercase tracking-wide">Add ASME Position Holder</h3>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <form id="asme-form" onsubmit="handleAsmeSubmit(event)" class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
             <input type="hidden" id="asme-id">
-            <input type="text" id="asme-name" placeholder="Full Name (e.g., Dr. Kishore Pradeep)" required oninput="updatePreview('asme')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            <input type="text" id="asme-position" placeholder="Position / Role (e.g., Student Section Advisor)" required oninput="updatePreview('asme')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
-            <input type="number" id="asme-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none md:col-span-2">
-            <div class="flex flex-col gap-1 md:col-span-2">
+            <input type="text" id="asme-name" placeholder="Full Name" required oninput="updatePreview('asme')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="text" id="asme-position" placeholder="Position (e.g., Chair)" required oninput="updatePreview('asme')" class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <input type="number" id="asme-order" placeholder="Display Order" value="1" required class="bg-slate-900 border border-slate-700 text-white px-4 py-3 rounded-lg text-sm focus:border-amber-500 focus:outline-none">
+            <div class="flex flex-col gap-1">
               <label class="text-[10px] text-gray-400 uppercase font-bold">Upload Leader Photo</label>
               <input type="file" id="asme-file" accept="image/*" onchange="previewImage(event, 'preview-asme-img')" class="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-slate-950 hover:file:bg-amber-400 cursor-pointer">
             </div>
@@ -562,7 +562,7 @@
       document.getElementById('announcement-cancel-btn').classList.add('hidden');
     }
 
-    // 0.1 ASME LEADERS CRUD
+    // ASME LEADERS CRUD
     async function fetchAdminAsme() {
       const container = document.getElementById('admin-asme-list');
       const { data, error } = await db.from('asme_position_holders').select('*').order('display_order', { ascending: true });
@@ -578,8 +578,8 @@
             <div><h4 class="font-bold text-sm text-white">${l.name}</h4><p class="text-[10px] text-amber-400 uppercase tracking-widest">${l.position}</p></div>
           </div>
           <div class="flex gap-2">
-            <button onclick='editAsme("${l.id}")' class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
-            <button onclick='deleteRecord("asme_position_holders", "${l.id}", fetchAdminAsme)' class="bg-red-600 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
+            <button onclick='editAsme("${l.id}")' class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Edit</button>
+            <button onclick='deleteRecord("asme_position_holders", "${l.id}", fetchAdminAsme)' class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold cursor-pointer">Delete</button>
           </div>
         </div>
       `).join('');
